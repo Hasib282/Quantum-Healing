@@ -1,0 +1,361 @@
+/* ----------------------------- Responsive Grid Design Starts here ----------------------------------------- */
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rows {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.cols {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.center-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+[class^="c-"] {
+    padding: 0 10px;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    width: 100%; /* Mobile default */
+}
+
+
+/* Small devices ≥576px */
+@media (min-width: 576px) {
+    .c-1 { width: 8.333%; }
+    .c-2 { width: 16.66666667%; }
+    .c-3 { width: 25%; }
+    .c-4 { width: 33.333%; }
+    .c-5 { width: 41.66666667%; }
+    .c-6 { width: 50%; }
+    .c-7 { width: 58.33333333%; }
+    .c-8 { width: 66.66666667%; }
+    .c-9 { width: 75%; }
+    .c-10 { width: 83.33333333%; }
+    .c-11 { width: 91.66666667%; }
+    .c-12 { width: 100%; }
+}
+/* ----------------------------- Responsive Grid Design ends here ----------------------------------------- */
+
+
+
+
+
+/* ---------------------------------- Data Table Design Start From Here --------------------------- */
+.load-data{
+    overflow-x: auto;
+}
+
+.data-table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table caption {
+    caption-side: top;
+    text-align: center;
+    background: #0f47a5;
+    color: white;
+    font-size: 18px;
+    padding: 5px 0;
+}
+
+.data-table td, th {
+    font-size: 14px;
+    border: 1px solid #80808024;
+    text-align: left;
+    padding: 2px 4px;
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background-color: #f2f2f25e;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #f2f2f233;
+}
+
+.data-table thead tr:nth-child(1){
+    background: #20a6c9;
+}
+
+.data-table thead tr:nth-child(2) th{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* Hide the default dropdown arrow and add background image in it*/
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 4px 18px 8px 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 33px;
+    background: url('../images/angle-arrow-down.png') no-repeat right 4px center #fff;
+    background-size: 10px;
+}
+
+label{
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+/* ---------------------------------- Data Table Design End At Here --------------------------- */
+
+
+
+
+
+/* ---------------------------------- Pagination Design Start From Here --------------------------- */
+#paginate{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination {
+    display: flex;
+    padding: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+    justify-content: center;
+    margin: 1rem 0;
+    font-size: 20px;
+}
+
+.page-link {
+    display: block;
+    padding: 2px 6px;
+    color: #18b4e9;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-link:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    border: 1px solid #18b4e9;
+}
+
+.page-item.disabled .page-link {
+    color: #afb5bbbf;
+    pointer-events: none;
+    border-color: #dee2e6;
+}
+
+@media (max-width: 576px) {
+    .pagination {
+        flex-wrap: wrap;
+    }
+
+    .page-item {
+        margin: 0.1rem;
+    }
+}
+/* ---------------------------------- Pagination Design End At Here --------------------------- */
+
+
+
+/* ---------------------------------- Input Design Start From Here --------------------------- */
+.col-filter, select, #globalSearch {
+    font-size: 14px;
+    border: 1px solid rgb(222, 226, 230);
+    padding: 4px 8px;
+    height: 30px;
+    width: 100%;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+
+.col-filter:focus, select:focus, #globalSearch:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, .25);
+    box-sizing: border-box;
+}
+/* ---------------------------------- Input Design End At Here --------------------------- */
+
+
+
+/* ---------------------------------- Button Design Started From Here --------------------------- */
+#actions{
+    display: flex;
+    gap: 5px;
+}
+
+.add-search{
+    margin: 15px 12px;
+}
+
+#add {
+    background-color: #00a7ffd9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+#edit{
+    color:white;
+    background: #00a7ffd9;
+    border: none;
+    border-radius: 10%;
+    padding: 2px 10px;
+}
+
+#edit:hover{
+    background: #2ae1f4d9;
+    cursor: pointer;
+}
+
+#delete{
+    color:white;
+    background: red;
+    border: none;
+    border-radius: 10%;
+    padding: 2px 10px;
+}
+
+#delete:hover, #delete_status:hover{
+    background: #f13f13;
+    cursor: pointer;
+}
+
+
+
+/* Delete Toggle Button Design Start  */
+#delete_status.icon-wrapper {
+    position: relative;
+    color: white;
+    background: #c96242;
+    border: none;
+    border-radius: 10%;
+    width: 34px;
+    height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* Central Trash Icon */
+#delete_status .main-icon {
+    position: relative;
+    z-index: 2;
+    font-size: 14px;
+}
+
+/* Rotate Icon Surrounding */
+#delete_status .ring-icon {
+    position: absolute;
+    font-size: 26px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+    z-index: 1;
+}
+/* Delete Toggle Button Design End  */
+
+
+
+
+
+
+#details{
+    color:black;
+    background: #20c997;
+    border: none;
+    border-radius: 10%;
+    padding: 5px 10px;
+}
+
+#details:hover{
+    background: #1ce0a6;
+}
+
+#verify{
+    color:white;
+    background: #0072ffe3;
+    border: none;
+    border-radius: 10%;
+    padding: 5px 10px;
+}
+
+#verify:hover{
+    background: #0088ffbd;
+}
+
+.remove{
+    color: red;
+    cursor: pointer;
+    padding: 2px 10px;
+    border: none;
+}
+
+#PayrollProcess{
+    background-color: #00a7ffd9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+#PayrollProcess:hover{
+    background: #0088ffbd;
+}
+/* ---------------------------------- Button Design End At Here --------------------------- */
+
+
+.dark-mode{
+    background-color: #9ba5ad94;
+}
+
+
+fieldset{
+    box-shadow: 0px 0px 40px rgb(143 116 116 / 42%);
+    border: 0;
+    margin: 15px 0;
+}
+
+legend{
+	/* text-align: center; */
+    font-weight: bold;
+	font-size: 15px;
+	letter-spacing: 2px;
+	color: #110033a6;
+    background: #fff;
+    width: 100%;
+    padding: 5px 5px 5px 10px;
+    border-bottom: 1px solid #80808052;
+    margin-bottom: 5px;
+}
