@@ -14,14 +14,13 @@ return new class extends Migration
         Schema::create('event__user__lists', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('event_id');
-            $table->unsignedBigInteger('user_id');
+            $table->json('conductors');
+            $table->json('participants');
             $table->timestamp('added_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
 
             // Foreignkey Decleration 
             $table->foreign('event_id')->references('id')->on('events')
-                    ->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('user__infos')
                     ->onUpdate('cascade');
         });
     }
