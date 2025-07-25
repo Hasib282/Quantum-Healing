@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('qt_status')->comment('graduate/pro-master');
             $table->boolean('quantum')->default(0);
             $table->boolean('quantier')->default(0);
-            $table->boolean('ardentie')->default(0);
+            $table->boolean('ardentier')->default(0);
             $table->unsignedBigInteger('branch')->nullable();
             $table->boolean('job_status')->default(0);
             $table->boolean('psyche_certificate')->default(0);
