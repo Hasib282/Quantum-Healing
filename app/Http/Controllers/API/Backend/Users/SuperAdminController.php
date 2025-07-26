@@ -15,7 +15,7 @@ class SuperAdminController extends Controller
 {
     // Show All SuperAdmins
     public function Show(Request $req){
-        $data = Login_User::on('mysql')->where('user_role', 1)->orderBy('added_at','asc')->get();
+        $data = Login_User::on('mysql')->where('role', 1)->orderBy('added_at','asc')->get();
         return response()->json([
             'status'=> true,
             'data' => $data,
@@ -28,8 +28,8 @@ class SuperAdminController extends Controller
     public function Insert(Request $req){
         $req->validate([
             "name" => 'required',
-            "phone" => 'required|numeric|unique:mysql.login__users,user_phone',
-            "email" => 'required|email|unique:mysql.login__users,user_email',
+            "phone" => 'required|numeric|unique:mysql.login__users,phone',
+            "email" => 'required|email|unique:mysql.login__users,email',
             'password' => 'required|confirmed',
             'image' => 'mimes:jpg,jpeg,png,gif|max:2048',
         ]);
@@ -43,10 +43,10 @@ class SuperAdminController extends Controller
 
             $insert = Login_User::on('mysql')->create([
                 "user_id" => $id,
-                "user_name" => $req->name,
-                "user_phone" => $req->phone,
-                "user_email" => $req->email,
-                "user_role" => 1,
+                "name" => $req->name,
+                "phone" => $req->phone,
+                "email" => $req->email,
+                "role" => 1,
                 "password" => Hash::make($req->password),
                 "image" => $imageName,
             ]);
@@ -65,12 +65,12 @@ class SuperAdminController extends Controller
 
     // Update SuperAdmins
     public function Update(Request $req){
-        $data = Login_User::on('mysql')->where('user_role', 1)->findOrFail($req->id);
+        $data = Login_User::on('mysql')->where('role', 1)->findOrFail($req->id);
 
         $req->validate([
             "name" => 'required',
-            "phone" => ['required','numeric',Rule::unique('mysql.login__users', 'user_phone')->ignore($data->id)],
-            "email" => ['required','email',Rule::unique('mysql.login__users', 'user_email')->ignore($data->id)],
+            "phone" => ['required','numeric',Rule::unique('mysql.login__users', 'phone')->ignore($data->id)],
+            "email" => ['required','email',Rule::unique('mysql.login__users', 'email')->ignore($data->id)],
         ]);
 
         DB::transaction(function () use ($req, $data) {
@@ -78,15 +78,15 @@ class SuperAdminController extends Controller
             $imageName = UpdateUserImage($req, $data->image, null, $data->user_id);
 
             $data->update([
-                "user_name" => $req->name,
-                "user_phone" => $req->phone,
-                "user_email" => $req->email,
+                "name" => $req->name,
+                "phone" => $req->phone,
+                "email" => $req->email,
                 "image" => $imageName,
                 "updated_at" => now(),
             ]);
         });
 
-        $updatedData = Login_User::on('mysql')->where('user_role', 1)->findOrFail($req->id);
+        $updatedData = Login_User::on('mysql')->where('role', 1)->findOrFail($req->id);
 
         return response()->json([
             'status'=>true,
@@ -99,7 +99,7 @@ class SuperAdminController extends Controller
 
     // Delete SuperAdmins
     public function Delete(Request $req){
-        $data = Login_User::on('mysql')->where('user_role', 1)->findOrFail($req->id);
+        $data = Login_User::on('mysql')->where('role', 1)->findOrFail($req->id);
         if($data->image){
             Storage::disk('public')->delete($data->image);
         }
@@ -114,7 +114,7 @@ class SuperAdminController extends Controller
 
     // Delete SuperAdmins Status
     public function DeleteStatus(Request $req){
-        $data = Login_User::on('mysql')->where('user_role', 1)->findOrFail($req->id);
+        $data = Login_User::on('mysql')->where('role', 1)->findOrFail($req->id);
         $data->update(['status' => $data->status == 0 ? 1 : 0]);
         
         $updatedData = Login_User::on('mysql')->findOrFail($req->id);

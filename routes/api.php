@@ -2,8 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\EventController;
-use App\Http\Controllers\API\BranchController;
+
 
 // Auth Controllers
 use App\Http\Controllers\API\Auth\AuthController;
@@ -13,6 +12,10 @@ use App\Http\Controllers\API\Auth\ForgetPasswordController;
 use App\Http\Controllers\API\Backend\Users\Setup\RoleController;
 use App\Http\Controllers\API\Backend\Users\AdminController;
 use App\Http\Controllers\API\Backend\Users\SuperAdminController;
+
+// Setup Controllers
+use App\Http\Controllers\API\Backend\Setup\EventController;
+use App\Http\Controllers\API\Backend\Setup\BranchController;
 
 
 // *************************************** Forget Password Controller Routes Start *************************************** //
@@ -64,32 +67,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/admins/delete', 'DeleteStatus');
             });
         }); // End User Routes
-    });
 
-      //Event routes
-    Route::controller(EventController::class)->group(function(){
-        Route::prefix('/events')->group(function(){
-            Route::get('/','show');
-            Route::post('/','add');
-            Route::get('/edit','edit');
-            // Route::put('/{id}','update');
-            Route::put('/','update');
-            Route::delete('/','delete');
-            Route::get('/search','search');
-        });
-    });
 
-         //Branch routes
-    Route::controller(BranchController::class)->group(function(){
-        Route::prefix('/branches')->group(function(){
-            Route::get('/','show');
-            Route::post('/','add');
-            Route::get('/edit','edit');
-            // Route::put('/{id}','update');
-            Route::put('/','update');
-            Route::delete('/','delete');
-            Route::get('/search','search');
-        });
+
+        // *************************************** Event Routes Start *************************************** //
+        Route::controller(EventController::class)->group(function(){
+            Route::get('/events','Show');
+            Route::post('/events','Insert');
+            Route::put('/events','Update');
+            Route::delete('/events','Delete');
+        }); // End Event Routes
+
+
+
+        // *************************************** Branch Routes Start *************************************** //
+        Route::controller(BranchController::class)->group(function(){
+            Route::get('/branches','Show');
+            Route::post('/branches','Insert');
+            Route::put('/branches','Update');
+            Route::delete('/branches','Delete');
+        }); // End Branch Routes
     });
 
 

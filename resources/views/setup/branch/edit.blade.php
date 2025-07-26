@@ -8,7 +8,7 @@
         </div>
 
         <!-- form start -->
-        <form id="BranchEditForm" method="POST" enctype="multipart/form-data">
+        <form id="EditForm" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <input type="hidden" name="id" id="id">

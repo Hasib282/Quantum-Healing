@@ -2,16 +2,13 @@
     {{-- <a href="{{ route('show.profile', auth()->user()->id) }}"> --}}
         <div class="user-details">
             <div class="user-image">
-                <img src="{{ rtrim(env('API_URL'), '/api') }}/storage/{{ auth()->user()->image != null ? auth()->user()->image : (auth()->user()->gender == 'female' ? 'female.png' : 'male.png') }}" alt="">
+                <img src="{{ rtrim(config('app.api_url'), '/api') }}/storage/{{ auth()->user()->image != null ? auth()->user()->image : (auth()->user()->gender == 'female' ? 'female.png' : 'male.png') }}" alt="">
             </div>
-
 
             <div class="user-name">
                 <strong>{{ auth()->user()->name }}</strong> <br>
                 {{-- <strong style="color:#00aaffcf;">{{ auth()->user()->role->name }}</strong> --}}
              </div> 
-
-
         </div>
     {{-- </a> --}}
     <hr>
@@ -38,9 +35,7 @@
                         </div>
                         <ul class="sub-menu1 {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users') ? 'show':''}}">
                           @if(auth()->check() && auth()->user()->role == 1)
-    <li class="sub-menu1-item" data-url="{{ route('show.roles') }}">
-
-
+                                <li class="sub-menu1-item" data-url="{{ route('show.roles') }}">
                                     <div class="menu-title  {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'roles') ? 'active':''}}">
                                         <p>
                                             <i class="fa-solid fa-dice-six"></i>
@@ -72,36 +67,26 @@
                         </ul>
                     </li>
                     
+                    <!-- Events Menu -->
+                    <li class="sub-menu-item" data-url="{{route('show.event')}}">
+                        <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'events') ? 'active':''}}">
+                            <p>
+                                <i class="fa-solid fa-calendar-days"></i>
+                                Events
+                            </p>
+                        </div>
+                    </li>
 
-                    
+                    <!-- Branches Menu -->
+                    <li class="sub-menu-item" data-url="{{route('show.branch')}}">
+                        <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'branches') ? 'active':''}}">
+                            <p>
+                                <i class="fa-solid fa-code-branch"></i>
+                                Branches
+                            </p>
+                        </div>
+                    </li>
                 </ul>
-<!-- Events Menu -->
-<li class="menu-item" data-url="/events">
-    {{-- <a href="/events"> --}}
-        <div class="menu-title {{ Request::is('events*') ? 'active' : '' }}">
-            <p>
-                <i class="fa-solid fa-calendar-days"></i>
-                Events
-            </p>
-        </div>
-    {{-- </a> --}}
-</li>
-
-<!-- Branches Menu -->
-<li class="menu-item" data-url="/branches">
-    {{-- <a href="{{ url('/branches') }}"> --}}
-        <div class="menu-title {{ Request::is('branches*') ? 'active' : '' }}">
-            <p>
-                <i class="fa-solid fa-code-branch"></i>
-                Branches
-            </p>
-        </div>
-    {{-- </a> --}}
-</li>
-
-
-
-
             </li>
             <hr>
         {{-- @endif --}}

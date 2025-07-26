@@ -59,22 +59,12 @@
 
         <!-- Bootstrap cdn link -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        {{-- laravel csrf token ajax --}}
-        {{-- <script>
-            var token = localStorage.getItem('token');
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                    'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json',
-                }
-            });
-        </script> --}}
         {{-- common ajax Request file --}}
         <script src="{{ asset('js/ajax/common_ajax/common_events.js') }}"></script>
         <script src="{{ asset('js/ajax/common_ajax/custom_helper_function.js') }}"></script>
         <script src="{{ asset('js/ajax/common_ajax/get_data.js') }}"></script>
         <script src="{{ asset('js/ajax/common_ajax/crude_ajax.js') }}"></script>
+        <script src="{{ asset('js/ajax/common_ajax/single_input.js') }}"></script>
         {{-- add extra ajax file if needed --}}
         @yield('ajax')
         {{-- custom sidebar ajax --}}

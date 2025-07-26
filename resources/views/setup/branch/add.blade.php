@@ -8,7 +8,7 @@
         </div>
 
         <!-- form start -->
-        <form id="BranchAddForm" method="POST" enctype="multipart/form-data">
+        <form id="AddForm" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 

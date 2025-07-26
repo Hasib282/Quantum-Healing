@@ -2,7 +2,7 @@ function ShowAdmins(res) {
     tableInstance = new GenerateTable({
         tableId: '#data-table',
         data: res.data,
-        tbody: ['user_id','user_name','user_email','user_phone',{key:'image', type: 'image'}],
+        tbody: ['user_id','name','email','phone',{key:'image', type: 'image'}],
         actions: (row) => `
                 <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
 
@@ -20,9 +20,9 @@ $(document).ready(function () {
     renderTableHead([
         { label: 'SL:', type: 'rowsPerPage', options: [15, 30, 50, 100, 500] },
         { label: 'Super Admin Id', key: 'user_id' },
-        { label: 'Name', key: 'user_name' },
-        { label: 'Email', key: 'user_email' },
-        { label: 'Phone', key: 'user_phone' },
+        { label: 'Name', key: 'name' },
+        { label: 'Email', key: 'email' },
+        { label: 'Phone', key: 'phone' },
         { label: 'Image' },
         { label: 'Action', type: 'button' }
     ]);
@@ -61,9 +61,9 @@ $(document).ready(function () {
     // Additional Edit Functionality
     function EditFormInputValue(item){
         $('#id').val(item.id);
-        $('#updateName').val(item.user_name);
-        $('#updatePhone').val(item.user_phone);
-        $('#updateEmail').val(item.user_email);
+        $('#updateName').val(item.name);
+        $('#updatePhone').val(item.phone);
+        $('#updateEmail').val(item.email);
         $('#updatePreviewImage').attr('src',`${apiUrl.replace('/api', '')}/storage/${item.image ? item.image : 'male.png'}?${new Date().getTime()} `).show();
         $('#updateName').focus();
     }; // End Method

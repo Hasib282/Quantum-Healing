@@ -2,13 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\ShowController;
 
 // Auth Controllers
 use App\Http\Controllers\Frontend\Auth\AuthController;
 use App\Http\Controllers\Frontend\Auth\ForgetPasswordController;
 
 use App\Http\Controllers\Frontend\Admin_Setup\UsersController;
+use App\Http\Controllers\Frontend\Admin_Setup\AdminSetupController;
 
 
 Route::get('/link', function(){
@@ -29,14 +29,7 @@ Route::controller(ForgetPasswordController::class)->group(function () {
     Route::get('/resetpassword', 'ResetPassword')->name('resetPassword');
 });
 
-Route::controller(ShowController::class)->group(function(){
-    Route::get('/events','showEvent')->name('show');
-    Route::get('/branches','showBranch')->name('show');
-  
-});
-
-
- /////-----/////-----/////-----/////-----/////-----///// Admin Setup Routes Start /////-----/////-----/////-----/////-----/////-----/////
+/////-----/////-----/////-----/////-----/////-----///// Admin Setup Routes Start /////-----/////-----/////-----/////-----/////-----/////
 
 Route::prefix('/admin')->group(function () {
     // *************************************** User Routes Start *************************************** //
@@ -54,4 +47,16 @@ Route::prefix('/admin')->group(function () {
             Route::get('/superadmins', 'ShowSuperAdmins')->name('show.superAdmins');
         }); // End Users Controller
     }); // End User Route
+
+
+
+    Route::controller(AdminSetupController::class)->group(function(){
+        ///////////// --------------- Event routes ----------- ///////////////////
+        Route::get('/events','ShowEvent')->name('show.event');
+
+
+
+        ///////////// --------------- Branch routes ----------- ///////////////////
+        Route::get('/branches','ShowBranch')->name('show.branch');
+    });
 });
