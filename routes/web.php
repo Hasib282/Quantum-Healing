@@ -8,10 +8,15 @@ use App\Http\Controllers\Frontend\Auth\AuthController;
 use App\Http\Controllers\Frontend\Auth\ForgetPasswordController;
 
 use App\Http\Controllers\Frontend\Admin_Setup\UsersController;
+use App\Http\Controllers\API\Backend\Users\UserInfoController;
 
 
 Route::get('/link', function(){
     Artisan::call('storage:link');
+});
+
+Route::get('/layout', function () {
+    return view('layouts.layout');
 });
 
 
@@ -45,6 +50,12 @@ Route::prefix('/admin')->group(function () {
 
             ///////////// --------------- Super Admin Routes ----------- ///////////////////
             Route::get('/superadmins', 'ShowSuperAdmins')->name('show.superAdmins');
+
         }); // End Users Controller
+
+        Route::controller(UserInfoController::class)->group(function () {
+        ///////////// --------------- User_info Routes ----------- ///////////////////
+            Route::get('/user_info', 'show')->name('show.user_info');
+        });
     }); // End User Route
 });

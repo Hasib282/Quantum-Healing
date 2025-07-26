@@ -63,10 +63,17 @@
                                     </div>
                                 </li>
                             {{-- @endif --}}
+
+                            <li class="sub-menu1-item" data-url="{{route('show.user_info')}}">
+                                <div class="menu-title">
+                                    <p>
+                                        <i class="fa-solid fa-user-tie"></i>
+                                        User Info 
+                                    </p>
+                                </div>
+                            </li>
                         </ul>
                     </li>
-
-                    
                 </ul>
             </li>
             <hr>

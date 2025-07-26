@@ -11,6 +11,12 @@ use App\Http\Controllers\API\Auth\ForgetPasswordController;
 use App\Http\Controllers\API\Backend\Users\Setup\RoleController;
 use App\Http\Controllers\API\Backend\Users\AdminController;
 use App\Http\Controllers\API\Backend\Users\SuperAdminController;
+use App\Http\Controllers\API\Backend\Users\UserInfoController;
+
+
+
+
+
 
 
 // *************************************** Forget Password Controller Routes Start *************************************** //
@@ -61,9 +67,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/admins', 'Delete');
                 Route::delete('/admins/delete', 'DeleteStatus');
             });
+
+             ///////////// --------------- User_info Routes ----------- ///////////////////
+
+            Route::controller(UserInfoController::class)->group(function () {
+                Route::get('/user_info', 'show');
+                Route::get('/user_info/show', 'showData');
+                Route::post('/user_info', 'add');
+                Route::get('/user_info/edit', 'edit');
+                Route::put('/user_info', 'update');
+                Route::delete('/user_info', 'delete');
+            });
         }); // End User Routes
     });
-
-
-
 });
+
+
