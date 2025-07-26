@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\ShowController;
 
 // Auth Controllers
 use App\Http\Controllers\Frontend\Auth\AuthController;
@@ -26,6 +27,12 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(ForgetPasswordController::class)->group(function () {
     Route::get('/forgotpassword', 'ForgotPassord')->name('forgotPassword');
     Route::get('/resetpassword', 'ResetPassword')->name('resetPassword');
+});
+
+Route::controller(ShowController::class)->group(function(){
+    Route::get('/events','showEvent')->name('show');
+    Route::get('/branches','showBranch')->name('show');
+  
 });
 
 

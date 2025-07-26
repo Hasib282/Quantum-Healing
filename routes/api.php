@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\EventController;
+use App\Http\Controllers\API\BranchController;
 
 // Auth Controllers
 use App\Http\Controllers\API\Auth\AuthController;
@@ -62,6 +64,32 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/admins/delete', 'DeleteStatus');
             });
         }); // End User Routes
+    });
+
+      //Event routes
+    Route::controller(EventController::class)->group(function(){
+        Route::prefix('/events')->group(function(){
+            Route::get('/','show');
+            Route::post('/','add');
+            Route::get('/edit','edit');
+            // Route::put('/{id}','update');
+            Route::put('/','update');
+            Route::delete('/','delete');
+            Route::get('/search','search');
+        });
+    });
+
+         //Branch routes
+    Route::controller(BranchController::class)->group(function(){
+        Route::prefix('/branches')->group(function(){
+            Route::get('/','show');
+            Route::post('/','add');
+            Route::get('/edit','edit');
+            // Route::put('/{id}','update');
+            Route::put('/','update');
+            Route::delete('/','delete');
+            Route::get('/search','search');
+        });
     });
 
 
