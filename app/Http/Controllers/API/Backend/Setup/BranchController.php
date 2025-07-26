@@ -98,14 +98,24 @@ class BranchController extends Controller
 
 
     // Get Branchs
-    public function Get(){
+    public function Get(Request $req){
         $data = Branch::on('mysql')
+        ->where('branch', 'like', $req->branch.'%')
         ->orderBy('branch')
+        ->take(20)
         ->get();
 
-        return response()->json([
-            'status' => true,
-            'data'=> $data,
-        ]);
+        $list = "<ul>";
+            if($data->count() > 0){
+                foreach($data as $index => $item) {
+                    $list .= '<li tabindex="' . ($index + 1) . '" data-id="'.$item->id.'">'.$item->branch.'</li>';
+                }
+            }
+            else{
+                $list .= '<li>No Data Found</li>';
+            }
+        $list .= "</ul>";
+
+        return $list;
     } // End Method
 }

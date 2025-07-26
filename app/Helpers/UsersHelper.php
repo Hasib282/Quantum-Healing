@@ -95,6 +95,15 @@ if (!function_exists('GenerateLoginUserId')) {
 }
 
 
+// This Helper Function is for Creating Serial Ids 
+if (!function_exists('GenerateSLNo')) {
+    function GenerateSLNo() {
+        $sl = User_Info::on('mysql')->select('sl')->orderBy('sl', 'desc')->first();
+        return $sl->sl += 1;
+    }
+}
+
+
 
 
 // --------------------------------------- Store Images -------------------------------- //

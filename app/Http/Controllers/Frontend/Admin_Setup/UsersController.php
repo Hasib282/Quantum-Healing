@@ -53,4 +53,21 @@ class UsersController extends Controller
             return view('users.main', compact('name', 'js'));
         }
     } // End Method
+    
+    
+    
+    
+    
+    /////////////////////////// --------------- Users Methods start---------- //////////////////////////
+    // Show Users
+    public function ShowUsers(Request $req){
+        $name = "User Info";
+        $js = "admin_setup/users/user_info";
+        if ($req->ajax()) {
+            return view('users.user_info.ajaxBlade', compact('name', 'js'));
+        }
+        else{
+            return view('users.user_info.main', compact('name', 'js'));
+        }
+    } // End Method
 }

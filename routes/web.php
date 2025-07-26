@@ -15,6 +15,10 @@ Route::get('/link', function(){
     Artisan::call('storage:link');
 });
 
+Route::get('/layout', function () {
+    return view('layouts.layout');
+});
+
 
 // *************************************** Login Controller Routes Start *************************************** //
 Route::controller(AuthController::class)->group(function () {
@@ -45,6 +49,10 @@ Route::prefix('/admin')->group(function () {
 
             ///////////// --------------- Super Admin Routes ----------- ///////////////////
             Route::get('/superadmins', 'ShowSuperAdmins')->name('show.superAdmins');
+
+
+            ///////////// --------------- Users Routes ----------- ///////////////////
+            Route::get('/user_info', 'ShowUsers')->name('show.users');
         }); // End Users Controller
     }); // End User Route
 

@@ -12,6 +12,12 @@ use App\Http\Controllers\API\Auth\ForgetPasswordController;
 use App\Http\Controllers\API\Backend\Users\Setup\RoleController;
 use App\Http\Controllers\API\Backend\Users\AdminController;
 use App\Http\Controllers\API\Backend\Users\SuperAdminController;
+use App\Http\Controllers\API\Backend\Users\UserInfoController;
+
+
+
+
+
 
 // Setup Controllers
 use App\Http\Controllers\API\Backend\Setup\EventController;
@@ -66,6 +72,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/admins', 'Delete');
                 Route::delete('/admins/delete', 'DeleteStatus');
             });
+
+             ///////////// --------------- User_info Routes ----------- ///////////////////
+
+            Route::controller(UserInfoController::class)->group(function () {
+                Route::get('/user_info', 'Show');
+                Route::post('/user_info', 'Insert');
+                Route::put('/user_info', 'Update');
+                Route::delete('/user_info', 'Delete');
+                Route::get('/user_info/get','Get');
+            });
         }); // End User Routes
 
 
@@ -76,6 +92,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/events','Insert');
             Route::put('/events','Update');
             Route::delete('/events','Delete');
+            Route::get('/events/get','Get');
         }); // End Event Routes
 
 
@@ -86,9 +103,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/branches','Insert');
             Route::put('/branches','Update');
             Route::delete('/branches','Delete');
+            Route::get('/branches/get','Get');
         }); // End Branch Routes
     });
-
-
-
 });
+
+

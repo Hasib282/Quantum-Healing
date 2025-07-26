@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('user__infos', function (Blueprint $table) {
             $table->id();
-            $table->integer('sl');
-            $table->text('qr_url')->nullable();
-            $table->integer('u_id')->nullable();
-            $table->string('reg_no');
+            $table->integer('sl')->unique();
+            $table->text('qr_url')->nullable()->unique();
+            $table->integer('u_id')->nullable()->unique();
+            $table->string('reg_no')->unique();
             $table->string('name');
             $table->string('phone')->nullable();
             $table->boolean('duplicate')->default(0);

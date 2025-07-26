@@ -64,6 +64,15 @@
                                     </div>
                                 </li>
                             {{-- @endif --}}
+
+                            <li class="sub-menu1-item" data-url="{{route('show.users')}}">
+                                <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'user_info') ? 'active':''}}">
+                                    <p>
+                                        <i class="fa-solid fa-user-tie"></i>
+                                        User Informations
+                                    </p>
+                                </div>
+                            </li>
                         </ul>
                     </li>
                     
