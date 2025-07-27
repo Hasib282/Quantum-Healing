@@ -105,6 +105,17 @@
                             </p>
                         </div>
                     </li>
+
+
+                     <!-- attendence  -->
+                    <li class="sub-menu-item" data-url="{{route('show.attendance')}}" >
+                        <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'attendance') ? 'active':''}}">
+                            <p>
+                                <i class="fa-solid fa-code-branch"></i>
+                                Attendance
+                            </p>
+                        </div>
+                    </li>
                 </ul>
             </li>
             <hr>
