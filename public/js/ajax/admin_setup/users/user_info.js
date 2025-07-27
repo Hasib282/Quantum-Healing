@@ -65,11 +65,31 @@ $(document).ready(function () {
     // Additional Edit Functionality
     function EditFormInputValue(item){
         $('#id').val(item.id);
+        $('#updateReg_no').val(item.reg_no);
         $('#updateName').val(item.name);
         $('#updatePhone').val(item.phone);
-        $('#updateEmail').val(item.email);
-        $('#updatePreviewImage').attr('src',`${apiUrl.replace('/api', '')}/storage/${item.image ? item.image : 'male.png'}?${new Date().getTime()} `).show();
-        $('#updateName').focus();
+        $('#updateGender').val(item.gender);
+        $('#updateAge').val(item.age);
+        $('#updateQt_status').val(item.qt_status);
+        $('#updateBranch').val(item.branch);
+        $('#updateCall').val(item.call);
+        $('#updateColor').val(item.color);
+        $('#updateOccupation').val(item.occupation);
+        $('#updateGroup').val(item.group);
+        $('#updateQr_url').val(item.qr_url);
+        $('#updateNew_barcode').val(item.new_barcode);
+        $('#updateU_id').val(item.u_id);
+        $('#updateJob_status').val(item.job_status);
+        $('#updateQuantum').val(item.quantum);
+        $('#updateQuantier').val(item.quantier);
+        $('#updateArdentier').val(item.ardentier);
+        $('#updatePsyche_certificate').val(item.psyche_certificate);
+        $('#updateSp').val(item.sp);
+        $('#updateSms').val(item.sms);
+        $('#updateBarcode').val(item.barcode);
+        $('#updateDuplicate').val(item.duplicate);
+        $('#updateBarcode_delivery').val(item.barcode_delivery);
+        // $('#updateImage').val(item.image);
     }; // End Method
 });
 
