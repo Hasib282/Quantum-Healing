@@ -65,11 +65,32 @@ $(document).ready(function () {
     // Additional Edit Functionality
     function EditFormInputValue(item){
         $('#id').val(item.id);
+        $('#updateReg_no').val(item.reg_no);
         $('#updateName').val(item.name);
         $('#updatePhone').val(item.phone);
-        $('#updateEmail').val(item.email);
-        $('#updatePreviewImage').attr('src',`${apiUrl.replace('/api', '')}/storage/${item.image ? item.image : 'male.png'}?${new Date().getTime()} `).show();
-        $('#updateName').focus();
+        $('#updateGender').val(item.gender);
+        $('#updateAge').val(item.age);
+        $('#updateQt_status').val(item.qt_status);
+        $('#updateBranch').val(item.branch);
+        $('#updateCall').val(item.call);
+        $('#updateColor').val(item.color);
+        $('#updateOccupation').val(item.occupation);
+        $('#updateGroup').val(item.group);
+        $('#updateQr_url').val(item.qr_url);
+        $('#updateNew_barcode').val(item.new_barcode);
+        $('#updateU_id').val(item.u_id);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+        // $('#update').val(item.);
+
+
+        
     }; // End Method
 });
 
