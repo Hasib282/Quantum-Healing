@@ -47,4 +47,19 @@ class AdminSetupController extends Controller
             return view('setup.event_user.main', compact('name', 'js'));
         }
     } // End Method
+
+
+
+      /////////////////////////// --------------- attendance Table Methods start ---------- //////////////////////////
+    // Show All EventUser
+    public function ShowAttendance(Request $req){
+        $name = "Attendance";
+        $js = 'admin_setup/attendance';
+        if ($req->ajax()) {
+            return view('setup.attendance.ajaxBlade', compact('name', 'js'));
+        }
+        else{
+            return view('setup.attendance.main', compact('name', 'js'));
+        }
+    } // End Method
 }

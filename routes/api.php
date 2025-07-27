@@ -22,6 +22,7 @@ use App\Http\Controllers\API\Backend\Users\UserInfoController;
 // Setup Controllers
 use App\Http\Controllers\API\Backend\Setup\EventController;
 use App\Http\Controllers\API\Backend\Setup\BranchController;
+use App\Http\Controllers\API\Backend\Setup\AttendanceController;
 
 
 // *************************************** Forget Password Controller Routes Start *************************************** //
@@ -105,6 +106,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/branches','Update');
             Route::delete('/branches','Delete');
             Route::get('/branches/get','Get');
+        }); // End Branch Routes
+
+
+         // *************************************** Attendance Routes Start *************************************** //
+        Route::controller(AttendanceController::class)->group(function(){
+            Route::get('/attendance','Show');
+            Route::post('/attendance','Insert');
+            Route::put('/attendance','Update');
+            Route::delete('/attendance','Delete');
+            Route::get('/attendance/get','Get');
         }); // End Branch Routes
     });
 });

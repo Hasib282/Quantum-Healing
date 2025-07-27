@@ -66,6 +66,11 @@ Route::prefix('/admin')->group(function () {
 
         ///////////// --------------- Branch routes ----------- ///////////////////
         Route::get('/branches','ShowBranch')->name('show.branch');
+
+
+
+        ///////////// --------------- Attendance routes ----------- ///////////////////
+        Route::get('/attendance','ShowAttendance')->name('show.attendance');
         
         
         
