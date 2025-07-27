@@ -68,8 +68,8 @@
             {{-- QT Status --}}
             <div class="c-3">
                 <div class="form-input-group">
-                    <label for="updateQtStatus">QT Status <span class="required">*</span></label>
-                    <select name="qt_status" id="updateQtStatus" class="form-input">
+                    <label for="updateQt_Status">QT Status <span class="required">*</span></label>
+                    <select name="qt_status" id="updateQt_Status" class="form-input">
                         <option value="">Select Status</option>
                         <option value="Graduate">Graduate</option>
                         <option value="Pro-master">Pro-master</option>
@@ -131,32 +131,32 @@
             {{-- QR URL --}}
             <div class="c-3">
                 <div class="form-input-group">
-                    <label for="updateQrUrl">QR URL</label>
-                    <input type="text" name="qr_url" id="updateQrUrl" class="form-input">
+                    <label for="updateQr_url">QR URL</label>
+                    <input type="text" name="qr_url" id="updateQr_url" class="form-input">
                     <span class="error" id="update_qr_url_error"></span>
                 </div>
             </div>
             {{-- New Barcode --}}
             <div class="c-3">
                 <div class="form-input-group">
-                    <label for="updateNewBarcode">New Barcode</label>
-                    <input type="text" name="new_barcode" id="updateNewBarcode" class="form-input">
+                    <label for="updateNew_barcode">New Barcode</label>
+                    <input type="text" name="new_barcode" id="updateNew_barcode" class="form-input">
                     <span class="error" id="update_new_barcode_error"></span>
                 </div>
             </div>
             {{-- New Barcode SL --}}
             <div class="c-3">
                 <div class="form-input-group">
-                    <label for="updateNewBarcodeSl">New Barcode SL</label>
-                    <input type="text" name="new_barcode_sl" id="updateNewBarcodeSl" class="form-input">
+                    <label for="updateNew_barcode">New Barcode SL</label>
+                    <input type="text" name="new_barcode_sl" id="updateNew_barcode" class="form-input">
                     <span class="error" id="update_new_barcode_sl_error"></span>
                 </div>
             </div>
             {{-- UID --}}
             <div class="c-3">
                 <div class="form-input-group">
-                    <label for="updateUId">UID</label>
-                    <input type="text" name="u_id" id="updateUId" class="form-input">
+                    <label for="updateU_id">UID</label>
+                    <input type="text" name="u_id" id="updateU_id" class="form-input">
                     <span class="error" id="update_u_id_error"></span>
                 </div>
             </div>
@@ -167,7 +167,7 @@
                     {{-- Job Status --}}
                     <div class="c-4">
                         <div class="form-input-group">
-                            <label for="updateJobStatus"><input type="checkbox" name="job_status" id="updateJobStatus">Job Status</label>
+                            <label for="updateJob_status"><input type="checkbox" name="job_status" id="updateJob_status">Job Status</label>
                         </div>
                     </div>
                     {{-- Quantum --}}
@@ -191,7 +191,7 @@
                     {{-- Psyche Certificate --}}
                     <div class="c-4">
                         <div class="form-input-group">
-                            <label for="updatePsycheCertificate"><input type="checkbox" name="psyche_certificate" id="updatePsycheCertificate">Psyche Certificate</label>
+                            <label for="updatePsyche_certificate"><input type="checkbox" name="psyche_certificate" id="updatePsyche_certificate">Psyche Certificate</label>
                         </div>
                     </div>
                     {{-- Spacial Program --}}
@@ -221,7 +221,7 @@
                     {{-- Barcode Delivery --}}
                     <div class="c-3">
                         <div class="form-input-group">
-                            <label for="updateBarcodeDelivery"><input type="checkbox" name="barcode_delivery" id="updateBarcodeDelivery">Barcode Delivery</label>
+                            <label for="updateBarcode_delivery"><input type="checkbox" name="barcode_delivery" id="updateBarcode_delivery">Barcode Delivery</label>
                         </div>
                     </div>
                 </div>
@@ -230,7 +230,7 @@
             <div class="c-4">
                 <div class="form-input-group">
                     <label for="updateImage">Image</label>
-                    <input type="file" name="image" id="update_image" class="form-input">
+                    <input type="file" name="image" id="updateImage" class="form-input">
                     <span class="error" id="update_image_error"></span>
                     <img src="/images/male.png" alt="Preview" id="previewImage" style="width: 150px; height: 150px; margin-top: 5px;">
                 </div>

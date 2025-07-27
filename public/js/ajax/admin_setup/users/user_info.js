@@ -79,16 +79,16 @@ $(document).ready(function () {
         $('#updateQr_url').val(item.qr_url);
         $('#updateNew_barcode').val(item.new_barcode);
         $('#updateU_id').val(item.u_id);
-        $('#updateJob_status').val(item.job_status);
-        $('#updateQuantum').val(item.quantum);
-        $('#updateQuantier').val(item.quantier);
-        $('#updateArdentier').val(item.ardentier);
-        $('#updatePsyche_certificate').val(item.psyche_certificate);
-        $('#updateSp').val(item.sp);
-        $('#updateSms').val(item.sms);
-        $('#updateBarcode').val(item.barcode);
-        $('#updateDuplicate').val(item.duplicate);
-        $('#updateBarcode_delivery').val(item.barcode_delivery);
+        $('#updateJob_status').prop('checked', item.job_status == '1');
+        $('#updateQuantum').prop('checked', item.job_status == '1');
+        $('#updateQuantier').prop('checked', item.job_status == '1');
+        $('#updateArdentier').prop('checked', item.job_status == '1');
+        $('#updatePsyche_certificate').prop('checked', item.job_status == '1');
+        $('#updateSp').prop('checked', item.job_status == '1');
+        $('#updateSms').prop('checked', item.sms == '1');
+        $('#updateBarcode').prop('checked', item.job_status == '1');
+        $('#updateDuplicate').prop('checked', item.job_status == '1');
+        $('#updateBarcode_delivery').prop('checked', item.job_status == '1');
         // $('#updateImage').val(item.image);
     }; // End Method
 });
