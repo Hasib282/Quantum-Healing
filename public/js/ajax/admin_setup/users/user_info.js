@@ -79,18 +79,17 @@ $(document).ready(function () {
         $('#updateQr_url').val(item.qr_url);
         $('#updateNew_barcode').val(item.new_barcode);
         $('#updateU_id').val(item.u_id);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-        // $('#update').val(item.);
-
-
-        
+        $('#updateJob_status').val(item.job_status);
+        $('#updateQuantum').val(item.quantum);
+        $('#updateQuantier').val(item.quantier);
+        $('#updateArdentier').val(item.ardentier);
+        $('#updatePsyche_certificate').val(item.psyche_certificate);
+        $('#updateSp').val(item.sp);
+        $('#updateSms').val(item.sms);
+        $('#updateBarcode').val(item.barcode);
+        $('#updateDuplicate').val(item.duplicate);
+        $('#updateBarcode_delivery').val(item.barcode_delivery);
+        // $('#updateImage').val(item.image);
     }; // End Method
 });
 
