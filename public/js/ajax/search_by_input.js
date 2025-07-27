@@ -199,6 +199,47 @@ $(document).ready(function () {
 
         '#update-branch li',
     );
+    
+    
+    
+    
+    
+    /////////////// ------------------ Search Participants by name and add value to input ajax part start ---------------- /////////////////////////////
+    // Branch Input Search
+    SearchByInput(
+        'admin/users/user_info/get/participants', 
+
+        function ($input) {
+            return {
+                name: $input.val(),
+            };
+        }, 
+
+        '#participants', 
+
+        '#participants-list',
+
+        // '#participants-list tbody tr',
+    );
+
+
+
+    // Update Participants Input Search
+    SearchByInput(
+        'admin/users/user_info/get/participants', 
+
+        function ($input) {
+            return {
+                name: $input.val(),
+            };
+        }, 
+
+        '#updateParticipants', 
+
+        '#update-participants',
+
+        // '#update-participants tbody tr',
+    );
 
 
     // /////////////// ------------------ Search Company by name and add value to input ajax part start ---------------- /////////////////////////////

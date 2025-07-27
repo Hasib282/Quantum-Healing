@@ -66,5 +66,10 @@ Route::prefix('/admin')->group(function () {
 
         ///////////// --------------- Branch routes ----------- ///////////////////
         Route::get('/branches','ShowBranch')->name('show.branch');
+        
+        
+        
+        ///////////// --------------- Event User routes ----------- ///////////////////
+        Route::get('/event_users','ShowEventUser')->name('show.eventUsers');
     });
 });

@@ -151,4 +151,89 @@ class UserInfoController extends Controller
             'message' => 'User info deleted successfully',
         ], 200);
     }
+
+
+    // Get Conductors
+    public function GetConductors(Request $req){
+        $data = User_Info::on('mysql')
+        ->where('name', 'like', $req->user.'%')
+        ->orderBy('name')
+        ->take(20)
+        ->get();
+
+        $list = '<table style="border-collapse: collapse;width: 100%;overflow-x: auto;">
+                    <thead>
+                        <th>Sl</th>
+                        <th>Reg No</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Gender</th>
+                        <th>action</th>
+                    </thead>
+                    <tbody>';
+                        if($data->count() > 0){
+                            foreach($data as $index => $item) {
+                                $list .= '<tr tabindex="' . ($index + 1) . '" data-id="'.$item->id.'">
+                                            <td>'.($index + 1).'</td>
+                                            <td>'.$item->reg_no.'</td>
+                                            <td>'.$item->name.'</td>
+                                            <td>'.$item->phone.'</td>
+                                            <td>'.$item->gender.'</td>
+                                            <td>
+                                                <button class="addConductors">Add</button>
+                                            </td>
+                                        </tr>';
+                            }
+                        }
+                        else{
+                            $list .= '<li>No Data Found</li>';
+                        }
+        $list .= "  </tbody>
+                </table>";
+
+        return $list;
+    } // End Method
+    
+    
+    
+    // Get Participants
+    public function GetParticipants(Request $req){
+        $data = User_Info::on('mysql')
+        ->where('name', 'like', $req->user.'%')
+        ->orderBy('name')
+        ->take(20)
+        ->get();
+
+        $list = '<table style="border-collapse: collapse;width: 100%;overflow-x: auto;">
+                    <thead>
+                        <th>Sl</th>
+                        <th>Reg No</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Gender</th>
+                        <th>action</th>
+                    </thead>
+                    <tbody>';
+                        if($data->count() > 0){
+                            foreach($data as $index => $item) {
+                                $list .= '<tr tabindex="' . ($index + 1) . '" data-id="'.$item->id.'">
+                                            <td>'.($index + 1).'</td>
+                                            <td>'.$item->reg_no.'</td>
+                                            <td>'.$item->name.'</td>
+                                            <td>'.$item->phone.'</td>
+                                            <td>'.$item->gender.'</td>
+                                            <td>
+                                                <button class="addParticipants" data-id="'.$item->id.'" data-name="'.$item->name.'" data-phone="'.$item->phone.'" data-gender="'.$item->gender.'">Add</button>
+                                            </td>
+                                        </tr>';
+                            }
+                        }
+                        else{
+                            $list .= '<li>No Data Found</li>';
+                        }
+        $list .= "  </tbody>
+                </table>";
+
+        return $list;
+    } // End Method
 }

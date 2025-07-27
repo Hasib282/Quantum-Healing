@@ -32,4 +32,19 @@ class AdminSetupController extends Controller
             return view('setup.branch.main', compact('name', 'js'));
         }
     } // End Method
+    
+    
+    
+    /////////////////////////// --------------- EventUser Table Methods start ---------- //////////////////////////
+    // Show All EventUser
+    public function ShowEventUser(Request $req){
+        $name = "Event User";
+        $js = 'admin_setup/event_user';
+        if ($req->ajax()) {
+            return view('setup.event_user.ajaxBlade', compact('name', 'js'));
+        }
+        else{
+            return view('setup.event_user.main', compact('name', 'js'));
+        }
+    } // End Method
 }

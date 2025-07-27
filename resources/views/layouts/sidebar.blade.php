@@ -95,6 +95,16 @@
                             </p>
                         </div>
                     </li>
+                    
+                    <!-- Branches Menu -->
+                    <li class="sub-menu-item" data-url="{{route('show.eventUsers')}}">
+                        <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'event_users') ? 'active':''}}">
+                            <p>
+                                <i class="fa-solid fa-code-branch"></i>
+                                Event Users Setup
+                            </p>
+                        </div>
+                    </li>
                 </ul>
             </li>
             <hr>

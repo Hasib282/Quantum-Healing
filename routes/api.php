@@ -80,7 +80,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::post('/user_info', 'Insert');
                 Route::put('/user_info', 'Update');
                 Route::delete('/user_info', 'Delete');
-                Route::get('/user_info/get','Get');
+                Route::get('/user_info/get/conductors','GetConductors');
+                Route::get('/user_info/get/participants','GetParticipants');
             });
         }); // End User Routes
 

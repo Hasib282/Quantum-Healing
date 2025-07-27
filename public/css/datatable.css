@@ -61,7 +61,7 @@
     overflow-x: auto;
 }
 
-.data-table {
+.data-table, #all-participants {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
