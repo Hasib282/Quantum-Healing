@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Api\Backend\Setup;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
+use App\Models\Event;
 use App\Models\Event_User_List;
 
 class EventUserController extends Controller
 {
     // Show All Branchs
     public function Show(Request $req){
-        $data = Event_User_List::get();
+        $data = Event::with('eventparticipants')->get();
 
         return response()->json([
             'status' => true,
@@ -23,21 +25,27 @@ class EventUserController extends Controller
     // Insert Branchs
     public function Insert(Request $req){
         $req->validate([
-            'branch' => 'required|string|max:255',
-            'short' => 'required|string|max:100'
+            'events' => 'required|exists:events,id',
+            'all_participants' => 'required'
         ]);
+        
+        $participants = json_decode($req->all_participants, true);
 
-        $insert = Event_User_List::create([
-            'branch' => $req->branch,
-            'short' => $req->short
-        ]);
+        foreach ($participants as $p){
+            $insert = Event_User_List::create([
+                'event_id' => $req->events,
+                'reg_no' => $p['reg_no']
+            ]);
+        }
 
-        $data = Event_User_List::findOrFail($insert->id);
+        
+
+        // $data = Event_User_List::findOrFail($insert->id);
         
         return response()->json([
             'status'=> true,
             'message' => 'Branch Added Successfully',
-            "data" => $data,
+            // "data" => $data,
         ], 200);
     } // End Method
 
@@ -100,22 +108,14 @@ class EventUserController extends Controller
     // Get Branchs
     public function Get(Request $req){
         $data = Event_User_List::on('mysql')
-        ->where('branch', 'like', $req->branch.'%')
-        ->orderBy('branch')
-        ->take(20)
+        ->where('event_id', $req->id)
         ->get();
 
-        $list = "<ul>";
-            if($data->count() > 0){
-                foreach($data as $index => $item) {
-                    $list .= '<li tabindex="' . ($index + 1) . '" data-id="'.$item->id.'">'.$item->branch.'</li>';
-                }
-            }
-            else{
-                $list .= '<li>No Data Found</li>';
-            }
-        $list .= "</ul>";
+        return response()->json([
+            'status'=> true,
+            'data' => $data
+        ], 200);
 
-        return $list;
+        // return $list;
     } // End Method
 }

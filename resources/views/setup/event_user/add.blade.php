@@ -1,5 +1,5 @@
 <div id="addModal" class="modal-container">
-    <div class="modal-subject" style="width: 80%;">
+    <div class="modal-subject" style="width: 100%;">
         <div class="modal-heading banner">
             <div class="center">
                 <h3>Add {{ $name }}</h3>
@@ -26,7 +26,7 @@
                     <div class="form-input-group">
                         <label for="participants">Participants <span class="required" title="Required">*</span></label>
                         <input type="text" name="participants" class="form-input" id="participants">
-                        <div id="all-participants">
+                        <div id="all-participants" style="max-height: 200px;">
                             <table>
                                 <thead>
                                     <th>Sl</th>

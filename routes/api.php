@@ -22,6 +22,7 @@ use App\Http\Controllers\API\Backend\Users\UserInfoController;
 // Setup Controllers
 use App\Http\Controllers\API\Backend\Setup\EventController;
 use App\Http\Controllers\API\Backend\Setup\BranchController;
+use App\Http\Controllers\API\Backend\Setup\EventUserController;
 
 
 // *************************************** Forget Password Controller Routes Start *************************************** //
@@ -105,6 +106,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/branches','Update');
             Route::delete('/branches','Delete');
             Route::get('/branches/get','Get');
+        }); // End Branch Routes
+        
+        
+        
+        // *************************************** Event Users Routes Start *************************************** //
+        Route::controller(EventUserController::class)->group(function(){
+            Route::get('/event_users','Show');
+            Route::post('/event_users','Insert');
+            Route::put('/event_users','Update');
+            Route::delete('/event_users','Delete');
+            Route::get('/event_users/get','Get');
         }); // End Branch Routes
     });
 });
