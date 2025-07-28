@@ -115,6 +115,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(EventUserController::class)->group(function(){
             Route::get('/event_users','Show');
             Route::post('/event_users','Insert');
+            Route::get('/event_users/edit','Edit');
             Route::put('/event_users','Update');
             Route::delete('/event_users','Delete');
             Route::get('/event_users/get','Get');

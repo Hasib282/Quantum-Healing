@@ -259,20 +259,12 @@ class GenerateTable {
                         return `<td><strong>${status ? status.name : 'Available'}</strong></td>`;
                     
                     case 'multi-data':
-                        let permissionNames = '';
+                        let name = '';
             
                         value.map((item, i) => { 
-                            permissionNames += item.name+',' ;
+                            name += item.name+',' ;
                         });
-                        return `<td class="truncate-text">${permissionNames}</td>`;
-
-                    // case 'conditional':
-                    //     // let permissionNames = '';
-            
-                    //     // value.map((item, i) => { 
-                    //     //     permissionNames += item.name+',' ;
-                    //     // });
-                    //     return `<td>${permissionNames}</td>`;
+                        return `<td class="truncate-text">${name}</td>`;
 
                     default:
                         return `<td>${value ?? ''}</td>`;

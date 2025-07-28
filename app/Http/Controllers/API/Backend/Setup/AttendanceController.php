@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Backend\Setup;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 use App\Models\Attendence;
 use App\Models\Event_User_List;
@@ -32,6 +33,23 @@ class AttendanceController extends Controller
 
      // Insert Branchs
     public function Insert(Request $req){
+        // $url = $req->qr_url;
+        // $response = Http::get($url);
+
+        // if ($response->failed()) {
+        //     return response()->json(['error' => 'Unable to fetch data.'], 500);
+        // }
+
+        // $html = $response->body();
+        // dd($html);
+        // dd(preg_match('/Quantum Reg:/i', $html, $matches));
+        // if (preg_match('/<strong[^>]*>\s*Quantum Reg:\s*<\/strong>/i', $html, $matches)) {
+        //     // return response()->json([
+        //     //     'quantum_reg' => $matches[1],
+        //     // ]);
+        //     dd('hello',$html);
+        // }
+        // dd($html);
 
         // $data = Event_User_List::with('events','participants')
         // ->where('event_id',$req->events)
@@ -42,45 +60,39 @@ class AttendanceController extends Controller
         $data = Event_User_List::with('events','participants')
         ->where('event_id',$req->events)
         ->whereHas('participants',function($query) use ($req) {
-            $query->where('qr_url','like','%'.$req->qr_url.'%');
-            // $query->orWhere('reg_no',$req->reg_no);
+            $query->where('qr_url', $req->qr_url);
+            $query->orWhere('reg_no', $req->qr_url);
         })->first();
-// dd($data->participants->reg_no);  
 
 
-    if ($data->count() > 0) {
+        if ($data) {
+            $req->validate([
+                'events' => 'required',
+                'date' => 'required',
+                'qr_url' => 'required'
+            ]);
 
-        $req->validate([
-            'events' => 'required',
-            'date' => 'required',
-            'qr_url' => 'required'
-        ]);
+            $insert = Attendence::create([
+                'event_id' => $req->events,
+                'date' => $req->date,
+                'reg_no' => $data->participants->first()->reg_no,
+            ]);
 
-        $insert = Attendence::create([
-            'event_id' => $req->events,
-            'date' => $req->date,
-            'reg_no' => $data->participants->first()->reg_no,
-        ]);
-
-        $data = Attendence::findOrFail($insert->id);
-        
-        return response()->json([
-            'status'=> true,
-            'message' => 'Attendance Added Successfully',
-            "data" => $data,
-        ], 200);
-
-    } else {
-
-        
-        return response()->json([
+            $data = Attendence::findOrFail($insert->id);
+            
+            return response()->json([
                 'status'=> true,
-                'message' => 'Attendence Unseccessful',
+                'message' => 'Attendance Added Successfully',
                 "data" => $data,
-        ], 200);
+            ], 200);
 
-   
-}
+        } else {
+            return response()->json([
+                    'status'=> false,
+                    'message' => 'Attendence Unseccessful',
+                    "data" => $data,
+            ], 408);
+        }
     } // End Method
 
 

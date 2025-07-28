@@ -9,7 +9,7 @@
     <div class="add-search">
         <div class="rows">
             <div class="c-3">
-                <button class="open-modal" data-modal-id="addModal" id="add"><i class="fa-solid fa-plus"></i> Add {{ $name }} </button>
+                
             </div>
             <div class="c-6">
 
@@ -32,12 +32,7 @@
     </div>
 
     {{-- Modals --}}
-    @include('setup.event_user.add')
-
     @include('setup.event_user.edit')
 
-    @include('common_modals.delete')
-
     <script src="{{ asset('js/ajax').'/'. $js . '.js' }}"></script>
-    {{-- <script src="{{ asset('js/ajax/search_by_input.js') }}"></script> --}}
 @endsection

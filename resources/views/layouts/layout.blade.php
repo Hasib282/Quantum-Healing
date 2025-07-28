@@ -64,6 +64,7 @@
         <script src="{{ asset('js/ajax/common_ajax/custom_helper_function.js') }}"></script>
         <script src="{{ asset('js/ajax/common_ajax/get_data.js') }}"></script>
         <script src="{{ asset('js/ajax/common_ajax/crude_ajax.js') }}"></script>
+        <script src="{{ asset('js/ajax/scroll_search.js') }}"></script>
         <script src="{{ asset('js/ajax/common_ajax/single_input.js') }}"></script>
         {{-- add extra ajax file if needed --}}
         @yield('ajax')

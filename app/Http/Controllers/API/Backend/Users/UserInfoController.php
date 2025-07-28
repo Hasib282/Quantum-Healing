@@ -168,12 +168,72 @@ class UserInfoController extends Controller
 
     // Get Participants
     public function GetParticipants(Request $req){
-        $data = User_Info::on('mysql')
-        ->where('name', 'like', $req->user.'%')
-        ->whereNotIn('id',is_array($req->ids) ? $req->ids : [])
-        ->orderBy('name')
-        ->take(20)
-        ->get();
+        // $data = User_Info::on('mysql')
+        // ->where('name', 'like', $req->user.'%')
+        // ->whereNotIn('id',is_array($req->ids) ? $req->ids : [])
+        // ->orderBy('name')
+        // ->take(20)
+        // ->get();
+
+        // $list = '<table style="border-collapse: collapse;width: 100%;overflow-x: auto;">
+        //             <thead>
+        //                 <th>Sl</th>
+        //                 <th>Reg No</th>
+        //                 <th>Name</th>
+        //                 <th>Phone</th>
+        //                 <th>Gender</th>
+        //                 <th>action</th>
+        //             </thead>
+        //             <tbody>';
+        //                 if($data->count() > 0){
+        //                     foreach($data as $index => $item) {
+        //                         $list .= '<tr tabindex="' . ($index + 1) . '" data-id="'.$item->id.'">
+        //                                     <td>'.($index + 1).'</td>
+        //                                     <td>'.$item->reg_no.'</td>
+        //                                     <td>'.$item->name.'</td>
+        //                                     <td>'.$item->phone.'</td>
+        //                                     <td>'.$item->gender.'</td>
+        //                                     <td>
+        //                                         <button class="addParticipants" data-reg_no="'.$item->reg_no.'" data-id="'.$item->id.'" data-name="'.$item->name.'" data-phone="'.$item->phone.'" data-gender="'.$item->gender.'">Add</button>
+        //                                     </td>
+        //                                 </tr>';
+        //                     }
+        //                 }
+        //                 else{
+        //                     $list .= '<li>No Data Found</li>';
+        //                 }
+        // $list .= "  </tbody>
+        //         </table>";
+
+        // return $list;
+
+
+        // dd($req->ids);
+
+
+        // $search = $request->input('search');
+        $page = $req->input('page', 1);
+        $perPage = 20;
+
+        $query = User_Info::query()
+            ->select('id', 'name', 'reg_no','phone','gender')
+            // ->where(function ($q) use ($req) {
+            //     $q->where('name', 'like', $req->search.'%')
+            //     ->orWhere('reg_no', 'like', $req->search.'%');
+            // })
+            ->whereNotIn('reg_no',is_array($req->reg_no) ? $req->reg_no : [])
+            ->when($req->search, function ($q) use ($req) {
+                $q->where(function ($sub) use ($req) {
+                    $sub->where('name', 'like', $req->search."%")
+                        ->orWhere('reg_no', 'like', $req->search."%");
+                });
+            })
+            ->orderBy('name');
+            
+            
+
+        $total = $query->count();
+        $data = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
 
         $list = '<table style="border-collapse: collapse;width: 100%;overflow-x: auto;">
                     <thead>
@@ -187,24 +247,24 @@ class UserInfoController extends Controller
                     <tbody>';
                         if($data->count() > 0){
                             foreach($data as $index => $item) {
-                                $list .= '<tr tabindex="' . ($index + 1) . '" data-id="'.$item->id.'">
-                                            <td>'.($index + 1).'</td>
+                                $list .= '<tr class="addData" tabindex="' . (($page - 1) * $perPage + $index) . '" data-reg_no="'.$item->reg_no.'" data-id="'.$item->id.'" data-name="'.$item->name.'" data-phone="'.$item->phone.'" data-gender="'.$item->gender.'">
+                                            <td>'.(($page - 1) * $perPage + $index +1).'</td>
                                             <td>'.$item->reg_no.'</td>
                                             <td>'.$item->name.'</td>
                                             <td>'.$item->phone.'</td>
                                             <td>'.$item->gender.'</td>
-                                            <td>
-                                                <button class="addParticipants" data-reg_no="'.$item->reg_no.'" data-id="'.$item->id.'" data-name="'.$item->name.'" data-phone="'.$item->phone.'" data-gender="'.$item->gender.'">Add</button>
-                                            </td>
                                         </tr>';
                             }
                         }
                         else{
-                            $list .= '<li>No Data Found</li>';
+                            $list .= '<tr><td colspsn="20">No Data Found</td></tr>';
                         }
         $list .= "  </tbody>
                 </table>";
 
-        return $list;
+        return response()->json([
+            'list' => $list,
+            'hasMore' => ($page * $perPage) < $total
+        ]);
     } // End Method
 }

@@ -215,8 +215,7 @@ function EditAjaxCall(link, AddSuccessEvent, AddClickEvent=undefined) {
                     AddSuccessEvent(res);
                 }
                 
-                var modal = document.getElementById(modalId);
-                modal.style.display = 'block';
+                $('#editModal').show()
             }
         });
     });
@@ -233,7 +232,11 @@ function UpdateAjax(link, AditionalData = {}, AdditionalEvent) {
         let formData = new FormData(this);
 
         $.each(AditionalData, function(key, value) {
-            if (typeof value === 'object' && value.selector) {
+            if (typeof value === 'function') {
+                formData.append(key, value === undefined ? '' : value())
+                // finalValue = value(); // call the function to get current value
+            }
+            else if (typeof value === 'object' && value.selector) {
                 let selectedValue = value.attribute ? $(value.selector).attr(value.attribute) : $(value.selector).val();
                 formData.append(key, selectedValue === undefined ? '' : selectedValue);
             } else {

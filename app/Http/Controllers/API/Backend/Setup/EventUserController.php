@@ -12,7 +12,7 @@ class EventUserController extends Controller
 {
     // Show All Branchs
     public function Show(Request $req){
-        $data = Event::with('eventparticipants')->get();
+        $data = Event::with('users')->get();
 
         return response()->json([
             'status' => true,
@@ -22,58 +22,42 @@ class EventUserController extends Controller
 
 
 
-    // Insert Branchs
-    public function Insert(Request $req){
-        $req->validate([
-            'events' => 'required|exists:events,id',
-            'all_participants' => 'required'
-        ]);
-        
-        $participants = json_decode($req->all_participants, true);
+    // Edit Branch
+    public function Edit(Request $req){
+        $data = Event_User_List::with('participants')
+        ->where('event_id', $req->id)
+        ->get();
 
-        foreach ($participants as $p){
-            $insert = Event_User_List::create([
-                'event_id' => $req->events,
-                'reg_no' => $p['reg_no']
-            ]);
-        }
-
-        
-
-        // $data = Event_User_List::findOrFail($insert->id);
-        
         return response()->json([
             'status'=> true,
-            'message' => 'Branch Added Successfully',
-            // "data" => $data,
-        ], 200);
+            'data' => $data
+        ], 200); 
     } // End Method
+
 
 
 
     // Update Branchs
     public function Update(Request $req){
-        $data = Event_User_List::findOrFail($req->id);
-
         $req->validate([
-            'branch' => 'required|string|max:255',
-            'short' => 'required|string|max:100'
+            'events' => 'required|exists:events,id',
+            'all_participants' => 'required',
         ]);
 
-        $update = $data->update([
-            'branch' => $req->branch,
-            'short' => $req->short
-        ]);
+        $participants = json_decode($req->all_participants, true);
+        $event = Event::find($req->events);
+        $regNos = collect($participants)->pluck('reg_no')->toArray();
+        
+        // This will remove old participants and add only the current ones
+        $event->users()->sync($regNos);
 
-        $updatedData = Branch::findOrFail($req->id);
-
-        if($update){
-            return response()->json([
-                'status'=>true,
-                'message' => 'Branch Updated successfully',
-                "updatedData" => $updatedData,
-            ], 200); 
-        }
+        $updatedData = Event::with('users')->findOrFail($req->events);
+        
+        return response()->json([
+            'status'=> true,
+            'message' => 'Branch Added Successfully',
+            "updatedData" => $updatedData,
+        ], 200);
     } // End Method
 
 
@@ -107,7 +91,7 @@ class EventUserController extends Controller
 
     // Get Branchs
     public function Get(Request $req){
-        $data = Event_User_List::on('mysql')
+        $data = Event_User_List::with('participants')
         ->where('event_id', $req->id)
         ->get();
 
@@ -115,7 +99,5 @@ class EventUserController extends Controller
             'status'=> true,
             'data' => $data
         ], 200);
-
-        // return $list;
     } // End Method
 }

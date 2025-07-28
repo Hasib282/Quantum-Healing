@@ -11,6 +11,11 @@ class User_Info extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event__user__lists', 'reg_no', 'event_id', 'reg_no', 'id');
+    }
 }
 
 

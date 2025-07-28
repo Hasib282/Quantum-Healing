@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\Auth\ForgetPasswordController;
 
 use App\Http\Controllers\Frontend\Admin_Setup\UsersController;
 use App\Http\Controllers\Frontend\Admin_Setup\AdminSetupController;
+use App\Http\Controllers\API\Backend\Users\UserInfoController;
 
 
 Route::get('/link', function(){
@@ -19,6 +20,13 @@ Route::get('/layout', function () {
     return view('layouts.layout');
 });
 
+Route::get('/search', function () {
+    return view('search');
+});
+
+Route::controller(UserInfoController::class)->group(function(){
+    Route::get('/user_info/get/participants','GetParticipants');
+}); // End Branch Routes
 
 // *************************************** Login Controller Routes Start *************************************** //
 Route::controller(AuthController::class)->group(function () {

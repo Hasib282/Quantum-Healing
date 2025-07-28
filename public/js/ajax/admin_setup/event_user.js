@@ -2,11 +2,10 @@ function ShowEventUsers(res) {
     tableInstance = new GenerateTable({
         tableId: '#data-table',
         data: res.data,
-        tbody: ['name',{ type:'multi-data', key:'eventparticipants' }],
+        tbody: ['name',{ type:'multi-data', key:'users' }],
         actions: (row) => {
             return `
                 <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
-                <button data-id="${row.id}" id="delete"><i class="fas fa-trash"></i></button>
             `;
         }
     });
@@ -28,41 +27,48 @@ $(document).ready(function () {
     ReloadData('admin/event_users', ShowEventUsers);
     
 
-    // Add Modal Open Functionality
-    AddModalFunctionality("#events");
-
-
-    // Insert Ajax
-    InsertAjax('admin/event_users', {all_participants: localStorage.getItem('participants') }, function() {
-        $("#branch").focus();
+    //  Edit Ajax
+    EditAjaxCall('admin/event_users', EditFormInputValue, function(){
+        localStorage.removeItem('participants');
+        $('#all-participants tbody').html("");
+        $('#participants-list').html("");
     });
 
 
-    // //Edit Ajax
-    // EditAjax(EditFormInputValue);
+    // Update Ajax
+    UpdateAjax('admin/event_users', {all_participants: () => JSON.stringify(JSON.parse(localStorage.getItem('participants') || '[]')) }, function(){
+        $("#branch").focus();
+        localStorage.removeItem('participants');
+        $('#all-participants tbody').html("");
+        $('#participants-list').html("");
+    });
 
 
-    // // Update Ajax
-    // UpdateAjax('admin/event_users', {department: { selector: '#updateDepartment', attribute: 'data-id' }}, function(){
-    //     $('#updateDepartment').removeAttr('data-id');
-    // });
-    
+    // Additional Edit Functionality
+    function EditFormInputValue(item){
+        $('#id').val(item.data[0].event_id);
+        $('#events').val(item.data[0].event_id);
 
-    // // Delete Ajax
-    // DeleteAjax('admin/event_users');
-    
+        $('#participants').focus();
 
-    // // Delete status Ajax
-    // DeleteStatusAjax('admin/event_users');
+        let participants = localStorage.getItem('participants') || [];
 
+        item.data.forEach(item => {
+            let productIssue = {
+                id: item.id,
+                name: item.participants[0]?.name || '',
+                phone: item.participants[0]?.phone || '',
+                reg_no: item.participants[0]?.reg_no || '',
+                gender: item.participants[0]?.gender || '',
+            };
+            participants.push(productIssue);
+        });
 
-    // // Additional Edit Functionality
-    // function EditFormInputValue(item){
-    //     $('#id').val(item.id);
-    //     $('#updateBranch').val(item.branch);
-    //     $('#updateShort').val(item.short);
-    //     $('#updateBranch').focus();
-    // }
+        // Save updated productIssue back to local storage
+        localStorage.setItem('participants', JSON.stringify(participants));
+
+        gridShow();
+    }
 
     // Get Trantype
     GetSelectInputList('admin/events/get', function (res) {
@@ -71,11 +77,10 @@ $(document).ready(function () {
     })
 
 
-    $(document).on('click', '.addParticipants',function (e) {
+    $(document).on('click', '.addData',function (e) {
         e.preventDefault();
-        console.log($(this).data('id'));
-        // $('.addParticipants').prop('disabled', true);
-
+        // console.log($(this));
+        
         let id = $(this).data('id');
         let name = $(this).data('name');
         let phone = $(this).data('phone');
@@ -97,7 +102,6 @@ $(document).ready(function () {
             reg_no,
             gender,
         };
-        
 
         // Add the new productIssue to the list
         participants.push(productIssue);
@@ -105,43 +109,15 @@ $(document).ready(function () {
         // Save updated productIssue back to local storage
         localStorage.setItem('participants', JSON.stringify(participants));
 
-
         gridShow();
-        
 
-        // $('.addParticipants').prop('disabled', false);
+        $(this).remove();
     })
-
-
-    function gridShow() {
-        let data = JSON.parse(localStorage.getItem('participants')) || [];
-        let ids = data.map(p => p.id);
-        let datas = {name: $('#participants').val(),ids};
-        // let id = $(this).attr('data-id');
-        GetInputList('admin/users/user_info/get/participants', datas, '#participants-list');
-
-        $('#all-participants tbody').html("");
-
-        data.forEach((item, index) => {
-            $('#all-participants tbody').append(`
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.reg_no}</td>
-                    <td>${item.name}</td>
-                    <td>${item.phone}</td>
-                    <td>${item.gender}</td>
-                    <td><div class="center"><button class="remove remove-participant"  data-index="${index}"><i class="fas fa-trash"></i></button></div></td>
-                </tr>`
-            );
-        });
-    }
 
 
 
     $(document).off("click", '.remove-participant').on("click", '.remove-participant', function (e){
         e.preventDefault();
-        console.log('a');
-        
         let index = $(this).attr('data-index');
         let perticipants = JSON.parse(localStorage.getItem('participants')) || [];
 
@@ -150,87 +126,85 @@ $(document).ready(function () {
         gridShow();
     })
 
-    // Focus Event
-    $(document).on('focus', '#participants', function (e) {
-        e.preventDefault();
-        let participants = JSON.parse(localStorage.getItem('participants')) || [];
-        let ids = participants.map(p => p.id);
-        let data = {name: $(this).val(),ids};
-        // let id = $(this).attr('data-id');
-        GetInputList('admin/users/user_info/get/participants', data, '#participants-list');
-    });
-
-
-    // $(document).off("change", '#events').on("change", '#events', function (e){
-    //     console.log(e);
-        
-    //     let id = $(this).val();
-    //     localStorage.setItem('participants',[])
-    //     $.ajax({
-    //         url: `${apiUrl}/admin/event_users/get`,
-    //         data: {id},
-    //         success: function (res) {
-    //             let participants = localStorage.getItem('participants') || [];
-
-    //             res.data.forEach(item => {
-    //                 let productIssue = {
-    //                     id:item.id,
-    //                     name:item.name,
-    //                     phone:item.phone,
-    //                     reg_no:item.reg_no,
-    //                     gender:item.gender,
-    //                 };
-    //                 console.log(item.name);
-                    
-
-    //                 // Add the new productIssue to the list
-    //                 participants.push(productIssue);
-    //             });
-
-    //             // let productIssue = {
-    //             //     id,
-    //             //     name,
-    //             //     phone,
-    //             //     reg_no,
-    //             //     gender,
-    //             // };
-
-    //             // Save updated productIssue back to local storage
-    //             localStorage.setItem('participants', JSON.stringify(participants));
-    //             // $(targetList).html(res);
-    //         }
-    //     });
-    // });
-
-    // Keydown Event
-    // $(document).off('keydown', '#participants').on('keydown', '#participants', function (e) {
-    //     e.preventDefault();
-
-
-    //     setTimeout(() => {
-    //         if ((e.key.length === 1 && e.key.match(/^[a-zA-Z0-9]$/)) || e.key === "Backspace" || e.key === 'Space'){
-    //             GetInputList('admin/users/user_info/get/participants', {name: $(this).val()}, '#participants-list');
-    //             // $(targetInput).removeAttr('data-id');
-
-    //             // Remove Input Data Events If Needed
-    //             // if (typeof RemoveData === "function") {
-    //             //     RemoveData(targetInput);
-    //             // }
-                
-    //             // if (timeoutId) {
-    //             //     clearTimeout(timeoutId);
-    //             // }
-
-    //             // Set a new timeout for the GetInputList call
-    //             // timeoutId = setTimeout(() => {
-    //             //     GetInputList(link, data, targetUl);
-    //             // }, 800);
-    //         }
-    //         // $(targetTable).html('');
-    //     }, 0);
-    // });
 
 
     
+
+
+    $(document).off("change", '#events').on("change", '#events', function (e){
+        let id = $(this).val();
+        localStorage.removeItem('participants');
+        $.ajax({
+            url: `${apiUrl}/admin/event_users/get`,
+            data: {id},
+            success: function (res) {
+                let participants = localStorage.getItem('participants') || [];
+
+                res.data.forEach(item => {
+                    let productIssue = {
+                        id: item.id,
+                        name: item.participants[0]?.name || '',
+                        phone: item.participants[0]?.phone || '',
+                        reg_no: item.participants[0]?.reg_no || '',
+                        gender: item.participants[0]?.gender || '',
+                    };
+                    
+
+                    // Add the new productIssue to the list
+                    participants.push(productIssue);
+                });
+
+                // Save updated productIssue back to local storage
+                localStorage.setItem('participants', JSON.stringify(participants));
+
+                gridShow();
+                // $(targetList).html(res);
+            }
+        });
+    });
+
+
+
+    FixedScrollSearch(
+        'admin/users/user_info/get/participants',
+
+        function (currentPage) {
+            let data = JSON.parse(localStorage.getItem('participants')) || [];
+            let reg_no = data.map(p => p.reg_no);
+            return {
+                search: $('#participants').val(),
+                page: currentPage,
+                reg_no: reg_no
+            };
+        }, 
+
+        '#participants', 
+
+        '#participants-list',
+
+        '#participants-list tbody tr',
+    )
 });
+
+
+
+
+function gridShow() {
+    let data = JSON.parse(localStorage.getItem('participants')) || [];
+
+    $('#all-participants tbody').html("");
+
+    data.forEach((item, index) => {
+        $('#all-participants tbody').append(`
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.reg_no}</td>
+                <td>${item.name}</td>
+                <td>${item.phone}</td>
+                <td>${item.gender}</td>
+                <td><div class="center"><button class="remove remove-participant"  data-index="${index}"><i class="fas fa-trash"></i></button></div></td>
+            </tr>`
+        );
+    });
+}
 
