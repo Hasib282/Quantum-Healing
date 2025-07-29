@@ -8,21 +8,14 @@ use Illuminate\Support\Facades\Http;
 
 use App\Models\Attendence;
 use App\Models\Event_User_List;
+use App\Models\Event;
+use App\Models\User_Info;
 
 class AttendanceController extends Controller
 {
-
-    
     // Show All Attendance
     public function Show(Request $req){
         $data = Attendence::get();
-
-        // $data = Event_User_List::with('events','participants')
-        // ->where('event_id',$req->events)
-        // ->whereHas('participants',function($query) use ($req) {
-        //     $query->where('qr_url',$req->qr_url);
-        //     $query->where('reg_no',$req->reg_no);
-        // })->first();
 
         return response()->json([
             'status' => true,
@@ -31,77 +24,82 @@ class AttendanceController extends Controller
     } // End Method
 
 
-     // Insert Branchs
+     // Insert Attendance
     public function Insert(Request $req){
-        // $url = $req->qr_url;
-        // $response = Http::get($url);
+        $req->validate([
+            'events' => 'required',
+            'date' => 'required',
+            'qr_url' => 'required'
+        ]);
 
-        // if ($response->failed()) {
-        //     return response()->json(['error' => 'Unable to fetch data.'], 500);
-        // }
+        $user = User_Info::select('id', 'name', 'reg_no','phone','gender','qr_url')
+        ->where('qr_url', $req->qr_url)
+        ->orWhere('reg_no', $req->qr_url)
+        ->first();
 
-        // $html = $response->body();
-        // dd($html);
-        // dd(preg_match('/Quantum Reg:/i', $html, $matches));
-        // if (preg_match('/<strong[^>]*>\s*Quantum Reg:\s*<\/strong>/i', $html, $matches)) {
-        //     // return response()->json([
-        //     //     'quantum_reg' => $matches[1],
-        //     // ]);
-        //     dd('hello',$html);
-        // }
-        // dd($html);
+        $event = Event::where('id', $req->events)->first();
 
-        // $data = Event_User_List::with('events','participants')
-        // ->where('event_id',$req->events)
-        // ->whereHas('participants',function($query) use ($req) {
-        //     $query->where('qr_url',$req->qr_url);
-        //     $query->orWhere('reg_no',$req->reg_no);
-        // })->first();
-        $data = Event_User_List::with('events','participants')
-        ->where('event_id',$req->events)
-        ->whereHas('participants',function($query) use ($req) {
-            $query->where('qr_url', $req->qr_url);
-            $query->orWhere('reg_no', $req->qr_url);
-        })->first();
+        if($event->all == 1){
+            $data = User_Info::where('qr_url', $req->qr_url)
+            ->orWhere('reg_no', $req->qr_url)
+            ->first();
 
+            if ($data) {
+                $insert = Attendence::create([
+                    'event_id' => $req->events,
+                    'date' => $req->date,
+                    'reg_no' => $data->reg_no,
+                ]);
 
-        if ($data) {
-            $req->validate([
-                'events' => 'required',
-                'date' => 'required',
-                'qr_url' => 'required'
-            ]);
-
-            $insert = Attendence::create([
-                'event_id' => $req->events,
-                'date' => $req->date,
-                'reg_no' => $data->participants->first()->reg_no,
-            ]);
-
-            $data = Attendence::findOrFail($insert->id);
-            
-            return response()->json([
-                'status'=> true,
-                'message' => 'Attendance Added Successfully',
-                "data" => $data,
-            ], 200);
-
-        } else {
-            return response()->json([
-                    'status'=> false,
-                    'message' => 'Attendence Unseccessful',
+                $data = Attendence::findOrFail($insert->id);
+                
+                return response()->json([
+                    'status'=> true,
+                    'message' => 'Your Attendance is Successfull',
                     "data" => $data,
-            ], 408);
+                    "user" => $user
+                ], 200);
+            }
         }
+        else if($event->all == 0){
+            $data = Event_User_List::with('events','participants')
+            ->where('event_id',$req->events)
+            ->whereHas('participants',function($query) use ($req) {
+                $query->where('qr_url', $req->qr_url);
+                $query->orWhere('reg_no', $req->qr_url);
+            })->first();
+
+            if ($data) {
+                $insert = Attendence::create([
+                    'event_id' => $req->events,
+                    'date' => $req->date,
+                    'reg_no' => $data->participants->first()->reg_no,
+                ]);
+
+                $data = Attendence::findOrFail($insert->id);
+                
+                return response()->json([
+                    'status'=> true,
+                    'message' => 'Attendance Added Successfully',
+                    "data" => $data,
+                    "user" => $user
+                ], 200);
+            }
+        }
+        
+
+        return response()->json([
+            'status'=> false,
+            'message' => 'You are not allowed to enter',
+            'user' => $user,
+        ], 200);
     } // End Method
 
 
 
-     // Update Attendence
+     // Update Attendance
     public function Update(Request $req){
         $data = Attendence::findOrFail($req->id);
-
-      
 
        $req->validate([
             'events' => 'required',
@@ -109,7 +107,6 @@ class AttendanceController extends Controller
             'qr_url' => 'required'
         ]);
        
-
         $update = $data->update([
             'event_id' => $req->events,
             'date' => $req->date,
@@ -128,8 +125,9 @@ class AttendanceController extends Controller
     } // End Method
 
 
-    // Delete Branch Status
-     // Delete Events
+
+
+     // Delete Attendance
     public function Delete(Request $req){
         Attendence::findOrFail($req->id)->delete();
         return response()->json([
@@ -137,10 +135,4 @@ class AttendanceController extends Controller
             'message' => 'Attendance Deleted Successfully',
         ], 200); 
     } // End Method
-
-
-  
-
-
-
 }

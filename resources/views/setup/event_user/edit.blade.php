@@ -18,7 +18,7 @@
                     {{-- Event List --}}
                     <div class="form-input-group">
                         <label for="events">Select Events</label>
-                        <select name="events" id="events" class="form-input">
+                        <select name="events" id="events" class="form-input" disabled>
                             <option value="">Select Events</option>
                             {{-- options will be import dynamically --}}
                         </select>

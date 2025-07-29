@@ -28,15 +28,11 @@ $(document).ready(function () {
     
 
     //  Edit Ajax
-    EditAjaxCall('admin/event_users', EditFormInputValue, function(){
-        localStorage.removeItem('participants');
-        $('#all-participants tbody').html("");
-        $('#participants-list').html("");
-    });
+    EditAjax(EditFormInputValue);
 
 
     // Update Ajax
-    UpdateAjax('admin/event_users', {all_participants: () => JSON.stringify(JSON.parse(localStorage.getItem('participants') || '[]')) }, function(){
+    UpdateAjax('admin/event_users', {all_participants: () => JSON.stringify(JSON.parse(localStorage.getItem('participants') || '[]')), events: { selector: '#events'} }, function(){
         $("#branch").focus();
         localStorage.removeItem('participants');
         $('#all-participants tbody').html("");
@@ -46,20 +42,24 @@ $(document).ready(function () {
 
     // Additional Edit Functionality
     function EditFormInputValue(item){
-        $('#id').val(item.data[0].event_id);
-        $('#events').val(item.data[0].event_id);
+        localStorage.removeItem('participants');
+        $('#all-participants tbody').html("");
+        $('#participants-list').html("");
+
+        $('#id').val(item.id);
+        $('#events').val(item.id);
 
         $('#participants').focus();
 
         let participants = localStorage.getItem('participants') || [];
 
-        item.data.forEach(item => {
+        item.users.forEach(item => {
             let productIssue = {
                 id: item.id,
-                name: item.participants[0]?.name || '',
-                phone: item.participants[0]?.phone || '',
-                reg_no: item.participants[0]?.reg_no || '',
-                gender: item.participants[0]?.gender || '',
+                name: item.name || '',
+                phone: item.phone || '',
+                reg_no: item.reg_no || '',
+                gender: item.gender || '',
             };
             participants.push(productIssue);
         });

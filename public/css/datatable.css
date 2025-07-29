@@ -1,3 +1,13 @@
+.red{
+    background: red;
+    color: white;
+}
+
+.green{
+    background: green;
+    color: white;
+}
+
 /* ----------------------------- Responsive Grid Design Starts here ----------------------------------------- */
 .center {
     display: flex;

@@ -2,7 +2,7 @@ function ShowEvents(res) {
     tableInstance = new GenerateTable({
         tableId: '#data-table',
         data: res.data,
-        tbody: ['name'],
+        tbody: ['name','all'],
         actions: (row) => `
                 <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
                         
@@ -13,12 +13,7 @@ function ShowEvents(res) {
 
 
 
-// Additional Edit Functionality
-function EditFormInputValue(item){
-    $('#id').val(item.id);
-    $('#updateName').val(item.name);
-    $('#updateName').focus();
-}
+
 
 
 
@@ -26,12 +21,49 @@ $(document).ready(function () {
     // Render The Table Heads
     renderTableHead([
         { label: 'SL:', type: 'rowsPerPage', options: [15, 30, 50, 100, 500] },
-        { label: 'User Role Name', key: 'name' },
+        { label: 'Event Name', key: 'name' },
+        { label: 'All Participant', key: 'all' },
         { label: 'Action', type: 'button' }
     ]);
 
 
-    SingleInputDataCrudeAjax('admin/events', ShowEvents);
+    // Load Data on Hard Reload
+    ReloadData('admin/events', ShowEvents);
+    
+
+    // Add Modal Open Functionality
+    AddModalFunctionality("#branch");
+
+
+    // Insert Ajax
+    InsertAjax('admin/events', {}, function() {
+        $("#branch").focus();
+    });
+
+
+    //Edit Ajax
+    EditAjax(EditFormInputValue);
+
+
+    // Update Ajax
+    UpdateAjax('admin/events');
+    
+
+    // Delete Ajax
+    DeleteAjax('admin/events');
+    
+
+    // Delete status Ajax
+    DeleteStatusAjax('admin/events');
+
+
+    // Additional Edit Functionality
+    function EditFormInputValue(item){
+        $('#id').val(item.id);
+        $('#updateName').val(item.name);
+        $('#updateAll').prop('checked', item.all == '1');
+        $('#updateName').focus();
+    }
 });
 
 

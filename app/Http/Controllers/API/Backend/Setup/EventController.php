@@ -30,6 +30,7 @@ class EventController extends Controller
 
         $insert = Event::create([
             "name" => $req->name,
+            "all" => $req->all ? 1 : 0,
         ]);
 
         $data = Event::on('mysql')->findOrFail($insert->id);
@@ -52,7 +53,8 @@ class EventController extends Controller
         ]);
 
         $update = $data->update([
-            "name" => $req->name
+            "name" => $req->name,
+            "all" => $req->all ? 1 : 0,
         ]);
 
         $updatedData = Event::findOrFail($req->id);

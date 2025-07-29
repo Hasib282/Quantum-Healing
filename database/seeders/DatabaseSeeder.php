@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             // Auth Seeders
             RoleSeeder::class,
             BranchSeeder::class,
+            EventSeeder::class,
             LoginUserSeeder::class,
             UserSeeder::class,
         ]);

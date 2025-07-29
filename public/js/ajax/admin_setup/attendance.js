@@ -36,7 +36,26 @@ $(document).ready(function () {
 
 
     // Insert Ajax
-    InsertAjax('admin/attendance', {events: { selector: '#events' },date: { selector: '#date' }});
+    InsertAjax('admin/attendance', {events: { selector: '#events' },date: { selector: '#date' }}, function(res){
+        console.log(res);
+        $('#userData').html(`
+            <h2 class="center">User Details</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Name :</td>
+                        <td>${res.user.name}</td>
+                    </tr>
+                    <tr>
+                        <td>Registration No :</td>
+                        <td>${res.user.reg_no}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <span class="${res.status == false ? 'red':'green'}">${res.message}</span>
+        `);
+        
+    });
 
 
     $(document).off('input','#qr_url').on('input','#qr_url', function (e) {
@@ -90,54 +109,55 @@ $(document).ready(function () {
     })
 
 
-    $(document).off("change", '#events').on("change", '#events', function (e){
-        let id = $(this).val();
-        localStorage.removeItem('participants');
-        $.ajax({
-            url: `${apiUrl}/admin/event_users/get`,
-            data: {id},
-            success: function (res) {
-                let participants = localStorage.getItem('participants') || [];
+    // $(document).off("change", '#events').on("change", '#events', function (e){
+    //     let id = $(this).val();
+    //     localStorage.removeItem('participants');
+    //     $.ajax({
+    //         url: `${apiUrl}/admin/event_users/get`,
+    //         data: {id},
+    //         success: function (res) {
+    //             let participants = localStorage.getItem('participants') || [];
 
-                res.data.forEach(item => {
-                    let productIssue = {
-                        id: item.id,
-                        name: item.participants[0]?.name || '',
-                        phone: item.participants[0]?.phone || '',
-                        reg_no: item.participants[0]?.reg_no || '',
-                        gender: item.participants[0]?.gender || '',
-                    };
+    //             res.data.forEach(item => {
+    //                 let productIssue = {
+    //                     id: item.id,
+    //                     name: item.participants? item.participants[0]?.name : item.name,
+    //                     phone: item.participants? item.participants[0]?.phone : item.phone,
+    //                     reg_no: item.participants? item.participants[0]?.reg_no : item.reg_no,
+    //                     gender: item.participants? item.participants[0]?.gender : item.gender,
+    //                 };
                     
+    //                 console.log();
+                    
+    //                 // Add the new productIssue to the list
+    //                 participants.push(productIssue);
+    //             });
 
-                    // Add the new productIssue to the list
-                    participants.push(productIssue);
-                });
+    //             // Save updated productIssue back to local storage
+    //             localStorage.setItem('participants', JSON.stringify(participants));
 
-                // Save updated productIssue back to local storage
-                localStorage.setItem('participants', JSON.stringify(participants));
-
-                gridShow();
-            }
-        });
-    });
+    //             gridShow();
+    //         }
+    //     });
+    // });
 });
 
 
-function gridShow() {
-    let data = JSON.parse(localStorage.getItem('participants')) || [];
+// function gridShow() {
+//     let data = JSON.parse(localStorage.getItem('participants')) || [];
 
-    $('#all-participants tbody').html("");
+//     $('#all-participants tbody').html("");
 
-    data.forEach((item, index) => {
-        $('#all-participants tbody').append(`
-            <tr>
-                <td>${index + 1}</td>
-                <td>${item.reg_no}</td>
-                <td>${item.name}</td>
-                <td>${item.phone}</td>
-                <td>${item.gender}</td>
-                <td><div class="center"><button class="remove remove-participant"  data-index="${index}"><i class="fas fa-trash"></i></button></div></td>
-            </tr>`
-        );
-    });
-}
+//     data.forEach((item, index) => {
+//         $('#all-participants tbody').append(`
+//             <tr>
+//                 <td>${index + 1}</td>
+//                 <td>${item.reg_no}</td>
+//                 <td>${item.name}</td>
+//                 <td>${item.phone}</td>
+//                 <td>${item.gender}</td>
+//                 <td><div class="center"><button class="remove remove-participant"  data-index="${index}"><i class="fas fa-trash"></i></button></div></td>
+//             </tr>`
+//         );
+//     });
+// }

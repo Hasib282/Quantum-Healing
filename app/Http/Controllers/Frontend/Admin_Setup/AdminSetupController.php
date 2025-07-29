@@ -13,9 +13,9 @@ class AdminSetupController extends Controller
         $name = "Event";
         $js = "admin_setup/event";
         if ($req->ajax()) {
-            return view('common_modals.single_input.ajaxBlade', compact('name', 'js'));
+            return view('setup.event.ajaxBlade', compact('name', 'js'));
         }
-        return view('common_modals.single_input.main', compact('name','js'));
+        return view('setup.event.main', compact('name','js'));
     } // End Method
 
 

@@ -217,10 +217,6 @@ class UserInfoController extends Controller
 
         $query = User_Info::query()
             ->select('id', 'name', 'reg_no','phone','gender')
-            // ->where(function ($q) use ($req) {
-            //     $q->where('name', 'like', $req->search.'%')
-            //     ->orWhere('reg_no', 'like', $req->search.'%');
-            // })
             ->whereNotIn('reg_no',is_array($req->reg_no) ? $req->reg_no : [])
             ->when($req->search, function ($q) use ($req) {
                 $q->where(function ($sub) use ($req) {
@@ -231,7 +227,7 @@ class UserInfoController extends Controller
             ->orderBy('name');
             
             
-
+        // (2-1)*20
         $total = $query->count();
         $data = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
 

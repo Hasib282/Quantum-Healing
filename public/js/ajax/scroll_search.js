@@ -35,7 +35,7 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
 
 
 
-    // Input Box Focus Out Event Start
+    // // Input Box Focus Out Event Start
     // $(document).off('focusout').on('focusout', function (e) {
     //     let id = $(this).attr('data-id');
     //     if(id == undefined){
@@ -52,9 +52,8 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
 
     // Infinite scroll
     $(divId).off('scroll').on('scroll', function (e) {
-        
+
         if ($(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight - 5) {
-            console.log(currentPage);
             FetchData();
         }
     });
@@ -382,7 +381,6 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
         
         const data = getData(currentPage);
         
-        console.log(data);
         $.ajax({
             url: `${apiUrl}/${link}`,
             method: 'GET',
@@ -396,7 +394,6 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
             },
             complete: function () {
                 isLoading = false;
-                console.log(currentPage);
             }
         });
     } // End FetchData Function

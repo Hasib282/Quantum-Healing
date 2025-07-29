@@ -148,7 +148,7 @@ function InsertAjax(link, AddData = {}, AddSuccessEvent, method ="POST") {
                     $('#AddForm')[0].reset();
                     
                     if(typeof AddSuccessEvent === 'function'){
-                        AddSuccessEvent();
+                        AddSuccessEvent(res);
                     }
                     $('#previewImage').attr('src', "/images/male.png");
 
@@ -159,6 +159,11 @@ function InsertAjax(link, AddData = {}, AddSuccessEvent, method ="POST") {
                     }
 
                     toastr.success(res.message, 'Added!');
+                }
+                else if(res.status == false){
+                    if(typeof AddSuccessEvent === 'function'){
+                        AddSuccessEvent(res);
+                    }
                 }
             },
             complete: function () {

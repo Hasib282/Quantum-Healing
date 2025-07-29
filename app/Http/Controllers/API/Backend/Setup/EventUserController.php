@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 
 use App\Models\Event;
 use App\Models\Event_User_List;
+use App\Models\User_Info;
 
 class EventUserController extends Controller
 {
     // Show All Branchs
     public function Show(Request $req){
-        $data = Event::with('users')->get();
+        $data = Event::with('users')->where('all', 0)->get();
 
         return response()->json([
             'status' => true,
@@ -62,38 +63,19 @@ class EventUserController extends Controller
 
 
 
-    // Delete Branch
-    public function Delete(Request $req){
-        Event_User_List::findOrFail($req->id)->delete();
-        return response()->json([
-            'status'=> true,
-            'message' => 'Branch Deleted Successfully',
-        ], 200); 
-    } // End Method
-
-
-
-    // Delete Branch Status
-    public function DeleteStatus(Request $req){
-        $data = Event_User_List::findOrFail($req->id);
-        $data->update(['status' => $data->status == 0 ? 1 : 0]);
-        
-        $updatedData = Event_User_List::on('mysql')->findOrFail($req->id);
-        
-        return response()->json([
-            'status'=> true,
-            'message' => 'Branch Deleted Successfully',
-            'updatedData' => $updatedData
-        ], 200);
-    } // End Method
-
-
-
     // Get Branchs
     public function Get(Request $req){
-        $data = Event_User_List::with('participants')
-        ->where('event_id', $req->id)
-        ->get();
+        $event = Event::where('id', $req->id)->first();
+        if($event->all == 1){
+            $data = User_Info::select('id', 'name', 'reg_no','phone','gender')
+            ->get();
+        }
+        else if($event->all == 0){
+            $data = Event_User_List::with('participants')
+            ->where('event_id', $req->id)
+            ->get();
+        }
+        
 
         return response()->json([
             'status'=> true,
