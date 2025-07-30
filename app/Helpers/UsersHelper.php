@@ -131,9 +131,9 @@ if (!function_exists('StoreUserImage')) {
 
 
 
-            else if(Str::startsWith($id, 'CL')) {
-                $imageName = '('. $req->company . ')'.$id. '('. $req->name . ').' . $req->file('image')->getClientOriginalExtension();
-                return $req->file('image')->storeAs('clients', $imageName);
+            else if(is_int($id) ) {
+                $imageName = $id .'.' . $req->file('image')->getClientOriginalExtension();
+                return $req->file('image')->storeAs('qt_img', $imageName);
             }
             else if(Str::startsWith($id, 'SU')) {
                 $imageName = '('. $req->company . ')'.$id. '('. $req->name . ').' . $req->file('image')->getClientOriginalExtension();
@@ -180,7 +180,10 @@ if (!function_exists('UpdateUserImage')) {
 
 
 
-
+                else if(is_int($user_id) ) {
+                    $imageName = $user_id .'.' . $req->file('image')->getClientOriginalExtension();
+                    return $req->file('image')->storeAs('qt_img', $imageName);
+                }
                 else if(Str::startsWith($user_id, 'CL')) {
                     $imageName = '('. $company_id . ')'.$user_id. '('. $req->name . ').' . $req->file('image')->getClientOriginalExtension();
                     return $req->file('image')->storeAs('clients', $imageName);

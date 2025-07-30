@@ -2,7 +2,7 @@ function ShowUsers(res) {
     tableInstance = new GenerateTable({
         tableId: '#data-table',
         data: res.data,
-        tbody: ['reg_no','name','phone','gender','age','branch','occupation','qr_url'],
+        tbody: ['reg_no','name','phone','gender','age','branch.branch','occupation','qr_url', {key:'image', type: 'image'}],
         actions: (row) => `
                 <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
                         
@@ -22,9 +22,10 @@ $(document).ready(function () {
         { label: 'Phone', key: 'phone' },
         { label: 'Gender', key: 'gender' },
         { label: 'Age', key: 'age' },
-        { label: 'Branch', key: 'branch' },
+        { label: 'Branch', key: 'branch.branch' },
         { label: 'Occupation', key: 'occupation' },
         { label: 'QR URL', key: 'qr_url' },
+        { label: 'Image' },
         { label: 'Action', type: 'button' }
     ]);
 
@@ -70,8 +71,10 @@ $(document).ready(function () {
         $('#updatePhone').val(item.phone);
         $('#updateGender').val(item.gender);
         $('#updateAge').val(item.age);
-        $('#updateQt_status').val(item.qt_status);
-        $('#updateBranch').val(item.branch);
+        $('#updateDob').val(item.dob);
+        $('#updateQt_Status').val(item.qt_status);
+        $('#updateBranch').val(item.branch.branch);
+        $('#updateBranch').attr('data-id',item.branch.id);
         $('#updateCall').val(item.call);
         $('#updateColor').val(item.color);
         $('#updateOccupation').val(item.occupation);
@@ -80,15 +83,16 @@ $(document).ready(function () {
         $('#updateNew_barcode').val(item.new_barcode);
         $('#updateU_id').val(item.u_id);
         $('#updateJob_status').prop('checked', item.job_status == '1');
-        $('#updateQuantum').prop('checked', item.job_status == '1');
-        $('#updateQuantier').prop('checked', item.job_status == '1');
-        $('#updateArdentier').prop('checked', item.job_status == '1');
-        $('#updatePsyche_certificate').prop('checked', item.job_status == '1');
-        $('#updateSp').prop('checked', item.job_status == '1');
+        $('#updateQuantum').prop('checked', item.quantum == '1');
+        $('#updateQuantier').prop('checked', item.quantier == '1');
+        $('#updateArdentier').prop('checked', item.ardentier == '1');
+        $('#updatePsyche_certificate').prop('checked', item.psyche_certificate == '1');
+        $('#updateSp').prop('checked', item.sp == '1');
         $('#updateSms').prop('checked', item.sms == '1');
-        $('#updateBarcode').prop('checked', item.job_status == '1');
-        $('#updateDuplicate').prop('checked', item.job_status == '1');
-        $('#updateBarcode_delivery').prop('checked', item.job_status == '1');
+        $('#updateBarcode').prop('checked', item.barcode == '1');
+        $('#updateDuplicate').prop('checked', item.duplicate == '1');
+        $('#updateBarcode_delivery').prop('checked', item.barcode_delivery == '1');
+        $('#updatePreviewImage').attr('src',`${apiUrl.replace('/api', '')}/storage/${item.image ? item.image : 'male.png'}?${new Date().getTime()} `).show();
         // $('#updateImage').val(item.image);
     }; // End Method
 });

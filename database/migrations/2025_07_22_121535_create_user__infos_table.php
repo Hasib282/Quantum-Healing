@@ -42,6 +42,7 @@ return new class extends Migration
             $table->boolean('barcode_delivery')->default(0);
             $table->date('first_attend')->nullable();
             $table->date('last_attend')->nullable();
+            $table->string('image')->nullable();
             $table->string('status')->default(1);
             $table->timestamp('added_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

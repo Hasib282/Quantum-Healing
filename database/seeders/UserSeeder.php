@@ -49,6 +49,7 @@ class UserSeeder extends Seeder
                 'first_attend' => $item->first_attend,
                 'last_attend' => $item->last_attend,
                 'status' => $item->status,
+                'image' => $item->image,
             ]);
         });
     }

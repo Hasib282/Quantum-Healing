@@ -17,6 +17,19 @@ class AdminSetupController extends Controller
         }
         return view('setup.event.main', compact('name','js'));
     } // End Method
+    
+    
+    
+    /////////////////////////// --------------- Event Schedule Methods start---------- //////////////////////////
+    // Show Event
+    public function ShowEventSchedule(Request $req){
+        $name = "Event Schedule";
+        $js = "admin_setup/event_schedule";
+        if ($req->ajax()) {
+            return view('setup.event_schedule.ajaxBlade', compact('name', 'js'));
+        }
+        return view('setup.event_schedule.main', compact('name','js'));
+    } // End Method
 
 
 
@@ -38,7 +51,7 @@ class AdminSetupController extends Controller
     /////////////////////////// --------------- EventUser Table Methods start ---------- //////////////////////////
     // Show All EventUser
     public function ShowEventUser(Request $req){
-        $name = "Event User";
+        $name = "Event Participant List";
         $js = 'admin_setup/event_user';
         if ($req->ajax()) {
             return view('setup.event_user.ajaxBlade', compact('name', 'js'));

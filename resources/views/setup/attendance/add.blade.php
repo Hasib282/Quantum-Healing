@@ -38,8 +38,8 @@
                     @method('POST')
                     {{-- QR Url --}}
                     <div class="form-input-group">
-                        <label for="qr_url">QR Url <span class="required" title="Required" autofocus >*</span></label>
-                        <input type="text" name="qr_url" class="form-input" id="qr_url">
+                        <label for="qr_url">QR Url <span class="required" title="Required">*</span></label>
+                        <input type="text" name="qr_url" class="form-input" id="qr_url" autofocus autocomplete="off">
                         <span class="error" id="qr_url_error"></span>
                     </div>
                     <div class="center">

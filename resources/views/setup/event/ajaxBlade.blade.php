@@ -29,9 +29,9 @@
 </div>
 
 {{-- Modals --}}
-@include('setup.branch.add')
+@include('setup.event.add')
 
-@include('setup.branch.edit')
+@include('setup.event.edit')
 
 @include('common_modals.delete')
 

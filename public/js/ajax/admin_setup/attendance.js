@@ -37,7 +37,8 @@ $(document).ready(function () {
 
     // Insert Ajax
     InsertAjax('admin/attendance', {events: { selector: '#events' },date: { selector: '#date' }}, function(res){
-        console.log(res);
+        // console.log(res);
+        
         $('#userData').html(`
             <h2 class="center">User Details</h2>
             <table>
@@ -54,11 +55,13 @@ $(document).ready(function () {
             </table>
             <span class="${res.status == false ? 'red':'green'}">${res.message}</span>
         `);
-        
+        $('#qr_url').val('');
+        $('#qr_url').focus();
     });
 
 
     $(document).off('input','#qr_url').on('input','#qr_url', function (e) {
+        
         if (e.key === "Enter") {
             e.preventDefault(); // Only stop Enter
             // your custom logic here
@@ -66,8 +69,15 @@ $(document).ready(function () {
         else if(e.key === "Tab"){
             e.preventDefault();
         }
-        let value = $(this).val();
-
+        setTimeout(() => {
+            let value = $(this).val();
+            // $('#AddForm')[0].submit()
+            console.log(value);
+            // KeyDown(e);
+            // $(targetTable).html('');
+        }, 100);
+        
+        
         // $('#profileShow').attr('src',value)
         // console.log(e.key);
         // console.log(value);

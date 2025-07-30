@@ -37,6 +37,25 @@ class AttendanceController extends Controller
         ->orWhere('reg_no', $req->qr_url)
         ->first();
 
+        // if(!$user){
+
+        //     return response()->json([
+        //         'status'=> false,
+        //         'message' => 'Your Attendance is already Given',
+        //         "user" => $user
+        //     ], 200);
+        // }
+
+        $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$user->reg_no)->where('date',$req->date)->first();
+
+        if($attendence){
+            return response()->json([
+                'status'=> false,
+                'message' => 'Your Attendance is already Given',
+                "user" => $user
+            ], 200);
+        }
+
         $event = Event::where('id', $req->events)->first();
 
         if($event->all == 1){

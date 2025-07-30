@@ -69,6 +69,11 @@ Route::prefix('/admin')->group(function () {
     Route::controller(AdminSetupController::class)->group(function(){
         ///////////// --------------- Event routes ----------- ///////////////////
         Route::get('/events','ShowEvent')->name('show.event');
+        
+        
+        
+        ///////////// --------------- Event routes ----------- ///////////////////
+        Route::get('/event_schedule','ShowEventSchedule')->name('show.eventSchedule');
 
 
 

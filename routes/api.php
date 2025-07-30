@@ -21,6 +21,7 @@ use App\Http\Controllers\API\Backend\Users\UserInfoController;
 
 // Setup Controllers
 use App\Http\Controllers\API\Backend\Setup\EventController;
+use App\Http\Controllers\API\Backend\Setup\EventScheduleController;
 use App\Http\Controllers\API\Backend\Setup\BranchController;
 use App\Http\Controllers\API\Backend\Setup\EventUserController;
 use App\Http\Controllers\API\Backend\Setup\AttendanceController;
@@ -75,8 +76,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/admins/delete', 'DeleteStatus');
             });
 
-             ///////////// --------------- User_info Routes ----------- ///////////////////
 
+
+            ///////////// --------------- User_info Routes ----------- ///////////////////
             Route::controller(UserInfoController::class)->group(function () {
                 Route::get('/user_info', 'Show');
                 Route::post('/user_info', 'Insert');
@@ -96,6 +98,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/events','Update');
             Route::delete('/events','Delete');
             Route::get('/events/get','Get');
+        }); // End Event Routes
+        
+        
+        
+        // *************************************** Event Routes Start *************************************** //
+        Route::controller(EventScheduleController::class)->group(function(){
+            Route::get('/event_schedule','Show');
+            Route::post('/event_schedule','Insert');
+            Route::put('/event_schedule','Update');
+            Route::delete('/event_schedule','Delete');
+            Route::get('/event_schedule/get','Get');
         }); // End Event Routes
 
 

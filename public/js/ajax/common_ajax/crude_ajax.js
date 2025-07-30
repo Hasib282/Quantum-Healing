@@ -871,4 +871,13 @@ $(document).ready(function () {
         DisplayTransactionGrid();
     })
     //////////////////// -------------------- Remove Product From Local Storage Part End -------------------- ////////////////////
+
+
+
+    $(document).off("click", '.openimg').on("click", '.openimg', function (e){
+        let src = $(this).attr('src');
+        if (src) {
+            window.open(src, '_blank'); // opens image in a new tab
+        }
+    });
 });

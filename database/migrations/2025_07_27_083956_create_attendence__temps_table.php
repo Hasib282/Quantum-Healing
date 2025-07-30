@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('event_id');
             $table->date('date');
-            $table->string('reg_no');
+            $table->string('reg_no')->nullable();
             $table->string('qr_url');
             $table->timestamp('added_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

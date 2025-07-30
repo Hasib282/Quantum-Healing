@@ -27,7 +27,7 @@
                     {{-- Participants --}}
                     <div class="form-input-group">
                         <label for="participants">Participants <span class="required" title="Required">*</span></label>
-                        <input type="text" name="participants" class="form-input" id="participants">
+                        <input type="text" name="participants" class="form-input" id="participants" autocomplete="off">
                         <div id="all-participants" style="max-height: 200px;">
                             <table>
                                 <thead>

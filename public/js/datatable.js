@@ -228,7 +228,7 @@ class GenerateTable {
                         return `<td style="text-align:right;">${Number(calcValue).toLocaleString('en-US', { minimumFractionDigits: 0 })}</td>`;
     
                     case 'image':
-                        return `<td><img src="${apiUrl.replace('/api', '')}/storage/${value ? value : 'male.png'}?${new Date().getTime()}" alt="Image" height="30px" width="30px"></td>`
+                        return `<td><img class="openimg" src="${apiUrl.replace('/api', '')}/storage/${value ? value : 'male.png'}?${new Date().getTime()}" alt="Image" height="30px" width="30px"></td>`
     
                     case 'date':
                         if (!value) return `<td></td>`;

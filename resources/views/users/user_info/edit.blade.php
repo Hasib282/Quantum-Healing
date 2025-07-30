@@ -9,6 +9,7 @@
       <!-- form start -->
       <form id="EditForm" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
 
         {{-- ID --}}
         <input type="hidden" name="id" id="id">
@@ -82,7 +83,7 @@
                 <div class="form-input-group">
                     <label for="updateBranch">Branch <span class="required">*</span></label>
                     <input type="text" name="branch" id="updateBranch" class="form-input" autocomplete="off"><hr>
-                    <div id="branch-list"></div>
+                    <div id="update-branch"></div>
                     <span class="error" id="update_branch_error"></span>
                 </div>
             </div>
@@ -232,7 +233,7 @@
                     <label for="updateImage">Image</label>
                     <input type="file" name="image" id="updateImage" class="form-input">
                     <span class="error" id="update_image_error"></span>
-                    <img src="/images/male.png" alt="Preview" id="previewImage" style="width: 150px; height: 150px; margin-top: 5px;">
+                    <img src="/images/male.png" alt="Preview" id="updatePreviewImage" style="width: 150px; height: 150px; margin-top: 5px;">
                 </div>
             </div>
         </div>

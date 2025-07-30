@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Backend\Users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 use App\Models\User_Info;
 
@@ -12,7 +13,7 @@ class UserInfoController extends Controller
 {
     // Show All User Information
     public function Show(Request $req){
-        $data = User_Info::get();
+        $data = User_Info::with('branch')->get();
         return response()->json([
             'status'=> true,
             'data' => $data,
@@ -32,7 +33,7 @@ class UserInfoController extends Controller
             'dob' => 'nullable|date',
             'qt_status' => 'required|in:Graduate,Pro-master',
             'branch'=> 'required|exists:branches,id',
-            'call'=>'nullable|in:Call,Not to Call',
+            'call'=>'nullable|in:Call,Not to call',
             'color'=> 'nullable|in:Red,Green,Yellow'
         ]);
 
@@ -49,37 +50,39 @@ class UserInfoController extends Controller
                 $dob = now()->subYears($age)->format('Y-m-d');
             }
 
+            $id = GenerateSLNo() + 0;
             // Calling UserHelper Functions
-            // $imageName = StoreUserImage($req, $id);
+            $imageName = StoreUserImage($req, $id);
 
             $insert = User_Info::create([
-                'sl' => GenerateSLNo(),
+                'sl' => $id,
                 'qr_url' => $req->qr_url,
                 'u_id' => $req->u_id,
                 'reg_no' => $req->reg_no,
                 'name' => $req->name,
                 'phone' => $req->phone,
-                'duplicate' => $req->duplicate ? 1:0,
+                'duplicate' => $req->duplicate == 'on' ? 1:0,
                 'gender' => $req->gender,
                 'age' => $age,
                 'dob' => $dob,
                 'occupation' => $req->occupation,
                 'qt_status' => $req->qt_status,
-                'quantum' => $req->quantum ? 1:0,
-                'quantier' => $req->quantier ? 1:0,
-                'ardentier' => $req->ardentier ? 1:0,
+                'quantum' => $req->quantum == 'on' ? 1:0,
+                'quantier' => $req->quantier == 'on' ? 1:0,
+                'ardentier' => $req->ardentier == 'on' ? 1:0,
                 'branch' => $req->branch,
-                'job_status' => $req->job_status ? 1:0,
-                'psyche_certificate' => $req->psyche_certificate ? 1:0,
-                'sp' => $req->sp ? 1:0,
+                'job_status' => $req->job_status == 'on' ? 1:0,
+                'psyche_certificate' => $req->psyche_certificate == 'on' ? 1:0,
+                'sp' => $req->sp == 'on' ? 1:0,
                 'group' => $req->group,
                 'call' => $req->call,
-                'sms' => $req->sms ? 1:0,
+                'sms' => $req->sms == 'on' ? 1:0,
                 'color' => $req->color,
-                'barcode' => $req->barcode ? 1:0,
+                'barcode' => $req->barcode == 'on' ? 1:0,
                 'new_barcode' => $req->new_barcode,
                 'new_barcode_sl' => $req->new_barcode_sl,
-                'barcode_delivery' => $req->barcode_delivery ? 1:0,
+                'barcode_delivery' => $req->barcode_delivery == 'on' ? 1:0,
+                'image' => $imageName
             ]);
 
             $data = User_Info::findOrFail($insert->id);
@@ -93,10 +96,12 @@ class UserInfoController extends Controller
     } // End Method
     
 
-    public function Update(Request $req, $id)
+    public function Update(Request $req)
     {
+        $data = User_Info::findOrFail($req->id);
+        
         $req->validate([
-            'reg_no' => 'required|unique:user__infos,reg_no',
+            'reg_no' => ['required',Rule::unique('user__infos', 'reg_no')->ignore($data->id)],
             'name' => 'required',
             'phone' => 'required',
             'gender' => 'required|in:Male,Female',
@@ -104,10 +109,11 @@ class UserInfoController extends Controller
             'dob' => 'nullable|date',
             'qt_status' => 'required|in:Graduate,Pro-master',
             'branch'=> 'required|exists:branches,id',
-            'call'=>'nullable|in:Call,Not to Call',
+            'call'=>'nullable|in:Call,Not to call',
             'color'=> 'nullable|in:Red,Green,Yellow'
         ]);
 
+        
 
         if ($req->dob) {
             // Calculate age from DOB
@@ -118,40 +124,46 @@ class UserInfoController extends Controller
             $age = (int) $req->age;
             $dob = now()->subYears($age)->format('Y-m-d');
         }
-
-        User_Info::findOrFail($req->id)>update([
-            'sl' => GenerateSLNo(),
+        // dd($data->sl+0);
+        $imageName = UpdateUserImage($req, $data->image, null, $data->sl + 0);
+        // dd($req->sms);
+        $data->update([
+            'sl' => $data->sl,
             'qr_url' => $req->qr_url,
             'u_id' => $req->u_id,
             'reg_no' => $req->reg_no,
             'name' => $req->name,
             'phone' => $req->phone,
-            'duplicate' => $req->duplicate ? 1:0,
+            'duplicate' => $req->duplicate == 'on' ? 1:0,
             'gender' => $req->gender,
             'age' => $age,
             'dob' => $dob,
             'occupation' => $req->occupation,
             'qt_status' => $req->qt_status,
-            'quantum' => $req->quantum ? 1:0,
-            'quantier' => $req->quantier ? 1:0,
-            'ardentier' => $req->ardentier ? 1:0,
+            'quantum' => $req->quantum == 'on' ? 1:0,
+            'quantier' => $req->quantier == 'on' ? 1:0,
+            'ardentier' => $req->ardentier == 'on' ? 1:0,
             'branch' => $req->branch,
-            'job_status' => $req->job_status ? 1:0,
-            'psyche_certificate' => $req->psyche_certificate ? 1:0,
-            'sp' => $req->sp ? 1:0,
+            'job_status' => $req->job_status == 'on' ? 1:0,
+            'psyche_certificate' => $req->psyche_certificate == 'on' ? 1:0,
+            'sp' => $req->sp == 'on' ? 1:0,
             'group' => $req->group,
             'call' => $req->call,
-            'sms' => $req->sms ? 1:0,
+            'sms' => $req->sms == 'on' ? 1:0,
             'color' => $req->color,
-            'barcode' => $req->barcode ? 1:0,
+            'barcode' => $req->barcode == 'on' ? 1:0,
             'new_barcode' => $req->new_barcode,
             'new_barcode_sl' => $req->new_barcode_sl,
-            'barcode_delivery' => $req->barcode_delivery ? 1:0,
+            'barcode_delivery' => $req->barcode_delivery == 'on' ? 1:0,
+            'image' => $imageName
         ]);
+
+        $updatedData = User_Info::with('branch')->findOrFail($req->id);
 
         return response()->json([
             'status' => true,
             'message' => 'User info updated successfully',
+            'updatedData' => $updatedData
         ], 200);
     }
 
@@ -216,6 +228,7 @@ class UserInfoController extends Controller
         $perPage = 20;
 
         $query = User_Info::query()
+            ->with('branch')
             ->select('id', 'name', 'reg_no','phone','gender')
             ->whereNotIn('reg_no',is_array($req->reg_no) ? $req->reg_no : [])
             ->when($req->search, function ($q) use ($req) {

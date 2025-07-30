@@ -16,6 +16,11 @@ class User_Info extends Model
     {
         return $this->belongsToMany(Event::class, 'event__user__lists', 'reg_no', 'event_id', 'reg_no', 'id');
     }
+
+
+    public function branch(){
+        return $this->belongsTo(Branch::class,'branch','id');
+    }
 }
 
 
