@@ -27,6 +27,11 @@ use App\Http\Controllers\API\Backend\Setup\EventUserController;
 use App\Http\Controllers\API\Backend\Setup\AttendanceController;
 
 
+
+// Reports Controller
+use App\Http\Controllers\API\Backend\Reports\AttendanceStatementController;
+
+
 // *************************************** Forget Password Controller Routes Start *************************************** //
 Route::controller(ForgetPasswordController::class)->group(function () {
     Route::post('/forgotpassword', 'ForgotPassword');
@@ -109,6 +114,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/event_schedule','Update');
             Route::delete('/event_schedule','Delete');
             Route::get('/event_schedule/get','Get');
+            Route::get('/event_schedule/get/date','GetDate');
         }); // End Event Routes
 
 
@@ -143,6 +149,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/attendance','Delete');
             Route::get('/attendance/get','Get');
         }); // End Branch Routes
+    });
+
+
+
+    /////-----/////-----/////-----/////-----/////-----///// Reports Routes Start /////-----/////-----/////-----/////-----/////-----/////
+    Route::prefix('/reports')->group(function () {
+        Route::controller(AttendanceStatementController::class)->group(function () {
+            ///////////// --------------- Attendance routes ----------- ///////////////////
+            Route::post('/attendance_statement', 'Show');
+            Route::get('/attendance_statement/print', 'Print')->withoutMiddleware('auth:sanctum')->middleware('web');
+        });
     });
 });
 

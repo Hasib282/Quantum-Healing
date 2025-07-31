@@ -12,7 +12,7 @@ class EventScheduleController extends Controller
 {
     // Show All Event Schedules
     public function Show(Request $req){
-        $data = Event_Schedule::get();
+        $data = Event_Schedule::with('event')->get();
 
         return response()->json([
             'status' => true,
@@ -33,7 +33,7 @@ class EventScheduleController extends Controller
             "date" => $req->date,
         ]);
 
-        $data = Event_Schedule::on('mysql')->findOrFail($insert->id);
+        $data = Event_Schedule::on('mysql')->with('event')->findOrFail($insert->id);
         
         return response()->json([
             'status'=> true,
@@ -57,7 +57,7 @@ class EventScheduleController extends Controller
             "date" => $req->date,
         ]);
 
-        $updatedData = Event_Schedule::findOrFail($req->id);
+        $updatedData = Event_Schedule::with('event')->findOrFail($req->id);
 
         if($update){
             return response()->json([
@@ -97,10 +97,25 @@ class EventScheduleController extends Controller
 
 
 
-    // Get Event Schedules
-    public function Get(){
-        $data = Event_Schedule::on('mysql')
-        ->orderBy('id')
+    // Get Schedule Events
+    public function Get(Request $req){
+        $data = Event_Schedule::with('event')
+        ->where('date', $req->search ?? date('Y-m-d'))
+        ->get();
+
+        return response()->json([
+            'status' => true,
+            'data'=> $data,
+        ]);
+    } // End Method
+    
+    
+    
+    // Get Event Schedules Date
+    public function GetDate(Request $req){
+        $data = Event_Schedule::select('date')
+        ->where('event_id', $req->search)
+        ->distinct()
         ->get();
 
         return response()->json([

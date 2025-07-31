@@ -73,7 +73,7 @@ $(document).ready(function () {
         $('#updateAge').val(item.age);
         $('#updateDob').val(item.dob);
         $('#updateQt_Status').val(item.qt_status);
-        $('#updateBranch').val(item.branch.branch);
+        $('#updateBranch').val(item.branchs.branch);
         $('#updateBranch').attr('data-id',item.branch.id);
         $('#updateCall').val(item.call);
         $('#updateColor').val(item.color);

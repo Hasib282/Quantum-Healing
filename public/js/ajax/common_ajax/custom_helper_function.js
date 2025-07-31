@@ -83,7 +83,8 @@ function CheckIfLastPage(callback) {
 function UpdateUrl(url, queryParams) {
     let newUrl = `${url}?${$.param(queryParams)}`;
     let urlObj = new URL(newUrl, window.location.origin);
-
+    console.log('hello');
+    
     // Update #print href
     $('#print').attr('href', `${urlObj}`);
 }; // End Function
@@ -91,13 +92,24 @@ function UpdateUrl(url, queryParams) {
 
 
 //////////////////// -------------------- Create Select Options Dynamically -------------------- ////////////////////
+// Helper function to get nested property like 'event.name'
+function getNestedValue(obj, path) {
+    return path.split('.').reduce((o, key) => (o ? o[key] : ''), obj);
+}
+
+
+
+//////////////////// -------------------- Create Select Options Dynamically -------------------- ////////////////////
 // For Creating Select Options Dynamically
-function CreateSelectOptions(id, defaultText, data, fieldName) {
+function CreateSelectOptions(id, defaultText, data, fieldName, Value = null) {
     let selectElement = $(id);
     selectElement.empty();
     selectElement.append(`<option value="">${defaultText}</option>`);
     data.forEach(function(item) {
-        selectElement.append(`<option value="${item.id}" >${item[fieldName]}</option>`);
+        let value = Value ? getNestedValue(item, Value) : item.id;
+        let text = getNestedValue(item, fieldName);
+        selectElement.append(`<option value="${value}">${text}</option>`);
+        // selectElement.append(`<option value="${item.id}" >${item[fieldName]}</option>`);
     });
 }; // End Method
 

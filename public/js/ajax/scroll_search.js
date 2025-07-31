@@ -52,7 +52,6 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
 
     // Infinite scroll
     $(divId).off('scroll').on('scroll', function (e) {
-
         if ($(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight - 5) {
             FetchData();
         }
@@ -297,7 +296,7 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
         let value = $(this).text();
         let id = $(this).data('id');
         
-        // $(inputId).val(value);
+        $(inputId).val(value);
         $(inputId).attr('data-id', id);
         $(divId).html('');
 
@@ -357,8 +356,8 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
         let item = list.eq(index);
         item.focus();
 
-        // $(inputId).val(item.text());
-        // $(inputId).attr("data-id", item.data('id'));
+        $(inputId).val(item.text());
+        $(inputId).attr("data-id", item.data('id'));
         
         // Additional Events If Needed
         if (typeof AdditionalEvent === "function") {
@@ -403,25 +402,46 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
 
 
 
-// $(document).ready(function () {
-//     // ScrollSearch('/user_info/get/participants','#search', '#user-list')
-//     ScrollSearchByInput(
-//         '/user_info/get/participants',
+$(document).ready(function () {
+    /////////////// ------------------ Search Branch by name and add value to input ajax part start ---------------- /////////////////////////////
+    // Branch Scroll Input Search
+    ScrollSearchByInput(
+        'admin/branches/get', 
 
-//         function (currentPage) {
-//             return {
-//                 search: $('#search').val(),
-//                 page: currentPage
-//             };
-//         }, 
+        function (currentPage) {
+            return {
+                search: $('#branch').val(),
+                page: currentPage
+            };
+        }, 
 
-//         '#search', 
+        '#branch', 
 
-//         '#user-list',
+        '#branch-list',
 
-//         '#user-list tbody tr',
-//     )
-// });
+        '#branch-list li',
+    );
+
+
+
+    // Update Branch Scroll Input Search
+    ScrollSearchByInput(
+        'admin/branches/get', 
+
+        function (currentPage) {
+            return {
+                search: $('#updateBranch').val(),
+                page: currentPage
+            };
+        }, 
+
+        '#updateBranch', 
+
+        '#update-branch',
+
+        '#update-branch li',
+    );
+});
 
 
 

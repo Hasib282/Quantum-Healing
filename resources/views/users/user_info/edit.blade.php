@@ -148,8 +148,8 @@
             {{-- New Barcode SL --}}
             <div class="c-3">
                 <div class="form-input-group">
-                    <label for="updateNew_barcode">New Barcode SL</label>
-                    <input type="text" name="new_barcode_sl" id="updateNew_barcode" class="form-input">
+                    <label for="updateNew_barcode_sl">New Barcode SL</label>
+                    <input type="text" name="new_barcode_sl" id="updateNew_barcode_sl" class="form-input">
                     <span class="error" id="update_new_barcode_sl_error"></span>
                 </div>
             </div>
@@ -163,7 +163,7 @@
             </div>
             {{-- Achivements --}}
             <div class="c-12">
-                <label for="">User Achievements</label>
+                <label>User Achievements</label>
                 <div class="rows">
                     {{-- Job Status --}}
                     <div class="c-4">

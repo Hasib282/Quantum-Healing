@@ -15,7 +15,9 @@ class AttendanceController extends Controller
 {
     // Show All Attendance
     public function Show(Request $req){
-        $data = Attendence::get();
+        $data = Attendence::with('users','events')
+        ->where('date', date('Y-m-d'))
+        ->get();
 
         return response()->json([
             'status' => true,
@@ -70,7 +72,7 @@ class AttendanceController extends Controller
                     'reg_no' => $data->reg_no,
                 ]);
 
-                $data = Attendence::findOrFail($insert->id);
+                $data = Attendence::with('users','events')->findOrFail($insert->id);
                 
                 return response()->json([
                     'status'=> true,
@@ -95,7 +97,7 @@ class AttendanceController extends Controller
                     'reg_no' => $data->participants->first()->reg_no,
                 ]);
 
-                $data = Attendence::findOrFail($insert->id);
+                $data = Attendence::with('users','events')->findOrFail($insert->id);
                 
                 return response()->json([
                     'status'=> true,
@@ -132,7 +134,7 @@ class AttendanceController extends Controller
             'reg_no' => $data->reg_no,
         ]);
 
-        $updatedData = Attendence::findOrFail($req->id);
+        $updatedData = Attendence::with('users','events')->findOrFail($req->id);
 
         if($update){
             return response()->json([
@@ -144,7 +146,7 @@ class AttendanceController extends Controller
     } // End Method
 
 
-
+    
 
      // Delete Attendance
     public function Delete(Request $req){

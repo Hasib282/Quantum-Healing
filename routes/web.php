@@ -10,6 +10,7 @@ use App\Http\Controllers\Frontend\Auth\ForgetPasswordController;
 use App\Http\Controllers\Frontend\Admin_Setup\UsersController;
 use App\Http\Controllers\Frontend\Admin_Setup\AdminSetupController;
 use App\Http\Controllers\API\Backend\Users\UserInfoController;
+use App\Http\Controllers\Frontend\ReportsController;
 
 
 Route::get('/link', function(){
@@ -89,5 +90,22 @@ Route::prefix('/admin')->group(function () {
         
         ///////////// --------------- Event User routes ----------- ///////////////////
         Route::get('/event_users','ShowEventUser')->name('show.eventUsers');
+    });
+});
+/////-----/////-----/////-----/////-----/////-----///// Admin Setup Routes End /////-----/////-----/////-----/////-----/////-----/////
+
+
+
+
+
+
+
+
+
+/////-----/////-----/////-----/////-----/////-----///// Reports Routes Start /////-----/////-----/////-----/////-----/////-----/////
+Route::prefix('/reports')->group(function () {
+    Route::controller(ReportsController::class)->group(function () {
+        ///////////// --------------- Attendance routes ----------- ///////////////////
+        Route::get('/attendance_statement','ShowAttendanceStatement')->name('show.attendanceStatement');
     });
 });

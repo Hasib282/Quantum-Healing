@@ -160,7 +160,7 @@
                 </div>
                 {{-- Achivements --}}
                 <div class="c-12">
-                    <label for="">User Achievements</label>
+                    <label>User Achievements</label>
                     <div class="rows">
                         {{-- Job Status --}}
                         <div class="c-4">

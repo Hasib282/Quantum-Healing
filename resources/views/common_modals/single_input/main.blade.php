@@ -80,5 +80,4 @@
     <!-- ajax part start from here -->
     <script src="{{ asset('js/ajax').'/'. $js . '.js' }}"></script>
     <script src="{{ asset('js/ajax/common_ajax/single_input.js') }}"></script>
-    <script src="{{ asset('js/ajax/search_by_input.js') }}"></script>
 @endsection

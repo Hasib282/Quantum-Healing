@@ -24,6 +24,7 @@
         <caption>{{ $name }} Details</caption>
         <thead></thead>
         <tbody></tbody>
+        <tfoot></tfoot>
     </table>
     <div id="paginate"></div>
 </div>

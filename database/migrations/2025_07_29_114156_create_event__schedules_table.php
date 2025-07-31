@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('status')->default(1);
             $table->timestamp('added_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
+
+            // Foreignkey Decleration 
+            $table->foreign('event_id')->references('id')->on('events')
+                    ->onUpdate('cascade');
         });
     }
 

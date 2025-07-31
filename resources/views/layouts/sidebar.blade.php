@@ -25,6 +25,7 @@
             </div>
             <ul class="sub-menu {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users') ? 'show':''}}">
                 @if(auth()->check() && auth()->user()->role == 1)
+                    {{-- Roles Sub Menu --}}
                     <li class="sub-menu-item" data-url="{{ route('show.roles') }}">
                         <div class="menu-title  {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'roles') ? 'active':''}}">
                             <p>
@@ -33,7 +34,8 @@
                             </p>
                         </div>
                     </li>
-                
+                    
+                    {{-- Super Admin Sub Menu --}}
                     <li class="sub-menu-item" data-url="{{route('show.superAdmins')}}">
                         <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'superadmins') ? 'active':''}}">
                             <p>
@@ -45,6 +47,7 @@
                 @endif
                     
                 {{-- @if(auth()->user()->hasPermission(1)) --}}
+                    {{-- Admin Sub Menu --}}
                     <li class="sub-menu-item" data-url="{{route('show.admins')}}">
                         <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'admins') ? 'active':''}}">
                             <p>
@@ -55,6 +58,7 @@
                     </li>
                 {{-- @endif --}}
 
+                {{-- Participant Sub Menu --}}
                 <li class="sub-menu-item" data-url="{{route('show.users')}}">
                     <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'user_info') ? 'active':''}}">
                         <p>
@@ -66,7 +70,7 @@
             </ul>
         </li>
 
-        <!-- Branches Menu -->
+        {{-- Branches Menu --}}
         <li class="menu-item" data-url="{{route('show.branch')}}">
             <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'branches') ? 'active':''}}">
                 <p>
@@ -76,7 +80,7 @@
             </div>
         </li>
         
-        <!-- Events Name Menu -->
+        {{-- Event Name Menu --}}
         <li class="menu-item" data-url="{{route('show.event')}}">
             <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'events') ? 'active':''}}">
                 <p>
@@ -86,7 +90,7 @@
             </div>
         </li>
         
-        <!-- Events Schedule Menu -->
+        {{-- Event Schedule Menu --}}
         <li class="menu-item" data-url="{{route('show.eventSchedule')}}">
             <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'event_schedule') ? 'active':''}}">
                 <p>
@@ -96,7 +100,7 @@
             </div>
         </li>
         
-        <!-- Branches Menu -->
+        {{-- Event Participant List Menu --}}
         <li class="menu-item" data-url="{{route('show.eventUsers')}}">
             <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'event_users') ? 'active':''}}">
                 <p>
@@ -106,8 +110,7 @@
             </div>
         </li>
 
-
-        <!-- attendence  -->
+        {{-- Attendence Menu --}}
         <li class="menu-item" data-url="{{route('show.attendance')}}" >
             <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'attendance') ? 'active':''}}">
                 <p>
@@ -115,6 +118,28 @@
                     Attendance
                 </p>
             </div>
+        </li>
+
+        {{-- Reports Menu --}}
+        <li class="menu-item">
+            <div class="menu-title {{ Request::segment(1) == 'reports' ? 'active':''}}">
+                <p>
+                    <i class="fa-solid fa-users"></i>
+                    Reports
+                </p>
+                <i class="fas fa-angle-right {{ Request::segment(1) == 'reports' ? 'rotate':''}}"></i>
+            </div>
+            <ul class="sub-menu {{ Request::segment(1) == 'reports' ? 'show':''}}">
+                {{-- Attendence Statement Sub Menu --}}
+                <li class="sub-menu-item" data-url="{{ route('show.attendanceStatement') }}">
+                    <div class="menu-title  {{ (Request::segment(1) == 'reports' && Request::segment(2) == 'attendance_statement') ? 'active':''}}">
+                        <p>
+                            <i class="fa-solid fa-dice-six"></i>
+                            Attendence Statement
+                        </p>
+                    </div>
+                </li>
+            </ul>
         </li>
     </ul>
 </aside>

@@ -18,7 +18,7 @@ class User_Info extends Model
     }
 
 
-    public function branch(){
+    public function branchs(){
         return $this->belongsTo(Branch::class,'branch','id');
     }
 }

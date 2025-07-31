@@ -19,4 +19,9 @@ class Event extends Model
     {
         return $this->belongsToMany(User_Info::class, 'event__user__lists', 'event_id', 'reg_no', 'id', 'reg_no');
     }
+
+    public function event_dates()
+    {
+        return $this->hasMany(Event_Schedule::class, 'event_id');
+    }
 }

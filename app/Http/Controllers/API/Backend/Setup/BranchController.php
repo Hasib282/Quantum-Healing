@@ -99,16 +99,21 @@ class BranchController extends Controller
 
     // Get Branchs
     public function Get(Request $req){
-        $data = Branch::on('mysql')
-        ->where('branch', 'like', $req->branch.'%')
-        ->orderBy('branch')
-        ->take(20)
-        ->get();
+        $page = $req->input('page', 1);
+        $perPage = 20;
+
+        $query = Branch::query()
+                ->where('branch', 'like', $req->search.'%')
+                ->orderBy('branch');
+
+        $total = $query->count();
+        $data = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
+
 
         $list = "<ul>";
             if($data->count() > 0){
                 foreach($data as $index => $item) {
-                    $list .= '<li tabindex="' . ($index + 1) . '" data-id="'.$item->id.'">'.$item->branch.'</li>';
+                    $list .= '<li tabindex="' . (($page - 1) * $perPage + $index) . '" data-id="'.$item->id.'">'.$item->branch.'</li>';
                 }
             }
             else{
@@ -116,6 +121,9 @@ class BranchController extends Controller
             }
         $list .= "</ul>";
 
-        return $list;
+        return response()->json([
+            'list' => $list,
+            'hasMore' => ($page * $perPage) < $total
+        ]);
     } // End Method
 }

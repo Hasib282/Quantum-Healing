@@ -46,5 +46,5 @@
 
     <!-- ajax part start from here -->
     <script src="{{ asset('js/ajax/' . (Request::segment(1) == 'admin' ? 'admin_setup' : Request::segment(1)) . '/users/' . $js . '.js') }}"></script>
-    <script src="{{ asset('js/ajax/search_by_input.js') }}"></script>
+    {{-- <script src="{{ asset('js/ajax/search_by_input.js') }}"></script> --}}
 @endsection

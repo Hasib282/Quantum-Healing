@@ -2,14 +2,14 @@ function ShowAttendance(res) {
     tableInstance = new GenerateTable({
         tableId: '#data-table',
         data: res.data,
-        tbody: ['event_id','date','req_no','added_at'],
+        tbody: ['events.name','date','users.name','added_at'],
        
-        actions: (row) => {
-            return `
-                <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
-                <button data-id="${row.id}" id="delete"><i class="fas fa-trash"></i></button>
-            `;
-        }
+        // actions: (row) => {
+        //     return `
+        //         <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
+        //         <button data-id="${row.id}" id="delete"><i class="fas fa-trash"></i></button>
+        //     `;
+        // }
     });
 }
 
@@ -19,11 +19,11 @@ $(document).ready(function () {
     // Render The Table Heads
     renderTableHead([
         { label: 'SL:', type: 'rowsPerPage', options: [15, 30, 50, 100, 500] },
-        { label: 'Event name', key: 'event_id' },
+        { label: 'Event name', key: 'events.name' },
         { label: 'Date', key: 'date' },
-        { label: 'Registaration', key: 'reg_no' },
+        { label: 'Registaration', key: 'users.name' },
         { label: 'Attendence Time', key: 'added_at' },
-        { label: 'Action', type: 'button' }
+        // { label: 'Action', type: 'button' }
     ]);
 
 
@@ -112,10 +112,34 @@ $(document).ready(function () {
     //     $('#updateBranch').focus();
     // }
 
-    // Get Trantype
+    // Get Events By Date
+    GetSelectInputList('admin/event_schedule/get', function (res) {
+        CreateSelectOptions('#events', "Select Events", res.data, 'event.name', 'event.id');
+        CreateSelectOptions('#updateEvents', "Select Events", res.data, 'event.name', 'event.id');
+    })
+    
+    
+    // Get Events
     GetSelectInputList('admin/events/get', function (res) {
-        CreateSelectOptions('#events', "Select Events", res.data, 'name');
-        CreateSelectOptions('#updateEvents', "Select Events", res.data, 'name');
+        CreateSelectOptions('#searchEvents', "Select Events", res.data, 'name');
+    })
+
+
+    // Events Change 
+    $(document).off('change','#date').on('change','#date', function (e) {
+        e.preventDefault();
+        let search = $(this).val();
+        $.ajax({
+            url: `${apiUrl}/admin/event_schedule/get`,
+            data: {search},
+            success: function (res) {
+                CreateSelectOptions('#events', "Select Events", res.data, 'event.name', 'event.id');
+                CreateSelectOptions('#updateEvents', "Select Events", res.data, 'event.name', 'event.id');
+                // CreateSelectOptions('#eventDate', "Select Event Date", res.data, 'date', 'date');
+                console.log(res);
+                
+            }
+        });
     })
 
 

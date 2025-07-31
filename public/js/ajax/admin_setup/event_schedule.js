@@ -2,7 +2,7 @@ function ShowEventSchedule(res) {
     tableInstance = new GenerateTable({
         tableId: '#data-table',
         data: res.data,
-        tbody: ['event_id','date'],
+        tbody: ['event.name','date'],
         actions: (row) => `
                 <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
                         
@@ -16,7 +16,7 @@ $(document).ready(function () {
     // Render The Table Heads
     renderTableHead([
         { label: 'SL:', type: 'rowsPerPage', options: [15, 30, 50, 100, 500] },
-        { label: 'Event Name', key: 'event_id' },
+        { label: 'Event Name', key: 'event.name' },
         { label: 'Date', key: 'date' },
         { label: 'Action', type: 'button' }
     ]);

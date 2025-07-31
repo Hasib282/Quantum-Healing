@@ -85,6 +85,6 @@
     @include('common_modals.deleteStatus')
 
     {{-- AJAX Scripts --}}
-    <script src="{{ asset('js/ajax/search_by_input.js') }}"></script>
+    {{-- <script src="{{ asset('js/ajax/search_by_input.js') }}"></script> --}}
     <script src="{{ asset('js/ajax').'/'. $js . '.js' }}"></script>
 @endsection
