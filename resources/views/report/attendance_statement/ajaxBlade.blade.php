@@ -37,7 +37,7 @@
             <a class="btn-blue" id="print"><i class="fa-solid fa-print"></i> Print</a>
         </div>
         <div class="c-1"></div>
-        <div class="c-12 center">
+        <div class="c-12 center-col">
             <span class="error" id="date_error"></span>
             <span class="error" id="events_error"></span>
         </div>
@@ -46,24 +46,13 @@
 
 {{-- Datatable Part --}}
 <div class="load-data">
-    {{-- <table class="data-table" id="data-table">
-        <caption>{{ $name }} Details</caption>
+    <table class="data-table" id="data-table">
+        <caption style="background: #f2f2f25e;color:black;border: 1px solid #80808080;">Event <span id="name"></span>
+            <br> Attendence on <span id="attend"></span></caption>
         <thead></thead>
         <tbody></tbody>
         <tfoot></tfoot>
-    </table> --}}
-    <hr>
-    <div style="text-align: center; width: 100%; margin: 0 auto;">
-        <p>
-            <strong id="name" style="font-size: 20px;"> Event</strong> <br>
-        </p>
-        <p>
-            <strong id="attend" style="font-size: 18px;">Attendence on </strong> <br>
-        </p>
-    </div>
-    <div id="tables">
-        
-    </div>
+    </table>
 
     <div id="paginate"></div>
 </div>

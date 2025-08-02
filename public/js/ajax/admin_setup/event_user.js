@@ -67,7 +67,9 @@ $(document).ready(function () {
         // Save updated productIssue back to local storage
         localStorage.setItem('participants', JSON.stringify(participants));
 
-        gridShow();
+        let data = JSON.parse(localStorage.getItem('participants')) || [];
+
+        gridShow(data);
     }
 
     // Get Trantype
@@ -109,7 +111,9 @@ $(document).ready(function () {
         // Save updated productIssue back to local storage
         localStorage.setItem('participants', JSON.stringify(participants));
 
-        gridShow();
+        let data = JSON.parse(localStorage.getItem('participants')) || [];
+
+        gridShow(data);
 
         $(this).remove();
     })
@@ -123,7 +127,10 @@ $(document).ready(function () {
 
         perticipants.splice(index, 1);
         localStorage.setItem('participants', JSON.stringify(perticipants));
-        gridShow();
+
+        let data = JSON.parse(localStorage.getItem('participants')) || [];
+
+        gridShow(data);
     })
 
 
@@ -157,10 +164,26 @@ $(document).ready(function () {
                 // Save updated productIssue back to local storage
                 localStorage.setItem('participants', JSON.stringify(participants));
 
-                gridShow();
+                let data = JSON.parse(localStorage.getItem('participants')) || [];
+
+                gridShow(data);
                 // $(targetList).html(res);
             }
         });
+    });
+
+
+    $(document).off("keyup", '#selectedParticipants').on("keyup", '#selectedParticipants', function (e) {
+        let participants = JSON.parse(localStorage.getItem('participants') || '[]');
+        let search = $('#selectedParticipants').val().toLowerCase();
+
+        let data = participants.filter(rows =>
+            Object.values(rows).some(val =>
+                (val ?? '').toString().toLowerCase().includes(search)
+            )
+        );
+
+        gridShow(data);
     });
 
 
@@ -182,6 +205,8 @@ $(document).ready(function () {
 
         '#participants-list',
 
+        '#participants-list tbody',
+
         '#participants-list tbody tr',
     )
 });
@@ -189,9 +214,7 @@ $(document).ready(function () {
 
 
 
-function gridShow() {
-    let data = JSON.parse(localStorage.getItem('participants')) || [];
-
+function gridShow(data) {
     $('#all-participants tbody').html("");
 
     data.forEach((item, index) => {

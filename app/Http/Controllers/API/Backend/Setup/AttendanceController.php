@@ -15,7 +15,7 @@ class AttendanceController extends Controller
 {
     // Show All Attendance
     public function Show(Request $req){
-        $data = Attendence::with('users','events')
+        $data = Attendence::with('users:name,reg_no','events:id,name')
         ->where('date', date('Y-m-d'))
         ->get();
 
@@ -26,7 +26,8 @@ class AttendanceController extends Controller
     } // End Method
 
 
-     // Insert Attendance
+    
+    // Insert Attendance
     public function Insert(Request $req){
         $req->validate([
             'events' => 'required',
@@ -34,20 +35,27 @@ class AttendanceController extends Controller
             'qr_url' => 'required'
         ]);
 
+        // Check User Data
         $user = User_Info::select('id', 'name', 'reg_no','phone','gender','qr_url')
         ->where('qr_url', $req->qr_url)
         ->orWhere('reg_no', $req->qr_url)
         ->first();
 
-        // if(!$user){
+        if(!$user){
+            Attendence_Temp::create([
+                'event_id' => $req->events,
+                'date' => $req->date,
+                'qr_url' => $req->qr_url,
+            ]);
 
-        //     return response()->json([
-        //         'status'=> false,
-        //         'message' => 'Your Attendance is already Given',
-        //         "user" => $user
-        //     ], 200);
-        // }
+            return response()->json([
+                'status'=> false,
+                'message' => 'Your QR is not found ',
+                "user" => $user
+            ], 200);
+        }
 
+        // Check User Attendance
         $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$user->reg_no)->where('date',$req->date)->first();
 
         if($attendence){
@@ -58,37 +66,33 @@ class AttendanceController extends Controller
             ], 200);
         }
 
+        // Check Event Status
         $event = Event::where('id', $req->events)->first();
 
         if($event->all == 1){
-            $data = User_Info::where('qr_url', $req->qr_url)
-            ->orWhere('reg_no', $req->qr_url)
-            ->first();
+            $insert = Attendence::create([
+                'event_id' => $req->events,
+                'date' => $req->date,
+                'reg_no' => $user->reg_no,
+            ]);
 
-            if ($data) {
-                $insert = Attendence::create([
-                    'event_id' => $req->events,
-                    'date' => $req->date,
-                    'reg_no' => $data->reg_no,
-                ]);
-
-                $data = Attendence::with('users','events')->findOrFail($insert->id);
-                
-                return response()->json([
-                    'status'=> true,
-                    'message' => 'Your Attendance is Successfull',
-                    "data" => $data,
-                    "user" => $user
-                ], 200);
-            }
+            $data = Attendence::with('users:name,reg_no','events:id,name')->findOrFail($insert->id);
+            
+            return response()->json([
+                'status'=> true,
+                'message' => 'Your Attendance is Successfull',
+                "data" => $data,
+                "user" => $user
+            ], 200);
         }
         else if($event->all == 0){
             $data = Event_User_List::with('events','participants')
-            ->where('event_id',$req->events)
+            ->where('event_id', $req->events)
             ->whereHas('participants',function($query) use ($req) {
                 $query->where('qr_url', $req->qr_url);
                 $query->orWhere('reg_no', $req->qr_url);
-            })->first();
+            })
+            ->first();
 
             if ($data) {
                 $insert = Attendence::create([
@@ -97,7 +101,7 @@ class AttendanceController extends Controller
                     'reg_no' => $data->participants->first()->reg_no,
                 ]);
 
-                $data = Attendence::with('users','events')->findOrFail($insert->id);
+                $data = Attendence::with('users:name,reg_no','events:id,name')->findOrFail($insert->id);
                 
                 return response()->json([
                     'status'=> true,
@@ -118,42 +122,16 @@ class AttendanceController extends Controller
 
 
 
-     // Update Attendance
-    public function Update(Request $req){
-        $data = Attendence::findOrFail($req->id);
+    // Search All Attendance
+    public function Search(Request $req){
+        $data = Attendence::with('users:name,reg_no','events:id,name')
+        ->where('date', 'like', $req->date.'%')
+        ->where('event_id', 'like', $req->event.'%')
+        ->get();
 
-       $req->validate([
-            'events' => 'required',
-            'date' => 'required',
-            'qr_url' => 'required'
-        ]);
-       
-        $update = $data->update([
-            'event_id' => $req->events,
-            'date' => $req->date,
-            'reg_no' => $data->reg_no,
-        ]);
-
-        $updatedData = Attendence::with('users','events')->findOrFail($req->id);
-
-        if($update){
-            return response()->json([
-                'status'=>true,
-                'message' => 'Attendence Updated successfully',
-                "updatedData" => $updatedData,
-            ], 200); 
-        }
-    } // End Method
-
-
-    
-
-     // Delete Attendance
-    public function Delete(Request $req){
-        Attendence::findOrFail($req->id)->delete();
         return response()->json([
-            'status'=> true,
-            'message' => 'Attendance Deleted Successfully',
-        ], 200); 
+            'status' => true,
+            'data' => $data,
+        ], 200);
     } // End Method
 }

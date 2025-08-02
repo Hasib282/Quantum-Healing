@@ -181,7 +181,7 @@ class UserInfoController extends Controller
     // Get Participants
     public function GetParticipants(Request $req){
         $page = $req->input('page', 1);
-        $perPage = 20;
+        $perPage = 30;
 
         $query = User_Info::query()
             // ->with('branch')
@@ -199,33 +199,39 @@ class UserInfoController extends Controller
         // (2-1)*20
         $total = $query->count();
         $data = $query->skip(($page - 1) * $perPage)->take($perPage)->with('branchs')->get();
+        $list = "";
 
-        $list = '<table style="border-collapse: collapse;width: 100%;overflow-x: auto;">
-                    <thead>
-                        <th>Sl</th>
-                        <th>Reg No</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Gender</th>
-                        <th>action</th>
-                    </thead>
-                    <tbody>';
-                        if($data->count() > 0){
-                            foreach($data as $index => $item) {
-                                $list .= '<tr class="addData" tabindex="' . (($page - 1) * $perPage + $index) . '" data-reg_no="'.$item->reg_no.'" data-id="'.$item->id.'" data-name="'.$item->name.'" data-phone="'.$item->phone.'" data-gender="'.$item->gender.'">
-                                            <td>'.(($page - 1) * $perPage + $index +1).'</td>
-                                            <td>'.$item->reg_no.'</td>
-                                            <td>'.$item->name.'</td>
-                                            <td>'.$item->phone.'</td>
-                                            <td>'.$item->gender.'</td>
-                                        </tr>';
-                            }
-                        }
-                        else{
-                            $list .= '<tr><td colspsn="20">No Data Found</td></tr>';
-                        }
-        $list .= "  </tbody>
-                </table>";
+        if($page == 1){
+            $list .= '<table style="border-collapse: collapse;width: 100%;overflow-x: auto;">
+                        <thead>
+                            <th>Sl</th>
+                            <th>Reg No</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Gender</th>
+                        </thead>
+                        <tbody>';
+        }
+
+        if($data->count() > 0){
+            foreach($data as $index => $item) {
+                $list .= '<tr class="addData" tabindex="' . (($page - 1) * $perPage + $index) . '" data-reg_no="'.$item->reg_no.'" data-id="'.$item->id.'" data-name="'.$item->name.'" data-phone="'.$item->phone.'" data-gender="'.$item->gender.'">
+                            <td>'.(($page - 1) * $perPage + $index +1).'</td>
+                            <td>'.$item->reg_no.'</td>
+                            <td>'.$item->name.'</td>
+                            <td>'.$item->phone.'</td>
+                            <td>'.$item->gender.'</td>
+                        </tr>';
+            }
+        }
+        else{
+            $list .= '<tr><td colspsn="20">No Data Found</td></tr>';
+        }
+
+        if($page == 1){
+            $list .= "  </tbody>
+                    </table>";
+        }
 
         return response()->json([
             'list' => $list,

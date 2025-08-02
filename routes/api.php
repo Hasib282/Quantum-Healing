@@ -145,9 +145,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(AttendanceController::class)->group(function(){
             Route::get('/attendance','Show');
             Route::post('/attendance','Insert');
-            Route::put('/attendance','Update');
-            Route::delete('/attendance','Delete');
-            Route::get('/attendance/get','Get');
+            Route::get('/attendance/search','Search');
         }); // End Branch Routes
     });
 

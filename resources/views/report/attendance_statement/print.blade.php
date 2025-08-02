@@ -1,75 +1,26 @@
 {{----------------------------------------------------- Common Part Of The Report Starts From Here -------------------------------------}}
 <style>
-    /* .show-table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
+    body {
+        margin: 0;
+        padding: 0;
         font-size: 12px;
+        color: black;
     }
 
-    .show-table td, th {
-        border: 1px solid #dddddd;
+    .show-table th,
+    .show-table td {
+        border: 1px solid #999;
+        padding: 5px;
         text-align: left;
-        padding: 2px 4px;
-    } */
-
-     /* General table styling */
-    table.show-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-        page-break-inside: avoid; /* Prevent table from breaking mid-way */
+        vertical-align: top;
+        page-break-inside: avoid !important;
     }
 
-    table.show-table caption {
-        caption-side: top;
-        padding: 10px;
-        font-weight: bold;
-        background: #f2f2f2;
-    }
-
-    table.show-table th,
-    table.show-table td {
-        border: 1px solid #ccc;
-        padding: 6px 10px;
-        font-size: 12px;
-        text-align: left;
-    }
-
-    /* Avoid breaking thead across pages */
-    thead {
-        display: table-header-group;
-    }
-
-    tbody {
-        display: table-row-group;
-    }
-
-    /* Page break after each table */
-    .page-break {
-        page-break-after: always;
-    }
-
-    @media print {
-        .no-print {
-            display: none;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-        }
+    .show-table tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto;
     }
 </style>
-
-<div style="text-align: center; width: 100%; margin: 0 auto;">
-    <p>
-        <strong style="font-size: 20px;">{{ $data[0]->events->name }} Event</strong> <br>
-    </p>
-    <p>
-       <strong style="font-size: 18px;">Attendence on {{ request()->query('date') }}</strong> <br>
-    </p>
-</div>
 
 {{----------------------------------------------------- Common Part Of The Report Ends At Here -----------------------------------------}}
 
@@ -77,54 +28,64 @@
     $lastGender = null;
     $lastQtStatus = null;
     $groupCount = 0;
+    $grouped = [];
 @endphp
 
 
 {{----------------------------------------------------- Dynamic Part Of The Report Starts From Here ------------------------------------}}
-@foreach($data as $key => $item)
-    @php
-        $p = $item->participants[0];
-        $showGender = $p->gender !== ($lastGender ?? null);
-        $showQtStatus = $p->qt_status !== ($lastQtStatus ?? null);
+<table class="show-table" style="width: 100%; border-collapse: collapse; page-break-inside: auto;">
+    <caption style="background: #f2f2f25e;color:black;border: 1px solid #80808080;">Event {{$data[0]->events->name}} <br> Attendence on {{request()->query('date')}}</caption>
+    <thead style="display: table-header-group;">
+        <tr style="background:none;">
+            <th>Gender</th>
+            <th>QT Status</th>
+            <th>Sl</th>
+            <th>Reg No</th>
+            <th>Name</th>
+            <th>Branch</th>
+            <th>Phone</th>
+            <th style="text-align: center;">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php
+            foreach ($data as $item) {
+                $p = $item->participants[0];
+                $p->date = $item->date;
+                $id = $p->gender . '_' . $p->qt_status;
 
-        if ($showGender || $showQtStatus) {
-            if ($key !== 0) {
-                echo "</tbody></table><br>"; 
+                if (!isset($grouped[$id])) {
+                    $grouped[$id] = [];
+                }
+
+                $grouped[$id][] = $p;
             }
 
+            $groupCount = 1;
+        @endphp
 
-            echo '<table class="show-table">
-                    <caption style="background: #f2f2f25e;color:black;border: 1px solid #80808080;""><strong>'.$p->gender. '(' . $p->qt_status .')</strong></caption>
-                    <thead>
-                        <tr style="background:none;">
-                            <th>Sl</th>
-                            <th>Reg No</th>
-                            <th>Name</th>
-                            <th>Branch</th>
-                            <th>Phone</th>
-                            <th style="text-align: center;">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-            $groupCount = 0;
-        }
+        @foreach ($grouped as $groupKey => $participants)
+            @php
+                list($gender, $qt_status) = explode('_', $groupKey);
+                $rowspan = count($participants);
+            @endphp
 
-        $lastGender = $p->gender;
-        $lastQtStatus = $p->qt_status;
-        $groupCount++;
-    @endphp
+            @foreach ($participants as $index => $p)
+                <tr>
+                    @if($index == 0)
+                        <td rowspan="{{ $rowspan }}">{{ $gender }}</td>
+                        <td rowspan="{{ $rowspan }}">{{ $qt_status }}</td>
+                    @endif
 
-    <tr>
-        <td>{{ $groupCount }}</td>
-        <td>{{ $item->participants[0]->reg_no }}</td>
-        <td>{{ $item->participants[0]->name }}</td>
-        <td>{{ $item->participants[0]->branchs->short }}</td>
-        <td>{{ $item->participants[0]->phone }}</td>
-        <td style="text-align: center;">{{ $item->date }}</td>
-    </tr>
-
-    @if($groupCount > 0 && $groupCount % 3 == 0)
-        <div class="page-break"></div>
-    @endif
-@endforeach
+                    <td>{{ $groupCount++ }}</td>
+                    <td>{{ $p->reg_no }}</td>
+                    <td>{{ $p->name }}</td>
+                    <td>{{ $p->branchs->short ?? '-' }}</td>
+                    <td>{{ $p->phone }}</td>
+                    <td style="text-align: center;">{{ $p->date }}</td>
+                </tr>
+            @endforeach
+        @endforeach
+    </tbody>
+</table>
 {{----------------------------------------------------- Dynamic Part Of The Report Ends At Here ----------------------------------------}}

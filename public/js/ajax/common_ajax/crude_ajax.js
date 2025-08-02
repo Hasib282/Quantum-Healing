@@ -785,30 +785,27 @@ function UpdateTransaction(url, method, type, AddSuccessEvent = undefined) {
 
 
 
-//////////////////// -------------------- Search By Date Ajax Part Start -------------------- ////////////////////
-function SearchByDateAjax(url, RenderData, data={}){
-    $(document).off('change', '#startDate, #endDate').on('change', '#startDate, #endDate', function(e){
-        e.preventDefault();
-        $('#startDate').length ? data.startDate = $('#startDate').val() : '';
-        $('#endDate').length ? data.endDate = $('#endDate').val() : '';
-        $('#status').length ? data.status = $('#status').val() : '';
-        $('#product-search').length ? data.search_id = $('#product-search').attr('data-id') : '';
-        ReloadData(url, RenderData, data);
-    });
-}; // End Method
-
-
-
-
-
 //////////////////// -------------------- Search By Select Input Change Ajax Part Start -------------------- ////////////////////
 function SearchBySelect(url, RenderData, id, data={}){
     $(document).off('change', id).on('change', id, function(e){
         e.preventDefault();
-        $('#startDate').length ? data.startDate = $('#startDate').val() : '';
-        $('#endDate').length ? data.endDate = $('#endDate').val() : '';
-        $(id).length ? data.status = $(id).val() : '';
-        ReloadData(url, RenderData, data);
+        let formData = {};
+        $('#startDate').length ? formData[startDate] = $('#startDate').val() : '';
+        $('#endDate').length ? formData[endDate] = $('#endDate').val() : '';
+
+        $.each(data, function(key, value) {
+            if (typeof value === 'function') {
+                formData[key] = value() ?? '';
+            }
+            else if (typeof value === 'object' && value.selector) {
+                let selectedValue = value.attribute ? $(value.selector).attr(value.attribute) : $(value.selector).val();
+                formData[key] = selectedValue ?? '';
+            } else {
+                formData[key] = value ?? '';
+            }
+        });
+
+        ReloadData(url, RenderData, formData);
     });
 }; // End Method
 

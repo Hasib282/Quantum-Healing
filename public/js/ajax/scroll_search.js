@@ -1,4 +1,4 @@
-function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = undefined, targetTable="", AdditionalEvent = undefined, RemoveData = undefined) {
+function FixedScrollSearch(link, getData, inputId, divId, listId, rowId, tableData = undefined, targetTable="", AdditionalEvent = undefined, RemoveData = undefined) {
     let keyDownProcessed = false;
     let currentPage = 1;
     let isLoading = false;
@@ -8,8 +8,6 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
     $(document).off('keydown', inputId).on('keydown', inputId, function (e) {
         keyDownProcessed = true;
         setTimeout(() => {
-            currentPage = 1;
-            hasMore = true;
             KeyDown(e);
             // $(targetTable).html('');
         }, 0);
@@ -19,9 +17,6 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
 
     // Input Box Focus Event Start
     $(document).off('focus', inputId).on('focus', inputId, function (e) {
-        currentPage = 1;
-        hasMore = true;
-
         let id = $(this).attr('data-id');
         if(id == undefined) {
             FetchData(true);
@@ -177,13 +172,17 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
         
         const data = getData(currentPage);
         
-        console.log(data);
         $.ajax({
             url: `${apiUrl}/${link}`,
             method: 'GET',
             data: data,
             success: function (res) {
-                $(divId).append(res.list);
+                if(currentPage == 1){
+                    $(divId).append(res.list);
+                }
+                else{
+                    $(listId).append(res.list);
+                }
 
                 hasMore = res.hasMore;
                 if (hasMore) currentPage++;
@@ -191,7 +190,6 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
             },
             complete: function () {
                 isLoading = false;
-                console.log(currentPage);
             }
         });
     } // End FetchData Function
@@ -199,7 +197,7 @@ function FixedScrollSearch(link, getData, inputId, divId, rowId, tableData = und
 
 let timeoutId = null;
 
-function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = undefined, targetTable="", AdditionalEvent = undefined, RemoveData = undefined){
+function ScrollSearchByInput(link, getData, inputId, divId, listId, rowId, tableData = undefined, targetTable="", AdditionalEvent = undefined, RemoveData = undefined){
     let keyDownProcessed = false;
     let currentPage = 1;
     let isLoading = false;
@@ -209,8 +207,6 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
     $(document).off('keydown', inputId).on('keydown', inputId, function (e) {
         keyDownProcessed = true;
         setTimeout(() => {
-            currentPage = 1;
-            hasMore = true;
             KeyDown(e);
             // $(targetTable).html('');
         }, 0);
@@ -220,9 +216,6 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
 
     // Input Box Focus Event Start
     $(document).off('focus', inputId).on('focus', inputId, function (e) {
-        currentPage = 1;
-        hasMore = true;
-
         let id = $(this).attr('data-id');
         if(id == undefined) {
             FetchData(true);
@@ -253,9 +246,7 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
 
     // Infinite scroll
     $(divId).off('scroll').on('scroll', function (e) {
-        
         if ($(this).scrollTop() + $(this).innerHeight() >= this.scrollHeight - 5) {
-            console.log(currentPage);
             FetchData();
         }
     });
@@ -385,7 +376,12 @@ function ScrollSearchByInput(link, getData, inputId, divId, rowId, tableData = u
             method: 'GET',
             data: data,
             success: function (res) {
-                $(divId).append(res.list);
+                if(currentPage == 1){
+                    $(divId).append(res.list);
+                }
+                else{
+                    $(listId).append(res.list);
+                }
 
                 hasMore = res.hasMore;
                 if (hasMore) currentPage++;
@@ -419,6 +415,8 @@ $(document).ready(function () {
 
         '#branch-list',
 
+        '#branch-list ul',
+
         '#branch-list li',
     );
 
@@ -438,6 +436,8 @@ $(document).ready(function () {
         '#updateBranch', 
 
         '#update-branch',
+
+        '#update-branch ul',
 
         '#update-branch li',
     );

@@ -3,13 +3,6 @@ function ShowAttendance(res) {
         tableId: '#data-table',
         data: res.data,
         tbody: ['events.name','date','users.name','added_at'],
-       
-        // actions: (row) => {
-        //     return `
-        //         <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
-        //         <button data-id="${row.id}" id="delete"><i class="fas fa-trash"></i></button>
-        //     `;
-        // }
     });
 }
 
@@ -23,7 +16,6 @@ $(document).ready(function () {
         { label: 'Date', key: 'date' },
         { label: 'Registaration', key: 'users.name' },
         { label: 'Attendence Time', key: 'added_at' },
-        // { label: 'Action', type: 'button' }
     ]);
 
 
@@ -37,80 +29,58 @@ $(document).ready(function () {
 
     // Insert Ajax
     InsertAjax('admin/attendance', {events: { selector: '#events' },date: { selector: '#date' }}, function(res){
-        // console.log(res);
-        
-        $('#userData').html(`
-            <h2 class="center">User Details</h2>
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Name :</td>
-                        <td>${res.user.name}</td>
-                    </tr>
-                    <tr>
-                        <td>Registration No :</td>
-                        <td>${res.user.reg_no}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <span class="${res.status == false ? 'red':'green'}">${res.message}</span>
-        `);
+        $('#userData').html("")
+        if(res.data){
+            $('#userData').html(`
+                <h2 class="center">User Details</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Name :</td>
+                            <td>${res.user.name}</td>
+                        </tr>
+                        <tr>
+                            <td>Registration No :</td>
+                            <td>${res.user.reg_no}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <span class="${res.status == false ? 'red':'green'}">${res.message}</span>
+            `);
+        }
+        $('#userData').append(`<span class="${res.status == false ? 'red':'green'}">${res.message}</span>`);
         $('#qr_url').val('');
         $('#qr_url').focus();
     });
 
 
-    $(document).off('input','#qr_url').on('input','#qr_url', function (e) {
+    // Search by Type
+    SearchBySelect('admin/attendance/search', ShowAttendance, "#searchEvents, #searchDates", {event: { selector: '#searchEvents'}, date: { selector: '#searchDates'}});
+
+
+    // $(document).off('input','#qr_url').on('input','#qr_url', function (e) {
         
-        if (e.key === "Enter") {
-            e.preventDefault(); // Only stop Enter
-            // your custom logic here
-        }
-        else if(e.key === "Tab"){
-            e.preventDefault();
-        }
-        setTimeout(() => {
-            let value = $(this).val();
-            // $('#AddForm')[0].submit()
-            console.log(value);
-            // KeyDown(e);
-            // $(targetTable).html('');
-        }, 100);
+    //     if (e.key === "Enter") {
+    //         e.preventDefault(); // Only stop Enter
+    //         // your custom logic here
+    //     }
+    //     else if(e.key === "Tab"){
+    //         e.preventDefault();
+    //     }
+    //     setTimeout(() => {
+    //         let value = $(this).val();
+    //         // $('#AddForm')[0].submit()
+    //         console.log(value);
+    //         // KeyDown(e);
+    //         // $(targetTable).html('');
+    //     }, 100);
         
         
-        // $('#profileShow').attr('src',value)
-        // console.log(e.key);
-        // console.log(value);
+    //     // $('#profileShow').attr('src',value)
+    //     // console.log(e.key);
+    //     // console.log(value);
         
-    })
-
-
-    // //Edit Ajax
-    // EditAjax(EditFormInputValue);
-
-
-    // // Update Ajax
-    // UpdateAjax('admin/attendance', {department: { selector: '#updateDepartment', attribute: 'data-id' }}, function(){
-    //     $('#updateDepartment').removeAttr('data-id');
-    // });
-    
-
-    // // Delete Ajax
-    // DeleteAjax('admin/attendance');
-    
-
-    // // Delete status Ajax
-    // DeleteStatusAjax('admin/attendance');
-
-
-    // // Additional Edit Functionality
-    // function EditFormInputValue(item){
-    //     $('#id').val(item.id);
-    //     $('#updateEvents').val(item.event_id);
-    //     $('#UpdateDate').val(item.date);
-    //     $('#updateQr_url').val(item.reg_no);
-    //     $('#updateBranch').focus();
-    // }
+    // })
 
     // Get Events By Date
     GetSelectInputList('admin/event_schedule/get', function (res) {
