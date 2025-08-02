@@ -62,4 +62,16 @@ class AdminSetupController extends Controller
             return view('setup.attendance.main', compact('name', 'js'));
         }
     } // End Method
+
+
+    public function ShowPracticeEventUser(Request $req){
+        $name = "Practice Event User";
+        $js = 'admin_setup/practice_event_user'; // new JS file
+        if ($req->ajax()) {
+            return view('setup.event_user_practice.ajaxBlade', compact('name', 'js'));
+        } else {
+            return view('setup.event_user_practice.main', compact('name', 'js'));
+        }
+    }
+    
 }

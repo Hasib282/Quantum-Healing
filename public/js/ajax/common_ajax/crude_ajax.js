@@ -257,16 +257,24 @@ function UpdateAjax(link, AditionalData = {}, AdditionalEvent) {
             success: function (res) {
                 if (res.status) {
                     $('#editModal').hide();
-
                     $('#EditForm')[0].reset();
-
+            
+                    // ✅ Update localStorage data
+                    let updatedList = JSON.parse(localStorage.getItem('participants') || '[]');
+                    let updatedId = formData.get('id');
+                    let index = updatedList.findIndex(p => p.id == updatedId);
+                    if (index !== -1) {
+                        updatedList[index] = res.updatedData;
+                        localStorage.setItem('participants', JSON.stringify(updatedList));
+                    }
+            
                     if(typeof AdditionalEvent === 'function'){
                         AdditionalEvent();
                     }
-                    
-                    // ReloadData(link, RenderData);
-                    tableInstance.updateRow(formData.get('id'), res.updatedData);
-
+            
+                    // Optional: visually update table if needed
+                    tableInstance.updateRow(updatedId, res.updatedData);
+            
                     toastr.success(res.message, 'Updated!');
                 }
             },

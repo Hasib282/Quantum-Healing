@@ -46,8 +46,11 @@ $(document).ready(function () {
 
     // Additional Edit Functionality
     function EditFormInputValue(item){
-        $('#id').val(item.data[0].event_id);
-        $('#events').val(item.data[0].event_id);
+        console.log(item);
+        
+
+        $('#id').val(item.data[0]?.event_id);
+        $('#events').val(item.data[0]?.event_id);
 
         $('#participants').focus();
 

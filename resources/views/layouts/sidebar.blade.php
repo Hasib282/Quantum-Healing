@@ -106,6 +106,16 @@
                         </div>
                     </li>
 
+                    <li class="sub-menu-item" data-url="{{ route('show.practiceEventUsers') }}">
+                        <div class="menu-title {{ (Request::segment(2) == 'practice_event_users') ? 'active':'' }}">
+                            <p>
+                                <i class="fa-solid fa-code-branch"></i>
+                                Practice Event Users Setup
+                            </p>
+                        </div>
+                    </li>
+                    
+
 
                      <!-- attendence  -->
                     <li class="sub-menu-item" data-url="{{route('show.attendance')}}" >

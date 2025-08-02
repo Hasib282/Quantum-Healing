@@ -84,5 +84,10 @@ Route::prefix('/admin')->group(function () {
         
         ///////////// --------------- Event User routes ----------- ///////////////////
         Route::get('/event_users','ShowEventUser')->name('show.eventUsers');
+
+        ///////////// --------------- Prctice Event User routes ----------- ///////////////////
+
+        Route::get('/practice_event_users', 'ShowPracticeEventUser')->name('show.practiceEventUsers');
+
     });
 });
