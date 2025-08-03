@@ -25,9 +25,6 @@
 {{----------------------------------------------------- Common Part Of The Report Ends At Here -----------------------------------------}}
 
 @php
-    $lastGender = null;
-    $lastQtStatus = null;
-    $groupCount = 0;
     $grouped = [];
 @endphp
 
@@ -60,24 +57,14 @@
 
                 $grouped[$id][] = $p;
             }
-
-            $groupCount = 1;
         @endphp
 
         @foreach ($grouped as $groupKey => $participants)
-            @php
-                list($gender, $qt_status) = explode('_', $groupKey);
-                $rowspan = count($participants);
-            @endphp
-
             @foreach ($participants as $index => $p)
                 <tr>
-                    @if($index == 0)
-                        <td rowspan="{{ $rowspan }}">{{ $gender }}</td>
-                        <td rowspan="{{ $rowspan }}">{{ $qt_status }}</td>
-                    @endif
-
-                    <td>{{ $groupCount++ }}</td>
+                    <td>{{ $p->gender }}</td>
+                    <td>{{ $p->qt_status }}</td>
+                    <td>{{ $index + 1 }}</td>
                     <td>{{ $p->reg_no }}</td>
                     <td>{{ $p->name }}</td>
                     <td>{{ $p->branchs->short ?? '-' }}</td>
