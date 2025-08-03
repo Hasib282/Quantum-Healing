@@ -1,7 +1,6 @@
 function FixedScrollSearch(link, getData, inputId, divId, listId, rowId, tableData = undefined, targetTable="", AdditionalEvent = undefined, RemoveData = undefined) {
     let keyDownProcessed = false;
     let currentPage = 1;
-    let isLoading = false;
     let hasMore = true;
 
     // Input Box Keydown Event Start
@@ -125,6 +124,8 @@ function FixedScrollSearch(link, getData, inputId, divId, listId, rowId, tableDa
                 clearTimeout(timeoutId);
             }
 
+            
+
             // Set a new timeout for the GetInputList call
             timeoutId = setTimeout(() => {
                 FetchData(true);
@@ -161,14 +162,13 @@ function FixedScrollSearch(link, getData, inputId, divId, listId, rowId, tableDa
 
     // Fetch Data From Api
     function FetchData(reset = false) {
-        if (isLoading || !hasMore) return;
-        isLoading = true;
-        
         if (reset) {
             $(divId).html('');
             currentPage = 1;
             hasMore = true;
         }
+
+        if (!hasMore) return;
         
         const data = getData(currentPage);
         
@@ -187,9 +187,6 @@ function FixedScrollSearch(link, getData, inputId, divId, listId, rowId, tableDa
                 hasMore = res.hasMore;
                 if (hasMore) currentPage++;
                 
-            },
-            complete: function () {
-                isLoading = false;
             }
         });
     } // End FetchData Function
@@ -360,14 +357,13 @@ function ScrollSearchByInput(link, getData, inputId, divId, listId, rowId, table
 
     // Fetch Data From Api
     function FetchData(reset = false) {
-        if (isLoading || !hasMore) return;
-        isLoading = true;
-        
         if (reset) {
             $(divId).html('');
             currentPage = 1;
             hasMore = true;
         }
+
+        if (!hasMore) return;
         
         const data = getData(currentPage);
         
@@ -386,9 +382,6 @@ function ScrollSearchByInput(link, getData, inputId, divId, listId, rowId, table
                 hasMore = res.hasMore;
                 if (hasMore) currentPage++;
                 
-            },
-            complete: function () {
-                isLoading = false;
             }
         });
     } // End FetchData Function
