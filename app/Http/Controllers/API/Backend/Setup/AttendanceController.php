@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 use App\Models\Attendence;
+use App\Models\Attendence_Temp;
 use App\Models\Event_User_List;
 use App\Models\Event;
 use App\Models\User_Info;
@@ -95,6 +96,14 @@ class AttendanceController extends Controller
             ->first();
 
             if ($data) {
+                if($event->id = 2){
+                    Attendence::create([
+                        'event_id' => 1,
+                        'date' => $req->date,
+                        'reg_no' => $data->participants->first()->reg_no,
+                    ]);
+                }
+                
                 $insert = Attendence::create([
                     'event_id' => $req->events,
                     'date' => $req->date,
