@@ -45,7 +45,6 @@ $(document).ready(function () {
                         </tr>
                     </tbody>
                 </table>
-                <span class="${res.status == false ? 'red':'green'}">${res.message}</span>
             `);
         }
         $('#userData').append(`<span class="${res.status == false ? 'red':'green'}">${res.message}</span>`);

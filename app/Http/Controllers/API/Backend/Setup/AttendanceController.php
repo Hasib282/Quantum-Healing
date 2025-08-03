@@ -96,14 +96,14 @@ class AttendanceController extends Controller
             ->first();
 
             if ($data) {
-                if($event->id = 2){
+                if($event->id == 2){
                     Attendence::create([
                         'event_id' => 1,
                         'date' => $req->date,
                         'reg_no' => $data->participants->first()->reg_no,
                     ]);
                 }
-                
+
                 $insert = Attendence::create([
                     'event_id' => $req->events,
                     'date' => $req->date,
