@@ -62,7 +62,7 @@
                 <li class="sub-menu-item" data-url="{{route('show.users')}}">
                     <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'user_info') ? 'active':''}}">
                         <p>
-                            <i class="fa-solid fa-user-tie"></i>
+                            <i class="fa-solid fa-address-card"></i>
                             User Informations
                         </p>
                     </div>
@@ -124,7 +124,7 @@
         <li class="menu-item" data-url="{{route('show.tempAttendance')}}" >
             <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'temp_attendance') ? 'active':''}}">
                 <p>
-                    <i class="fa-solid fa-clipboard-user"></i>
+                    <i class="fa-solid fa-user-clock"></i>
                     Temporary Attendance
                 </p>
             </div>
@@ -134,7 +134,7 @@
         <li class="menu-item">
             <div class="menu-title {{ Request::segment(1) == 'reports' ? 'active':''}}">
                 <p>
-                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-file-invoice"></i>
                     Reports
                 </p>
                 <i class="fas fa-angle-right {{ Request::segment(1) == 'reports' ? 'rotate':''}}"></i>
@@ -144,8 +144,17 @@
                 <li class="sub-menu-item" data-url="{{ route('show.attendanceStatement') }}">
                     <div class="menu-title  {{ (Request::segment(1) == 'reports' && Request::segment(2) == 'attendance_statement') ? 'active':''}}">
                         <p>
-                            <i class="fa-solid fa-dice-six"></i>
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
                             Attendence Statement
+                        </p>
+                    </div>
+                </li>
+                {{-- Temp Attendence Statement Sub Menu --}}
+                <li class="sub-menu-item" data-url="{{ route('show.tempAttendanceStatement') }}">
+                    <div class="menu-title  {{ (Request::segment(1) == 'reports' && Request::segment(2) == 'temp_attendance_statement') ? 'active':''}}">
+                        <p>
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            Temp Attendence Statement
                         </p>
                     </div>
                 </li>

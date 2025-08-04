@@ -19,4 +19,19 @@ class ReportsController extends Controller
             return view('report.attendance_statement.main', compact('name', 'js'));
         }
     } // End Method
+    
+    
+    
+    /////////////////////////// --------------- Temp Attedance Statement Methods start ---------- //////////////////////////
+    // Show All Temp Attedance Statement
+    public function ShowTempAttendanceStatement(Request $req){
+        $name = "Temp Attedance Statement";
+        $js = 'reports/temp_attendance_statement';
+        if ($req->ajax()) {
+            return view('report.temp_attendance_statement.ajaxBlade', compact('name', 'js'));
+        }
+        else{
+            return view('report.temp_attendance_statement.main', compact('name', 'js'));
+        }
+    } // End Method
 }

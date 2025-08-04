@@ -112,5 +112,10 @@ Route::prefix('/reports')->group(function () {
     Route::controller(ReportsController::class)->group(function () {
         ///////////// --------------- Attendance routes ----------- ///////////////////
         Route::get('/attendance_statement','ShowAttendanceStatement')->name('show.attendanceStatement');
+        
+        
+        
+        ///////////// --------------- Temporary Attendance routes ----------- ///////////////////
+        Route::get('/temp_attendance_statement','ShowTempAttendanceStatement')->name('show.tempAttendanceStatement');
     });
 });

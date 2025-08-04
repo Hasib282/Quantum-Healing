@@ -13,14 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-
         $this->call([
             // Auth Seeders
             RoleSeeder::class,
@@ -28,6 +20,7 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             LoginUserSeeder::class,
             UserSeeder::class,
+            EventUserSeeder::class,
         ]);
     }
 }
