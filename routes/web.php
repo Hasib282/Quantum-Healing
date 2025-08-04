@@ -85,6 +85,11 @@ Route::prefix('/admin')->group(function () {
 
         ///////////// --------------- Attendance routes ----------- ///////////////////
         Route::get('/attendance','ShowAttendance')->name('show.attendance');
+
+
+
+        ///////////// --------------- Temporary Attendance routes ----------- ///////////////////
+        Route::get('/temp_attendance','ShowTempAttendance')->name('show.tempAttendance');
         
         
         

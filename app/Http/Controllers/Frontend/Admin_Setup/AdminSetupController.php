@@ -63,7 +63,7 @@ class AdminSetupController extends Controller
 
 
 
-      /////////////////////////// --------------- attendance Table Methods start ---------- //////////////////////////
+    /////////////////////////// --------------- attendance Table Methods start ---------- //////////////////////////
     // Show All EventUser
     public function ShowAttendance(Request $req){
         $name = "Attendance";
@@ -74,5 +74,18 @@ class AdminSetupController extends Controller
         else{
             return view('setup.attendance.main', compact('name', 'js'));
         }
+    } // End Method
+    
+    
+    
+    /////////////////////////// --------------- Temporary Attendance Table Methods start ---------- //////////////////////////
+    // Show All Temp Attendance
+    public function ShowTempAttendance(Request $req){
+        $name = "Temporary Attendance";
+        $js = 'admin_setup/temp_attendance';
+        if ($req->ajax()) {
+            return view('setup.temp_attendance.ajaxBlade', compact('name', 'js'));
+        }
+        return view('setup.temp_attendance.main', compact('name', 'js'));
     } // End Method
 }

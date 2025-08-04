@@ -120,6 +120,16 @@
             </div>
         </li>
 
+        {{-- Temp Attendence Menu --}}
+        <li class="menu-item" data-url="{{route('show.tempAttendance')}}" >
+            <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'temp_attendance') ? 'active':''}}">
+                <p>
+                    <i class="fa-solid fa-clipboard-user"></i>
+                    Temporary Attendance
+                </p>
+            </div>
+        </li>
+
         {{-- Reports Menu --}}
         <li class="menu-item">
             <div class="menu-title {{ Request::segment(1) == 'reports' ? 'active':''}}">

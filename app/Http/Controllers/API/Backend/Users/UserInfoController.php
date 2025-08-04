@@ -238,4 +238,18 @@ class UserInfoController extends Controller
             'hasMore' => ($page * $perPage) < $total
         ]);
     } // End Method
+
+
+
+    // Get User Regno
+    public function GetRegno(Request $req){
+        $data = User_Info::with('branchs')
+        ->select('reg_no','id','name','phone','gender','qt_status','branch','image')
+        ->where('reg_no',$req->reg_no)->first();
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ], 200);
+    }
 }

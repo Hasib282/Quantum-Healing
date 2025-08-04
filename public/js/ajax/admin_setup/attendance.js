@@ -30,18 +30,33 @@ $(document).ready(function () {
     // Insert Ajax
     InsertAjax('admin/attendance', {events: { selector: '#events' },date: { selector: '#date' }}, function(res){
         $('#userData').html("")
-        if(res.data){
+        if(res.user){
             $('#userData').html(`
                 <h2 class="center">User Details</h2>
                 <table>
                     <tbody>
                         <tr>
+                            <td colspan="2">
+                                <div class="center">
+                                    <img src="${apiUrl.replace('/api', '')}/storage/${res.user.image ? res.user.image : 'male.png'}?${new Date().getTime()}" width="100" height="100">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Reg No :</td>
+                            <td>${res.user.reg_no}</td>
+                        </tr>
+                        <tr>
                             <td>Name :</td>
                             <td>${res.user.name}</td>
                         </tr>
                         <tr>
-                            <td>Registration No :</td>
-                            <td>${res.user.reg_no}</td>
+                            <td>Phone :</td>
+                            <td>${res.user.phone}</td>
+                        </tr>
+                        <tr>
+                            <td>Branch :</td>
+                            <td>${res.user.branchs.short}</td>
                         </tr>
                     </tbody>
                 </table>

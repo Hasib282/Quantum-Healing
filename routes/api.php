@@ -25,6 +25,7 @@ use App\Http\Controllers\API\Backend\Setup\EventScheduleController;
 use App\Http\Controllers\API\Backend\Setup\BranchController;
 use App\Http\Controllers\API\Backend\Setup\EventUserController;
 use App\Http\Controllers\API\Backend\Setup\AttendanceController;
+use App\Http\Controllers\API\Backend\Setup\TempAttendanceController;
 
 
 
@@ -89,8 +90,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::post('/user_info', 'Insert');
                 Route::put('/user_info', 'Update');
                 Route::delete('/user_info', 'Delete');
-                Route::get('/user_info/get/conductors','GetConductors');
                 Route::get('/user_info/get/participants','GetParticipants');
+                Route::get('/user_info/get/reg','GetRegno');
             });
         }); // End User Routes
 
@@ -141,11 +142,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
         }); // End Branch Routes
 
 
-         // *************************************** Attendance Routes Start *************************************** //
+        // *************************************** Attendance Routes Start *************************************** //
         Route::controller(AttendanceController::class)->group(function(){
             Route::get('/attendance','Show');
             Route::post('/attendance','Insert');
             Route::get('/attendance/search','Search');
+        }); // End Branch Routes
+        
+        
+        
+        // *************************************** Attendance Routes Start *************************************** //
+        Route::controller(TempAttendanceController::class)->group(function(){
+            Route::get('/temp_attendance','Show');
+            Route::post('/temp_attendance','Insert');
+            Route::delete('/temp_attendance','Delete');
+            Route::get('/temp_attendance/search','Search');
         }); // End Branch Routes
     });
 

@@ -37,7 +37,8 @@ class AttendanceController extends Controller
         ]);
 
         // Check User Data
-        $user = User_Info::select('id', 'name', 'reg_no','phone','gender','qr_url')
+        $user = User_Info::with('branchs')
+        ->select('reg_no','id','name','phone','gender','qt_status','branch','image')
         ->where('qr_url', $req->qr_url)
         ->orWhere('reg_no', $req->qr_url)
         ->first();
