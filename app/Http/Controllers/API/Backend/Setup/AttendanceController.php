@@ -51,8 +51,8 @@ class AttendanceController extends Controller
             ]);
 
             return response()->json([
-                'status'=> false,
-                'message' => 'Your QR is not found ',
+                'status'=> true,
+                'message' => 'Your Attendance is Successfull. Status others.',
                 "user" => $user
             ], 200);
         }
@@ -144,4 +144,24 @@ class AttendanceController extends Controller
             'data' => $data,
         ], 200);
     } // End Method
+
+
+
+    public function Count(Request $req){
+        $graduate = Attendence::with('users:name,reg_no,qt_status')->where('event_id',$req->events)->where('date',$req->date)->whereHas('users', function ($q) {
+                $q->where('qt_status', 'Graduate');
+            })
+            ->count();
+        $prograduate = Attendence::with('users:name,reg_no,qt_status')->where('event_id',$req->events)->where('date',$req->date)->whereHas('users', function ($q) {
+                $q->where('qt_status', 'Pro-master');
+            })->count();
+        $temp = Attendence_Temp::where('event_id',$req->events)->where('date',$req->date)->count();
+
+        return response()->json([
+            'status' => true,
+            'graduate' => $graduate,
+            'prograduate' => $prograduate,
+            'temp' => $temp,
+        ], 200);
+    }
 }

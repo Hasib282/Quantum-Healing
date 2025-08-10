@@ -51,6 +51,30 @@
             <div class="c-12 center-col" id="userData">
                 {{-- <iframe src="#" title="description" id="profileShow"></iframe> --}}
             </div>
+
+            <div class="c-8"></div>
+            <div class="c-4">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Graduate</th>
+                            <td id="grad">0</td>
+                        </tr>
+                        <tr>
+                            <th>Pro-master</th>
+                            <td id="pro">0</td>
+                        </tr>
+                        <tr>
+                            <th>Others</th>
+                            <td id="other">0</td>
+                        </tr>
+                        <tr>
+                            <th>Total</th>
+                            <td id="tot">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

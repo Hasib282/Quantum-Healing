@@ -65,6 +65,21 @@ $(document).ready(function () {
         $('#userData').append(`<span class="${res.status == false ? 'red':'green'}">${res.message}</span>`);
         $('#qr_url').val('');
         $('#qr_url').focus();
+
+        let events = $('#events').val();
+        let date = $('#date').val();
+        
+        $.ajax({
+            url: `${apiUrl}/admin/attendance/count`,
+            data: {events, date},
+            success: function (res) {
+                $('#grad').html(res.graduate ?? 0)
+                $('#pro').html(res.prograduate ?? 0)
+                $('#other').html(res.temp ?? 0)
+                let total = Number(res.graduate) + Number(res.prograduate) + Number(res.temp);
+                $('#tot').html(total ?? 0)
+            }
+        });
     });
 
 

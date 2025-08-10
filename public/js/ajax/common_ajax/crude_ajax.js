@@ -158,7 +158,11 @@ function InsertAjax(link, AddData = {}, AddSuccessEvent, method ="POST") {
                         tableInstance.addRow(res.data);
                     }
 
-                    toastr.success(res.message, 'Added!');
+                    if(link.includes('attendence')){
+
+                        toastr.success(res.message, 'Added!');
+                    }
+
                 }
                 else if(res.status == false){
                     if(typeof AddSuccessEvent === 'function'){
