@@ -215,6 +215,44 @@ $(document).ready(function () {
             });
         }
       });
+
+
+      $(document).on('click', '.addData',function (e) {
+        e.preventDefault();
+        // console.log($(this));
+        
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let phone = $(this).data('phone');
+        let reg_no = $(this).data('reg_no');
+        let gender = $(this).data('gender');
+
+        // Retrieve existing productIssue from local storage
+        let participants = JSON.parse(localStorage.getItem('participants')) || [];
+        let pid = participants.map(p => p.id);
+
+        if (pid.includes(id)) {
+            return;
+        }
+
+        let productIssue = {
+            id,
+            name,
+            phone,
+            reg_no,
+            gender,
+        };
+
+        // Add the new productIssue to the list
+        participants.push(productIssue);
+
+        // Save updated productIssue back to local storage
+        localStorage.setItem('participants', JSON.stringify(participants));
+
+        gridShow();
+
+        $(this).remove();
+    })
       
 
     // Row click adds to participants

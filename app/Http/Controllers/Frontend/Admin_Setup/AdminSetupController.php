@@ -66,7 +66,7 @@ class AdminSetupController extends Controller
 
     public function ShowPracticeEventUser(Request $req){
         $name = "Practice Event User";
-        $js = 'admin_setup/practice_event_user'; // new JS file
+        $js = 'admin_setup/practice_event_user';
         if ($req->ajax()) {
             return view('setup.event_user_practice.ajaxBlade', compact('name', 'js'));
         } else {
