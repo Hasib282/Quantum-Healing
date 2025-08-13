@@ -43,22 +43,24 @@ class AttendanceController extends Controller
         ->orWhere('reg_no', $req->qr_url)
         ->first();
 
-        if(!$user){
-            Attendence_Temp::create([
-                'event_id' => $req->events,
-                'date' => $req->date,
-                'qr_url' => $req->qr_url,
-            ]);
+        // if(!$user){
+        //     Attendence_Temp::create([
+        //         'event_id' => $req->events,
+        //         'date' => $req->date,
+        //         'qr_url' => $req->qr_url,
+        //     ]);
 
-            return response()->json([
-                'status'=> true,
-                'message' => 'Your Attendance is Successfull. Status others.',
-                "user" => $user
-            ], 200);
-        }
+        //     return response()->json([
+        //         'status'=> true,
+        //         'message' => 'Your Attendance is Successfull. Status others.',
+        //         "user" => $user
+        //     ], 200);
+        // }
 
         // Check User Attendance
-        $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$user->reg_no)->where('date',$req->date)->first();
+        if($user){
+            $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$user->reg_no)->where('date',$req->date)->first();
+        }
 
         if($attendence){
             return response()->json([
@@ -72,6 +74,20 @@ class AttendanceController extends Controller
         $event = Event::where('id', $req->events)->first();
 
         if($event->all == 1){
+            if(!$user){
+                Attendence_Temp::create([
+                    'event_id' => $req->events,
+                    'date' => $req->date,
+                    'qr_url' => $req->qr_url,
+                ]);
+
+                return response()->json([
+                    'status'=> true,
+                    'message' => 'Your Attendance is Successfull. Status others.',
+                    "user" => $user
+                ], 200);
+            }
+
             $insert = Attendence::create([
                 'event_id' => $req->events,
                 'date' => $req->date,
@@ -147,6 +163,7 @@ class AttendanceController extends Controller
 
 
 
+    // User Count
     public function Count(Request $req){
         $graduate = Attendence::with('users:name,reg_no,qt_status')->where('event_id',$req->events)->where('date',$req->date)->whereHas('users', function ($q) {
                 $q->where('qt_status', 'Graduate');
@@ -163,5 +180,5 @@ class AttendanceController extends Controller
             'prograduate' => $prograduate,
             'temp' => $temp,
         ], 200);
-    }
+    } // End Method
 }

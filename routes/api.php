@@ -93,6 +93,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/user_info', 'Delete');
                 Route::get('/user_info/get/participants','GetParticipants');
                 Route::get('/user_info/get/reg','GetRegno');
+                Route::post('/upload_data', 'UploadData');
             });
         }); // End User Routes
 

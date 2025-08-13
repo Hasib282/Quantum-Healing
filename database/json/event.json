@@ -1,5 +1,6 @@
 [
     {"name": "Healing",         "all":1 },
     {"name": "Hadis",           "all":0 },
-    {"name": "Physchy Healing", "all":0 }
+    {"name": "Physchy Healing", "all":0 },
+    {"name": "Quanfee", "all":0 }
 ]

@@ -251,5 +251,105 @@ class UserInfoController extends Controller
             'status' => true,
             'data' => $data,
         ], 200);
+    } // End Method
+
+
+
+    // Upload User Data
+    public function UploadData(Request $req){
+        $request->validate([
+            'file' => 'required|mimes:xlsx',
+        ]);
+        // $request->validate([
+        //     'file' => 'required|mimes:csv,txt'
+        // ]);
+
+
+        // Store file temporarily
+        $path = $req->file('file')->getRealPath();
+
+
+        $rows = $this->readXlsxRaw($filePath);
+
+        foreach ($rows as $index => $row) {
+            if ($index === 0) continue; // skip header row
+
+            DB::table('employees')->insert([
+                'name'   => $row[0] ?? '',
+                'mobile' => $row[1] ?? '',
+                'email'  => $row[2] ?? ''
+            ]);
+        }
+
+        // // Open and read CSV
+        // if (($handle = fopen($path, "r")) !== false) {
+        //     $isHeader = true;
+
+        //     while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+        //         // Skip header row
+        //         if ($isHeader) {
+        //             $isHeader = false;
+        //             continue;
+        //         }
+
+        //         // Insert into DB (adjust table/columns as needed)
+        //         \DB::table('my_table')->insert([
+        //             'column1' => $data[0],
+        //             'column2' => $data[1],
+        //             'column3' => $data[2],
+        //             'created_at' => now(),
+        //             'updated_at' => now(),
+        //         ]);
+        //     }
+        //     fclose($handle);
+        // }
+
+
+
+    } // End Method
+
+
+    // Excel xlsx file reading system
+    private function readXlsxRaw($filePath)
+    {
+        $zip = new ZipArchive();
+        if ($zip->open($filePath) === true) {
+            // Get shared strings
+            $sharedStrings = [];
+            if (($xmlIndex = $zip->locateName("xl/sharedStrings.xml")) !== false) {
+                $xmlData = $zip->getFromIndex($xmlIndex);
+                $xml = simplexml_load_string($xmlData);
+                foreach ($xml->si as $si) {
+                    $sharedStrings[] = (string) $si->t;
+                }
+            }
+
+            // Get first sheet data
+            $sheetData = [];
+            if (($xmlIndex = $zip->locateName("xl/worksheets/sheet1.xml")) !== false) {
+                $xmlData = $zip->getFromIndex($xmlIndex);
+                $xml = simplexml_load_string($xmlData);
+                foreach ($xml->sheetData->row as $row) {
+                    $rowData = [];
+                    foreach ($row->c as $cell) {
+                        $value = (string) $cell->v;
+
+                        // Check for shared string
+                        if (isset($cell['t']) && $cell['t'] == 's') {
+                            $value = $sharedStrings[(int) $value];
+                        }
+
+                        // Always treat as string to keep formatting like +880...
+                        $rowData[] = $value;
+                    }
+                    $sheetData[] = $rowData;
+                }
+            }
+
+            $zip->close();
+            return $sheetData;
+        } else {
+            throw new \Exception("Cannot open XLSX file.");
+        }
     }
 }

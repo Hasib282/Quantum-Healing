@@ -38,7 +38,7 @@ $(document).ready(function () {
                         <tr>
                             <td colspan="2">
                                 <div class="center">
-                                    <img src="${apiUrl.replace('/api', '')}/storage/${res.user.image ? res.user.image : 'male.png'}?${new Date().getTime()}" width="100" height="100">
+                                    <img src="${apiUrl.replace('/api', '')}/storage/${res.user.image ? res.user.image : 'male.png'}?${new Date().getTime()}" height="200">
                                 </div>
                             </td>
                         </tr>
@@ -56,7 +56,7 @@ $(document).ready(function () {
                         </tr>
                         <tr>
                             <td>Branch :</td>
-                            <td>${res.user.branchs.short}</td>
+                            <td>${res.user.branch}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -135,11 +135,31 @@ $(document).ready(function () {
                 CreateSelectOptions('#events', "Select Events", res.data, 'event.name', 'event.id');
                 CreateSelectOptions('#updateEvents', "Select Events", res.data, 'event.name', 'event.id');
                 // CreateSelectOptions('#eventDate', "Select Event Date", res.data, 'date', 'date');
-                console.log(res);
+                
                 
             }
         });
     })
+    
+    
+    // Events Change 
+    $(document).off('change','#events').on('change','#events', function (e) {
+        e.preventDefault();
+        let events = $('#events').val();
+        let date = $('#date').val();
+        $.ajax({
+            url: `${apiUrl}/admin/attendance/count`,
+            data: {events, date},
+            success: function (res) {
+                $('#grad').html(res.graduate ?? 0)
+                $('#pro').html(res.prograduate ?? 0)
+                $('#other').html(res.temp ?? 0)
+                let total = Number(res.graduate) + Number(res.prograduate) + Number(res.temp);
+                $('#tot').html(total ?? 0)
+            }
+        });
+    })
+    
 
 
     // $(document).off("change", '#events').on("change", '#events', function (e){

@@ -10,12 +10,13 @@
     <div class="add-search">
         <div class="rows">
             <div class="c-3">
-                <button class="open-modal" data-modal-id="addModal" id="add">
-                    <i class="fa-solid fa-plus"></i> Add {{ $name }}
-                </button>
+                <button class="open-modal" data-modal-id="addModal" id="add"><i class="fa-solid fa-plus"></i> Add {{ $name }}</button>
             </div>
-            <div class="c-6">
-                {{-- Reserved for future filters if needed --}}
+            <div class="c-3">
+                <button class="open-modal" data-modal-id="uploadModal"><i class="fa-solid fa-plus"></i> Upload Excel </button>
+            </div>
+            <div class="c-3">
+
             </div>
             <div class="c-3" style="padding: 0;">
                 <input type="text" id="globalSearch" placeholder="Search..." />
@@ -77,6 +78,8 @@
     @include('users.user_info.add')
 
     @include('users.user_info.edit')
+
+    @include('users.user_info.upload')
 
     @include('common_modals.detailsModal')
 
