@@ -6,9 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-// use ZipArchive;
+use ZipArchive;
 
 use App\Models\User_Info;
+use App\Models\Branch;
 
 class UserInfoController extends Controller
 {
@@ -257,32 +258,62 @@ class UserInfoController extends Controller
 
 
     // Upload User Data
-    public function UploadData(Request $req){
-        $req->validate([
-            'file' => 'required|mimes:xlsx',
+   /* public function UploadData(Request $req){
+         $request->validate([
+            'file' => 'required|mimes:xlsx|max:2048'
         ]);
-        // $request->validate([
-        //     'file' => 'required|mimes:csv,txt'
-        // ]);
 
+        $filePath = $request->file('file')->getRealPath();
 
-        // Store file temporarily
-        $path = $req->file('file')->getRealPath();
+        $zip = new ZipArchive;
+        if ($zip->open($filePath) === true) {
 
+            // Step 1: Read shared strings
+            $sharedStringsXML = $zip->getFromName('xl/sharedStrings.xml');
+            $sharedStrings = [];
+            if ($sharedStringsXML) {
+                $xml = simplexml_load_string($sharedStringsXML);
+                foreach ($xml->si as $string) {
+                    $sharedStrings[] = (string)$string->t;
+                }
+            }
 
-        $rows = $this->readXlsxRaw($path);
+            // Step 2: Read sheet data
+            $sheetXML = $zip->getFromName('xl/worksheets/sheet1.xml');
+            $sheetData = simplexml_load_string($sheetXML);
 
-        dd($rows);
+            $isHeader = true;
 
-        foreach ($rows as $index => $row) {
-            if ($index === 0) continue; // skip header row
+            foreach ($sheetData->sheetData->row as $row) {
+                $rowData = [];
 
-            DB::table('employees')->insert([
-                'name'   => $row[0] ?? '',
-                'mobile' => $row[1] ?? '',
-                'email'  => $row[2] ?? ''
-            ]);
+                foreach ($row->c as $cell) {
+                    $value = (string)$cell->v;
+                    if (isset($cell['t']) && $cell['t'] == 's') {
+                        $value = $sharedStrings[(int)$value];
+                    }
+                    $rowData[] = $value;
+                }
+
+                // Skip first row (header)
+                if ($isHeader) {
+                    $isHeader = false;
+                    continue;
+                }
+
+                // Insert into DB (only branch & short columns)
+                Branch::create([
+                    'branch' => $rowData[0] ?? null,
+                    'short'  => $rowData[1] ?? null
+                ]);
+            }
+
+            $zip->close();
+            return back()->with('success', 'Branches imported successfully!');
         }
+
+        
+        
 
         // // Open and read CSV
         // if (($handle = fopen($path, "r")) !== false) {
@@ -309,11 +340,68 @@ class UserInfoController extends Controller
 
 
 
-    } // End Method
+    } // End Method*/
+
+    public function UploadData(Request $req){
+    // Validate uploaded file
+    $req->validate([
+        'file' => 'required|mimes:xlsx|max:2048'
+    ]);
+
+    // Get the uploaded file path
+    $filePath = $req->file('file')->getRealPath();
+
+    $zip = new \ZipArchive;
+    if ($zip->open($filePath) === true) {
+        // Step 1: Read shared strings
+        $sharedStringsXML = $zip->getFromName('xl/sharedStrings.xml');
+        
+        $sharedStrings = [];
+        if ($sharedStringsXML) {
+            $xml = simplexml_load_string($sharedStringsXML);
+            foreach ($xml->si as $string) {
+                $sharedStrings[] = (string)$string->t;
+            }
+        }
+
+        // Step 2: Read sheet data
+        $sheetXML = $zip->getFromName('xl/worksheets/sheet1.xml');
+        $sheetData = simplexml_load_string($sheetXML);
+
+        $isHeader = true;
+
+        foreach ($sheetData->sheetData->row as $row) {
+            $rowData = [];
+
+            foreach ($row->c as $cell) {
+                $value = (string)$cell->v;
+                if (isset($cell['t']) && $cell['t'] == 's') {
+                    $value = $sharedStrings[(int)$value];
+                }
+                $rowData[] = $value;
+            }
+            // Skip first row (header)
+            if ($isHeader) {
+                $isHeader = false;
+                continue;
+            }
+
+            // Insert into DB (only branch & short columns)
+            Branch::create([
+                'branch' => $rowData[0] ?? null,
+                'short'  => $rowData[1] ?? null
+            ]);
+        }
+
+        $zip->close();
+        return back()->with('success', 'Branches imported successfully!');
+    }
+}
+
 
 
     // Excel xlsx file reading system
-    private function readXlsxRaw($filePath)
+   /* private function readXlsxRaw($filePath)
     {
         $zip = new \ZipArchive();
         // $zip = new ZipArchive();
@@ -355,5 +443,5 @@ class UserInfoController extends Controller
         } else {
             throw new \Exception("Cannot open XLSX file.");
         }
-    }
+    }*/
 }
