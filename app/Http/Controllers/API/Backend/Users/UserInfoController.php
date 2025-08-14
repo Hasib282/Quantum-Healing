@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+// use ZipArchive;
 
 use App\Models\User_Info;
 
@@ -257,7 +258,7 @@ class UserInfoController extends Controller
 
     // Upload User Data
     public function UploadData(Request $req){
-        $request->validate([
+        $req->validate([
             'file' => 'required|mimes:xlsx',
         ]);
         // $request->validate([
@@ -269,7 +270,9 @@ class UserInfoController extends Controller
         $path = $req->file('file')->getRealPath();
 
 
-        $rows = $this->readXlsxRaw($filePath);
+        $rows = $this->readXlsxRaw($path);
+
+        dd($rows);
 
         foreach ($rows as $index => $row) {
             if ($index === 0) continue; // skip header row
@@ -312,7 +315,8 @@ class UserInfoController extends Controller
     // Excel xlsx file reading system
     private function readXlsxRaw($filePath)
     {
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
+        // $zip = new ZipArchive();
         if ($zip->open($filePath) === true) {
             // Get shared strings
             $sharedStrings = [];
