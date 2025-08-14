@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 use ZipArchive;
 
 use App\Models\User_Info;
-use App\Models\Branch;
+use App\Models\Temp_User;
 
 class UserInfoController extends Controller
 {
@@ -342,7 +342,7 @@ class UserInfoController extends Controller
 
     } // End Method*/
 
-    public function UploadData(Request $req){
+   /* public function UploadData(Request $req){
     // Validate uploaded file
     $req->validate([
         'file' => 'required|mimes:xlsx|max:2048'
@@ -395,6 +395,104 @@ class UserInfoController extends Controller
 
         $zip->close();
         return back()->with('success', 'Branches imported successfully!');
+    }
+}
+*/
+
+
+public function UploadData(Request $req)
+{
+    $req->validate([
+        'file' => 'required|mimes:xlsx|max:2048'
+    ]);
+
+    $filePath = $req->file('file')->getRealPath();
+
+    $zip = new \ZipArchive;
+    if ($zip->open($filePath) === true) {
+
+        // Step 1: Read shared strings
+        $sharedStringsXML = $zip->getFromName('xl/sharedStrings.xml');
+        $sharedStrings = [];
+        if ($sharedStringsXML) {
+            $xml = simplexml_load_string($sharedStringsXML);
+            foreach ($xml->si as $string) {
+                $sharedStrings[] = (string)$string->t;
+            }
+        }
+
+        // Step 2: Read sheet data
+        $sheetXML = $zip->getFromName('xl/worksheets/sheet1.xml');
+        $sheetData = simplexml_load_string($sheetXML);
+
+        $isHeader = true;
+
+        foreach ($sheetData->sheetData->row as $row) {
+            $rowData = [];
+
+            foreach ($row->c as $cell) {
+                $value = (string)$cell->v;
+                if (isset($cell['t']) && $cell['t'] == 's') {
+                    $value = $sharedStrings[(int)$value];
+                }
+                $rowData[] = $value;
+            }
+
+            // Skip header
+            if ($isHeader) {
+                $isHeader = false;
+                continue;
+            }
+            $u_id = isset($rowData[2]) && is_numeric($rowData[2]) ? (int)$rowData[2] : null;
+
+            // 4️⃣ Helper: convert Excel serial date to Y-m-d
+            $excelDateToYMD = function ($serial) {
+                if (is_numeric($serial)) {
+                    $unixDate = ($serial - 25569) * 86400;
+                    return gmdate('Y-m-d', $unixDate);
+                }
+                return null;
+            };
+
+            // Generate unique qr_url if empty
+            $qrUrl = !empty($rowData[1]) ? $rowData[1] : uniqid('QR_', true);
+            // dd($rowData);
+            // Insert into temp__users
+            Temp_User::create([
+                'sl' => $rowData[0],
+                'qr_url' => $rowData[1] == NULL ? "":$rowData[1],
+                'u_id' => $rowData[2] == NULL ? "":$rowData[2],
+                'reg_no' => $rowData[3],
+                'name' => $rowData[4],
+                'phone' => $rowData[5] == NULL ? "":$rowData[5],
+                'duplicate' => $rowData[6] ?? 0,
+                'gender' => $rowData[7] ?? null,
+                'age' => $rowData[8] ?? null,
+                'dob' => !empty($rowData[9]) ? $excelDateToYMD($rowData[9]) : null,
+                'occupation' => $rowData[10] ?? null,
+                'qt_status' => $rowData[11] ?? null,
+                'quantum' => $rowData[12] ?? 0,
+                'quantier' => $rowData[13] ?? 0,
+                'ardentier' => $rowData[14] ?? 0,
+                'branch' => $rowData[15] ?? null,
+                'job_status' => $rowData[16] ?? 0,
+                'psyche_certificate' => isset($rowData[17]) && is_numeric($rowData[17]) ? (int)$rowData[17] : 0,
+                'sp' => $rowData[18] ?? 0,
+                'group' => $rowData[19] ?? null,
+                'call' => $rowData[20] ?? null,
+                'sms' => $rowData[21] ?? 0,
+                'color' => $rowData[22] ?? null,
+                'barcode' => isset($rowData[23]) && is_numeric($rowData[23]) ? (int)$rowData[23] : 0,
+                'new_barcode' => $rowData[24] ?? null,
+                'new_barcode_sl' => $rowData[25] ?? null,
+                'barcode_delivery' => $rowData[26] ?? 0,
+                'first_attend' => $rowData[27] ?? null,
+                'last_attend' => $rowData[28] ?? null,
+            ]);
+        }
+
+        $zip->close();
+        return back()->with('success', 'Users imported successfully!');
     }
 }
 
