@@ -180,7 +180,7 @@ class AttendanceController extends Controller
 
         $filePath = $req->file('file')->getRealPath();
         $data = readXlsxRaw($filePath);
-
+        // dd($data);
         $isHeader = true;
         foreach ($data as $key => $item) {
             // Skip header
@@ -189,12 +189,17 @@ class AttendanceController extends Controller
                 continue;
             }
 
-            // // Insert into temp__users
-            // Attendence::create([
-            //     'event_id' => $req->events,
-            //     'date' => !empty($item[2]) ? $item[0] : null,
-            //     'reg_no' => !empty($item[3]) ? $item[1] : null,
-            // ]);
+            $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$item[2])->where('date',$item[1])->first();
+
+            if(!$attendence){
+                // Insert into temp__users
+                Attendence::create([
+                    'event_id' => $req->events,
+                    'date' => $item[1],
+                    'reg_no' => $item[2],
+                ]);
+            }
+            
         }
 
         return response()->json([
