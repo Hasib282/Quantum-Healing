@@ -180,7 +180,8 @@ class AttendanceController extends Controller
 
         $filePath = $req->file('file')->getRealPath();
         $data = readXlsxRaw($filePath);
-        // dd($data);
+        
+        $count = 0;
         $isHeader = true;
         foreach ($data as $key => $item) {
             // Skip header
@@ -198,13 +199,22 @@ class AttendanceController extends Controller
                     'date' => $item[1],
                     'reg_no' => $item[2],
                 ]);
+                $count++;
             }
             
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Excel Data Uploded Successfully',
-        ], 200);
+        if($count > 0){
+            return response()->json([
+                'status' => true,
+                'message' => 'Excel Data Uploded Successfully',
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'status' => true,
+                'message' => 'You have already uploaded this excel file.',
+            ], 200);
+        }
     } // End Method
 }
