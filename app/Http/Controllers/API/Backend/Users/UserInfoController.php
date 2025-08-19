@@ -10,6 +10,7 @@ use ZipArchive;
 
 use App\Models\User_Info;
 use App\Models\Temp_User;
+use App\Models\Branch;
 
 class UserInfoController extends Controller
 {
@@ -258,288 +259,167 @@ class UserInfoController extends Controller
 
 
     // Upload User Data
-   /* public function UploadData(Request $req){
-         $request->validate([
-            'file' => 'required|mimes:xlsx|max:2048'
+    public function UploadData(Request $req){
+        $req->validate([
+            'file' => 'required|file|mimes:xlsx'
         ]);
 
-        $filePath = $request->file('file')->getRealPath();
-
-        $zip = new ZipArchive;
-        if ($zip->open($filePath) === true) {
-
-            // Step 1: Read shared strings
-            $sharedStringsXML = $zip->getFromName('xl/sharedStrings.xml');
-            $sharedStrings = [];
-            if ($sharedStringsXML) {
-                $xml = simplexml_load_string($sharedStringsXML);
-                foreach ($xml->si as $string) {
-                    $sharedStrings[] = (string)$string->t;
-                }
-            }
-
-            // Step 2: Read sheet data
-            $sheetXML = $zip->getFromName('xl/worksheets/sheet1.xml');
-            $sheetData = simplexml_load_string($sheetXML);
-
-            $isHeader = true;
-
-            foreach ($sheetData->sheetData->row as $row) {
-                $rowData = [];
-
-                foreach ($row->c as $cell) {
-                    $value = (string)$cell->v;
-                    if (isset($cell['t']) && $cell['t'] == 's') {
-                        $value = $sharedStrings[(int)$value];
-                    }
-                    $rowData[] = $value;
-                }
-
-                // Skip first row (header)
-                if ($isHeader) {
-                    $isHeader = false;
-                    continue;
-                }
-
-                // Insert into DB (only branch & short columns)
-                Branch::create([
-                    'branch' => $rowData[0] ?? null,
-                    'short'  => $rowData[1] ?? null
-                ]);
-            }
-
-            $zip->close();
-            return back()->with('success', 'Branches imported successfully!');
-        }
-
+        $filePath = $req->file('file')->getRealPath();
+        $rows = readXlsxRaw($filePath);
         
-        
-
-        // // Open and read CSV
-        // if (($handle = fopen($path, "r")) !== false) {
-        //     $isHeader = true;
-
-        //     while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-        //         // Skip header row
-        //         if ($isHeader) {
-        //             $isHeader = false;
-        //             continue;
-        //         }
-
-        //         // Insert into DB (adjust table/columns as needed)
-        //         \DB::table('my_table')->insert([
-        //             'column1' => $data[0],
-        //             'column2' => $data[1],
-        //             'column3' => $data[2],
-        //             'created_at' => now(),
-        //             'updated_at' => now(),
-        //         ]);
-        //     }
-        //     fclose($handle);
-        // }
-
-
-
-    } // End Method*/
-
-   /* public function UploadData(Request $req){
-    // Validate uploaded file
-    $req->validate([
-        'file' => 'required|mimes:xlsx|max:2048'
-    ]);
-
-    // Get the uploaded file path
-    $filePath = $req->file('file')->getRealPath();
-
-    $zip = new \ZipArchive;
-    if ($zip->open($filePath) === true) {
-        // Step 1: Read shared strings
-        $sharedStringsXML = $zip->getFromName('xl/sharedStrings.xml');
-        
-        $sharedStrings = [];
-        if ($sharedStringsXML) {
-            $xml = simplexml_load_string($sharedStringsXML);
-            foreach ($xml->si as $string) {
-                $sharedStrings[] = (string)$string->t;
-            }
-        }
-
-        // Step 2: Read sheet data
-        $sheetXML = $zip->getFromName('xl/worksheets/sheet1.xml');
-        $sheetData = simplexml_load_string($sheetXML);
-
         $isHeader = true;
-
-        foreach ($sheetData->sheetData->row as $row) {
-            $rowData = [];
-
-            foreach ($row->c as $cell) {
-                $value = (string)$cell->v;
-                if (isset($cell['t']) && $cell['t'] == 's') {
-                    $value = $sharedStrings[(int)$value];
-                }
-                $rowData[] = $value;
-            }
-            // Skip first row (header)
-            if ($isHeader) {
-                $isHeader = false;
-                continue;
-            }
-
-            // Insert into DB (only branch & short columns)
-            Branch::create([
-                'branch' => $rowData[0] ?? null,
-                'short'  => $rowData[1] ?? null
-            ]);
-        }
-
-        $zip->close();
-        return back()->with('success', 'Branches imported successfully!');
-    }
-}
-*/
-
-
-public function UploadData(Request $req)
-{
-    $req->validate([
-        'file' => 'required|mimes:xlsx|max:2048'
-    ]);
-
-    $filePath = $req->file('file')->getRealPath();
-
-    $zip = new \ZipArchive;
-    if ($zip->open($filePath) === true) {
-
-        // Step 1: Read shared strings
-        $sharedStringsXML = $zip->getFromName('xl/sharedStrings.xml');
-        $sharedStrings = [];
-        if ($sharedStringsXML) {
-            $xml = simplexml_load_string($sharedStringsXML);
-            foreach ($xml->si as $string) {
-                $sharedStrings[] = (string)$string->t;
-            }
-        }
-
-        // Step 2: Read sheet data
-        $sheetXML = $zip->getFromName('xl/worksheets/sheet1.xml');
-        $sheetData = simplexml_load_string($sheetXML);
-
-        $isHeader = true;
-
-        foreach ($sheetData->sheetData->row as $row) {
-            $rowData = [];
-
-            foreach ($row->c as $cell) {
-                $value = (string)$cell->v;
-                if (isset($cell['t']) && $cell['t'] == 's') {
-                    $value = $sharedStrings[(int)$value];
-                }
-                $rowData[] = $value;
-            }
-
+        foreach ($rows as $key => $rowData) {
             // Skip header
             if ($isHeader) {
                 $isHeader = false;
                 continue;
             }
-            $u_id = isset($rowData[2]) && is_numeric($rowData[2]) ? (int)$rowData[2] : null;
-
-            // 4️⃣ Helper: convert Excel serial date to Y-m-d
-            $excelDateToYMD = function ($serial) {
-                if (is_numeric($serial)) {
-                    $unixDate = ($serial - 25569) * 86400;
-                    return gmdate('Y-m-d', $unixDate);
-                }
-                return null;
-            };
-
-            // Generate unique qr_url if empty
-            $qrUrl = !empty($rowData[1]) ? $rowData[1] : uniqid('QR_', true);
+            
             // dd($rowData);
+            $sl = GenerateTempSLNo() + 0;
+
+            if ($rowData[7]) {
+                // Calculate DOB from Age (approximate)
+                $age = (int) $rowData[7];
+                $dob = now()->subYears($age)->format('Y-m-d');
+            } else {
+                // Calculate DOB from Age (approximate)
+                $age = null;
+                $dob = null;
+            }
+
             // Insert into temp__users
             Temp_User::create([
-                'sl' => $rowData[0],
-                'qr_url' => $rowData[1] == NULL ? "":$rowData[1],
-                'u_id' => $rowData[2] == NULL ? "":$rowData[2],
-                'reg_no' => $rowData[3],
-                'name' => $rowData[4],
-                'phone' => $rowData[5] == NULL ? "":$rowData[5],
-                'duplicate' => $rowData[6] ?? 0,
-                'gender' => $rowData[7] ?? null,
-                'age' => $rowData[8] ?? null,
-                'dob' => !empty($rowData[9]) ? $excelDateToYMD($rowData[9]) : null,
-                'occupation' => $rowData[10] ?? null,
-                'qt_status' => $rowData[11] ?? null,
-                'quantum' => $rowData[12] ?? 0,
-                'quantier' => $rowData[13] ?? 0,
-                'ardentier' => $rowData[14] ?? 0,
-                'branch' => $rowData[15] ?? null,
-                'job_status' => $rowData[16] ?? 0,
-                'psyche_certificate' => isset($rowData[17]) && is_numeric($rowData[17]) ? (int)$rowData[17] : 0,
-                'sp' => $rowData[18] ?? 0,
-                'group' => $rowData[19] ?? null,
-                'call' => $rowData[20] ?? null,
-                'sms' => $rowData[21] ?? 0,
-                'color' => $rowData[22] ?? null,
-                'barcode' => isset($rowData[23]) && is_numeric($rowData[23]) ? (int)$rowData[23] : 0,
-                'new_barcode' => $rowData[24] ?? null,
-                'new_barcode_sl' => $rowData[25] ?? null,
-                'barcode_delivery' => $rowData[26] ?? 0,
-                'first_attend' => $rowData[27] ?? null,
-                'last_attend' => $rowData[28] ?? null,
+                'sl' => $sl,
+                'qr_url' => !empty($rowData[0]) ? $rowData[0] : null,
+                'u_id' => !empty($rowData[1]) ? $rowData[1] : null,
+                'reg_no' => $rowData[2],
+                'name' => $rowData[3],
+                'phone' => $rowData[4],
+                'duplicate' => !empty($rowData[5]) ? $rowData[2] : 0,
+                'gender' => $rowData[6],
+                'age' => $age,
+                'dob' => $dob,
+                'occupation' => !empty($rowData[9]) ? $rowData[9] : null,
+                'qt_status' => $rowData[10],
+                'quantum' => !empty($rowData[11]) ? $rowData[11] : 0,
+                'quantier' => !empty($rowData[12]) ? $rowData[12] : 0,
+                'ardentier' => !empty($rowData[13]) ? $rowData[13] : 0,
+                'branch' => !empty($rowData[14]) ? $rowData[14] : null,     
+                'job_status' => !empty($rowData[15]) ? $rowData[15] : 0,
+                'psyche_certificate' => !empty($rowData[16]) ? $rowData[16] : 0,
+                'sp' => !empty($rowData[17]) ? $rowData[17] : 0,
+                'group' => !empty($rowData[18]) ? $rowData[18] : null,
+                'call' => !empty($rowData[19]) ? $rowData[19] : null,
+                'sms' => !empty($rowData[20]) ? $rowData[20] : 0,
+                'color' => !empty($rowData[21]) ? $rowData[21] : null,
+                'barcode' => !empty($rowData[22]) ? $rowData[22] : 0,
+                'new_barcode' => !empty($rowData[23]) ? $rowData[23] : null,
+                'new_barcode_sl' => !empty($rowData[24]) ? $rowData[24] : null,
+                'barcode_delivery' => !empty($rowData[25]) ? $rowData[25] : 0,
+                'first_attend' => !empty($rowData[26]) ? $rowData[26] : null,
+                'last_attend' =>  !empty($rowData[27]) ? $rowData[27] : null,
             ]);
+        };
+
+        $count = $this->moveTempUsers();
+
+        if($count > 0){
+            return response()->json([
+                'status' => true,
+                'message' => 'Excel Data Inserted successfully',
+                'count' => $count
+            ], 200);
         }
 
-        $zip->close();
-        return back()->with('success', 'Users imported successfully!');
-    }
-}
+        return response()->json([
+            'status' => false,
+            'message' => 'No unique data in Excel File',
+        ], 200);
+
+        
+    } // End Method
 
 
 
-    // Excel xlsx file reading system
-   /* private function readXlsxRaw($filePath)
-    {
-        $zip = new \ZipArchive();
-        // $zip = new ZipArchive();
-        if ($zip->open($filePath) === true) {
-            // Get shared strings
-            $sharedStrings = [];
-            if (($xmlIndex = $zip->locateName("xl/sharedStrings.xml")) !== false) {
-                $xmlData = $zip->getFromIndex($xmlIndex);
-                $xml = simplexml_load_string($xmlData);
-                foreach ($xml->si as $si) {
-                    $sharedStrings[] = (string) $si->t;
-                }
+    public function moveTempUsers(){
+        // Step 1: Get only unique reg_no from Temp_User that are not in User_Info
+        $existingRegNos = User_Info::pluck('reg_no')->toArray();
+
+        $validTempUsers = Temp_User::whereNotIn('reg_no', $existingRegNos)
+            ->get()
+            ->unique('reg_no'); // keep unique reg_no only
+
+        if($validTempUsers->count() > 0){
+            // Step 2: Delete duplicates from Temp_User
+            Temp_User::whereIn('reg_no', $existingRegNos)->delete();
+
+            
+
+            // Step 2: Get distinct branch names from Temp_User
+            $branchNames = Temp_User::pluck('branch')
+                ->map(fn($branch) => strtolower(rtrim($branch)))
+                ->unique()
+                ->values();
+
+            // Step 3: Get already existing branches in Branch table
+            $existingBranches = Branch::pluck('branch')->map(fn($branch) => strtolower(rtrim($branch)))->toArray();
+
+            // Step 4: Find new branches that are not in Branch table
+            $newBranches = $branchNames->diff($existingBranches);
+
+            // dd($newBranches);
+            // Step 5: Insert new branches into Branch table
+            foreach ($newBranches as $branchName) {
+                Branch::create(['branch' => ucwords($branchName)]);
             }
 
-            // Get first sheet data
-            $sheetData = [];
-            if (($xmlIndex = $zip->locateName("xl/worksheets/sheet1.xml")) !== false) {
-                $xmlData = $zip->getFromIndex($xmlIndex);
-                $xml = simplexml_load_string($xmlData);
-                foreach ($xml->sheetData->row as $row) {
-                    $rowData = [];
-                    foreach ($row->c as $cell) {
-                        $value = (string) $cell->v;
+            // Step 3: Map branch name to branch_id
+            $branches = Branch::pluck('id', 'branch')->mapWithKeys(
+                fn($id, $name) => [strtolower(rtrim($name)) => $id]
+            );
 
-                        // Check for shared string
-                        if (isset($cell['t']) && $cell['t'] == 's') {
-                            $value = $sharedStrings[(int) $value];
-                        }
-
-                        // Always treat as string to keep formatting like +880...
-                        $rowData[] = $value;
-                    }
-                    $sheetData[] = $rowData;
-                }
+            foreach ($validTempUsers as $user) {
+                // dd($user->branch);
+                User_Info::create([
+                    'sl' => GenerateSLNo() + 0,
+                    'qr_url' => $user->qr_url,
+                    'u_id' => $user->u_id,
+                    'reg_no' => $user->reg_no,
+                    'name' => $user->name,
+                    'phone' => $user->phone,
+                    'duplicate' => $user->duplicate,
+                    'gender' => $user->gender,
+                    'age' => $user->age,
+                    'dob' => $user->dob,
+                    'occupation' => $user->occupation,
+                    'qt_status' => $user->qt_status,
+                    'quantum' => $user->quantum,
+                    'quantier' => $user->quantier,
+                    'ardentier' => $user->ardentier,
+                    'branch' => $branches[strtolower(rtrim($user->branch))] ?? null,
+                    'job_status' => $user->job_status,
+                    'psyche_certificate' => $user->psyche_certificate,
+                    'sp' => $user->sp,
+                    'group' => $user->group,
+                    'call' => $user->call,
+                    'sms' => $user->sms,
+                    'color' => $user->color,
+                    'barcode' => $user->barcode,
+                    'new_barcode' => $user->new_barcode,
+                    'new_barcode_sl' => $user->new_barcode_sl,
+                    'barcode_delivery' => $user->barcode_delivery,
+                    'first_attend' => $user->first_attend,
+                    'last_attend' =>  $user->last_attend,
+                ]);
             }
-
-            $zip->close();
-            return $sheetData;
-        } else {
-            throw new \Exception("Cannot open XLSX file.");
         }
-    }*/
+        Temp_User::truncate();
+        return $validTempUsers->count();
+        
+    } // End Method
+
+
+
+    
 }

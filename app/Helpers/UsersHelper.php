@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Login_User;
 use App\Models\User_Info;
+use App\Models\Temp_User;
 use Illuminate\Support\Facades\Cache;
 
 
@@ -100,6 +101,14 @@ if (!function_exists('GenerateSLNo')) {
     function GenerateSLNo() {
         $sl = User_Info::on('mysql')->select('sl')->orderBy('sl', 'desc')->first();
         return $sl->sl += 1;
+    }
+}
+
+// This Helper Function is for Creating Serial Ids 
+if (!function_exists('GenerateTempSLNo')) {
+    function GenerateTempSLNo() {
+        $sl = Temp_User::on('mysql')->select('sl')->orderBy('sl', 'desc')->first();
+        return $sl ? $sl->sl += 1 : 1;
     }
 }
 

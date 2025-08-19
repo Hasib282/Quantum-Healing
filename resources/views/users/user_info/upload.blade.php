@@ -16,6 +16,7 @@
                 <label for="file">Upload Excel File<span class="required">*</span></label>
                 <input type="file" name="file" class="form-input" id="file">
                 <span class="error" id="file_error"></span>
+                <span class="error" id="count"></span>
             </div>
             
             <div class="center">

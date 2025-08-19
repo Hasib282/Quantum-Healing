@@ -19,7 +19,7 @@ class BranchSeeder extends Seeder
 
         $data->each(function($item){
             Branch::create([
-                "branch"=>$item->name,
+                "branch"=>ucwords($item->name),
                 "short"=>$item->short,
             ]);
         });

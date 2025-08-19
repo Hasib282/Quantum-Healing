@@ -110,7 +110,17 @@ $(document).ready(function () {
             cache: false,
             data: formData,
             success: function (res) {
-                console.log(res);
+                if (res.status == true) {
+                    $('#CsvForm')[0].reset();
+
+                    $('#count').html(`${res.count} data Added Successfully`)
+
+                    toastr.success(res.message, 'Added!');
+                }
+                else{
+                    $('#count').html(`No Data Added`)
+                    toastr.error(res.message, 'Not Added!');
+                }
             }
         });
 

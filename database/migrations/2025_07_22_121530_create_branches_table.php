@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
             $table->string('branch');
-            $table->string('short');
+            $table->string('short')->nullable();
             $table->string('status')->default(1);
             $table->timestamp('added_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
