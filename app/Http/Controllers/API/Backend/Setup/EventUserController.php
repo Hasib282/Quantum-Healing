@@ -11,7 +11,7 @@ use App\Models\User_Info;
 
 class EventUserController extends Controller
 {
-    // Show All Branchs
+    // Show All Event User Lists
     public function Show(Request $req){
         $data = Event::with('users')->where('all', 0)->get();
 
@@ -23,7 +23,7 @@ class EventUserController extends Controller
 
 
 
-    // Edit Branch
+    // Edit Event User List
     public function Edit(Request $req){
         $data = Event_User_List::with('participants')
         ->where('event_id', $req->id)
@@ -38,7 +38,7 @@ class EventUserController extends Controller
 
 
 
-    // Update Branchs
+    // Update Event User Lists
     public function Update(Request $req){
         $req->validate([
             'events' => 'required|exists:events,id',
@@ -56,14 +56,14 @@ class EventUserController extends Controller
         
         return response()->json([
             'status'=> true,
-            'message' => 'Branch Added Successfully',
+            'message' => 'Event User List Added Successfully',
             "updatedData" => $updatedData,
         ], 200);
     } // End Method
 
 
 
-    // Get Branchs
+    // Get Event User Lists
     public function Get(Request $req){
         $event = Event::where('id', $req->id)->first();
         if($event->all == 1){
@@ -80,6 +80,36 @@ class EventUserController extends Controller
         return response()->json([
             'status'=> true,
             'data' => $data
+        ], 200);
+    } // End Method
+
+
+
+    // Upload Data from excel file to Database
+    public function UploadData(Request $req){
+        $req->validate([
+            'events' => 'required|exists:events,id',
+            'file' => 'required|file|mimes:xlsx'
+        ]);
+
+        $filePath = $req->file('file')->getRealPath();
+        $data = readXlsxRaw($filePath);
+        $rows = array_slice($data, 1);
+
+        // Get only reg_no values
+        $regNos = collect($rows)->pluck('1')->toArray();
+
+        // Sync users for that event
+        $event = Event::find($req->events);
+        $event->users()->sync($regNos);
+
+        // If you want updated event data with users
+        $updatedData = Event::with('users')->findOrFail($req->events);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Excel Data Uploded Successfully',
+            "updatedData" => $updatedData,
         ], 200);
     } // End Method
 }

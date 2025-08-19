@@ -141,6 +141,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/event_users','Update');
             Route::delete('/event_users','Delete');
             Route::get('/event_users/get','Get');
+            Route::post('/event_users/upload_data', 'UploadData');
         }); // End Branch Routes
 
 
@@ -150,6 +151,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/attendance','Insert');
             Route::get('/attendance/search','Search');
             Route::get('/attendance/count','Count');
+            Route::post('/attendance/upload_data', 'UploadData');
         }); // End Branch Routes
         
         

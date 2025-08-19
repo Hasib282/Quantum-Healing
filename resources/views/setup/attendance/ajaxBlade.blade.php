@@ -16,7 +16,7 @@
             <input type="date" name="searchDates" id="searchDates" class="form-input" value="{{date('Y-m-d')}}">
         </div>
         <div class="c-5">
-            <label for="search">Start Date</label>
+            <label for="search">Search</label>
             <input type="text" name="search" id="search" class="form-input">
         </div>
     </div>

@@ -43,20 +43,6 @@ class AttendanceController extends Controller
         ->orWhere('reg_no', $req->qr_url)
         ->first();
 
-        // if(!$user){
-        //     Attendence_Temp::create([
-        //         'event_id' => $req->events,
-        //         'date' => $req->date,
-        //         'qr_url' => $req->qr_url,
-        //     ]);
-
-        //     return response()->json([
-        //         'status'=> true,
-        //         'message' => 'Your Attendance is Successfull. Status others.',
-        //         "user" => $user
-        //     ], 200);
-        // }
-
         // Check User Attendance
         if($user){
             $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$user->reg_no)->where('date',$req->date)->first();
@@ -179,6 +165,41 @@ class AttendanceController extends Controller
             'graduate' => $graduate,
             'prograduate' => $prograduate,
             'temp' => $temp,
+        ], 200);
+    } // End Method
+
+
+
+
+    // Upload Data from excel file to Database
+    public function UploadData(Request $req){
+        $req->validate([
+            'events' => 'required|exists:events,id',
+            'file' => 'required|file|mimes:xlsx'
+        ]);
+
+        $filePath = $req->file('file')->getRealPath();
+        $data = readXlsxRaw($filePath);
+
+        $isHeader = true;
+        foreach ($data as $key => $item) {
+            // Skip header
+            if ($isHeader) {
+                $isHeader = false;
+                continue;
+            }
+
+            // // Insert into temp__users
+            // Attendence::create([
+            //     'event_id' => $req->events,
+            //     'date' => !empty($item[2]) ? $item[0] : null,
+            //     'reg_no' => !empty($item[3]) ? $item[1] : null,
+            // ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Excel Data Uploded Successfully',
         ], 200);
     } // End Method
 }

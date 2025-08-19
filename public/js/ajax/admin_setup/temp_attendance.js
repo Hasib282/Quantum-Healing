@@ -58,6 +58,7 @@ $(document).ready(function () {
     // Get Events
     GetSelectInputList('admin/events/get', function (res) {
         CreateSelectOptions('#searchEvents', "Select Events", res.data, 'name');
+        CreateSelectOptions('#allevents', "Select Events", res.data, 'name');
     })
 
 
@@ -115,4 +116,32 @@ $(document).ready(function () {
             }
         });
     });
+
+
+
+
+    // Upload CSV Form Submit Event
+    $(document).on('submit','#CsvForm', function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.ajax({
+            url: `${apiUrl}/admin/attendance/upload_data`,
+            method: 'POST',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: formData,
+            success: function (res) {
+                if (res.status == true) {
+                    $('#CsvForm')[0].reset();
+
+                    $('#message').html(res.message)
+
+                    tableInstance.updateRow(res.updatedData.id, res.updatedData);
+
+                    toastr.success(res.message, 'Added!');
+                }
+            }
+        });
+    })
 });

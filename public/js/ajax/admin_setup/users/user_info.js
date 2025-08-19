@@ -99,6 +99,7 @@ $(document).ready(function () {
 
 
 
+    // Upload CSV Form Submit Event
     $(document).on('submit','#CsvForm', function (e) {
         e.preventDefault();
         let formData = new FormData(this);
@@ -113,18 +114,17 @@ $(document).ready(function () {
                 if (res.status == true) {
                     $('#CsvForm')[0].reset();
 
-                    $('#count').html(`${res.count} data Added Successfully`)
+                    $('#message').html(`${res.count} data Added Successfully`)
 
                     toastr.success(res.message, 'Added!');
                 }
                 else{
-                    $('#count').html(`No Data Added`)
+                    $('#message').html(res.message)
                     toastr.error(res.message, 'Not Added!');
                 }
             }
         });
-
-    })
+    }) // End Method
 });
 
 

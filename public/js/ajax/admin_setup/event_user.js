@@ -32,7 +32,7 @@ $(document).ready(function () {
 
 
     // Update Ajax
-    UpdateAjax('admin/event_users', {all_participants: () => JSON.stringify(JSON.parse(localStorage.getItem('participants') || '[]')), events: { selector: '#events'} }, function(){
+    UpdateAjax('admin/event_users', {all_participants: () => JSON.stringify(JSON.parse(localStorage.getItem('participants') || '[]')), events: { selector: '#updateEvents'} }, function(){
         $("#branch").focus();
         localStorage.removeItem('participants');
         $('#all-participants tbody').html("");
@@ -47,7 +47,7 @@ $(document).ready(function () {
         $('#participants-list').html("");
 
         $('#id').val(item.id);
-        $('#events').val(item.id);
+        $('#updateEvents').val(item.id);
 
         $('#participants').focus();
 
@@ -135,44 +135,6 @@ $(document).ready(function () {
 
 
 
-    
-
-
-    $(document).off("change", '#events').on("change", '#events', function (e){
-        let id = $(this).val();
-        localStorage.removeItem('participants');
-        $.ajax({
-            url: `${apiUrl}/admin/event_users/get`,
-            data: {id},
-            success: function (res) {
-                let participants = localStorage.getItem('participants') || [];
-
-                res.data.forEach(item => {
-                    let productIssue = {
-                        id: item.id,
-                        name: item.participants[0]?.name || '',
-                        phone: item.participants[0]?.phone || '',
-                        reg_no: item.participants[0]?.reg_no || '',
-                        gender: item.participants[0]?.gender || '',
-                    };
-                    
-
-                    // Add the new productIssue to the list
-                    participants.push(productIssue);
-                });
-
-                // Save updated productIssue back to local storage
-                localStorage.setItem('participants', JSON.stringify(participants));
-
-                let data = JSON.parse(localStorage.getItem('participants')) || [];
-
-                gridShow(data);
-                // $(targetList).html(res);
-            }
-        });
-    });
-
-
     $(document).off("keyup", '#selectedParticipants').on("keyup", '#selectedParticipants', function (e) {
         let participants = JSON.parse(localStorage.getItem('participants') || '[]');
         let search = $('#selectedParticipants').val().toLowerCase();
@@ -209,6 +171,36 @@ $(document).ready(function () {
 
         '#participants-list tbody tr',
     )
+
+
+
+    
+
+
+    // Upload CSV Form Submit Event
+    $(document).on('submit','#CsvForm', function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.ajax({
+            url: `${apiUrl}/admin/event_users/upload_data`,
+            method: 'POST',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: formData,
+            success: function (res) {
+                if (res.status == true) {
+                    $('#CsvForm')[0].reset();
+
+                    $('#message').html(res.message)
+
+                    tableInstance.updateRow(res.updatedData.id, res.updatedData);
+
+                    toastr.success(res.message, 'Added!');
+                }
+            }
+        });
+    })
 });
 
 

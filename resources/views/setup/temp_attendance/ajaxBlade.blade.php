@@ -2,7 +2,7 @@
 <div class="add-search">
     <div class="rows">
         <div class="c-3">
-            
+            <button class="open-modal" data-modal-id="uploadModal"><i class="fa-solid fa-plus"></i> Upload Excel </button>
         </div>
         <div class="c-2">
             <label for="searchEvents">Events</label>
@@ -35,6 +35,8 @@
 
 {{-- Modals --}}
 @include('setup.temp_attendance.edit')
+
+@include('setup.temp_attendance.upload')
 
 @include('common_modals.delete')
 

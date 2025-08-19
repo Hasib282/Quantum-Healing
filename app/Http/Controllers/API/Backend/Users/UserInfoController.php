@@ -265,22 +265,19 @@ class UserInfoController extends Controller
         ]);
 
         $filePath = $req->file('file')->getRealPath();
-        $rows = readXlsxRaw($filePath);
+        $data = readXlsxRaw($filePath);
         
         $isHeader = true;
-        foreach ($rows as $key => $rowData) {
+        foreach ($data as $key => $item) {
             // Skip header
             if ($isHeader) {
                 $isHeader = false;
                 continue;
             }
-            
-            // dd($rowData);
-            $sl = GenerateTempSLNo() + 0;
 
-            if ($rowData[7]) {
+            if ($item[7]) {
                 // Calculate DOB from Age (approximate)
-                $age = (int) $rowData[7];
+                $age = (int) $item[7];
                 $dob = now()->subYears($age)->format('Y-m-d');
             } else {
                 // Calculate DOB from Age (approximate)
@@ -290,35 +287,35 @@ class UserInfoController extends Controller
 
             // Insert into temp__users
             Temp_User::create([
-                'sl' => $sl,
-                'qr_url' => !empty($rowData[0]) ? $rowData[0] : null,
-                'u_id' => !empty($rowData[1]) ? $rowData[1] : null,
-                'reg_no' => $rowData[2],
-                'name' => $rowData[3],
-                'phone' => $rowData[4],
-                'duplicate' => !empty($rowData[5]) ? $rowData[2] : 0,
-                'gender' => $rowData[6],
+                'sl' => GenerateTempSLNo() + 0,
+                'qr_url' => !empty($item[0]) ? $item[0] : null,
+                'u_id' => !empty($item[1]) ? $item[1] : null,
+                'reg_no' => $item[2],
+                'name' => $item[3],
+                'phone' => $item[4],
+                'duplicate' => !empty($item[5]) ? $item[2] : 0,
+                'gender' => $item[6],
                 'age' => $age,
                 'dob' => $dob,
-                'occupation' => !empty($rowData[9]) ? $rowData[9] : null,
-                'qt_status' => $rowData[10],
-                'quantum' => !empty($rowData[11]) ? $rowData[11] : 0,
-                'quantier' => !empty($rowData[12]) ? $rowData[12] : 0,
-                'ardentier' => !empty($rowData[13]) ? $rowData[13] : 0,
-                'branch' => !empty($rowData[14]) ? $rowData[14] : null,     
-                'job_status' => !empty($rowData[15]) ? $rowData[15] : 0,
-                'psyche_certificate' => !empty($rowData[16]) ? $rowData[16] : 0,
-                'sp' => !empty($rowData[17]) ? $rowData[17] : 0,
-                'group' => !empty($rowData[18]) ? $rowData[18] : null,
-                'call' => !empty($rowData[19]) ? $rowData[19] : null,
-                'sms' => !empty($rowData[20]) ? $rowData[20] : 0,
-                'color' => !empty($rowData[21]) ? $rowData[21] : null,
-                'barcode' => !empty($rowData[22]) ? $rowData[22] : 0,
-                'new_barcode' => !empty($rowData[23]) ? $rowData[23] : null,
-                'new_barcode_sl' => !empty($rowData[24]) ? $rowData[24] : null,
-                'barcode_delivery' => !empty($rowData[25]) ? $rowData[25] : 0,
-                'first_attend' => !empty($rowData[26]) ? $rowData[26] : null,
-                'last_attend' =>  !empty($rowData[27]) ? $rowData[27] : null,
+                'occupation' => !empty($item[9]) ? $item[9] : null,
+                'qt_status' => $item[10],
+                'quantum' => !empty($item[11]) ? $item[11] : 0,
+                'quantier' => !empty($item[12]) ? $item[12] : 0,
+                'ardentier' => !empty($item[13]) ? $item[13] : 0,
+                'branch' => !empty($item[14]) ? $item[14] : null,     
+                'job_status' => !empty($item[15]) ? $item[15] : 0,
+                'psyche_certificate' => !empty($item[16]) ? $item[16] : 0,
+                'sp' => !empty($item[17]) ? $item[17] : 0,
+                'group' => !empty($item[18]) ? $item[18] : null,
+                'call' => !empty($item[19]) ? $item[19] : null,
+                'sms' => !empty($item[20]) ? $item[20] : 0,
+                'color' => !empty($item[21]) ? $item[21] : null,
+                'barcode' => !empty($item[22]) ? $item[22] : 0,
+                'new_barcode' => !empty($item[23]) ? $item[23] : null,
+                'new_barcode_sl' => !empty($item[24]) ? $item[24] : null,
+                'barcode_delivery' => !empty($item[25]) ? $item[25] : 0,
+                'first_attend' => !empty($item[26]) ? $item[26] : null,
+                'last_attend' =>  !empty($item[27]) ? $item[27] : null,
             ]);
         };
 

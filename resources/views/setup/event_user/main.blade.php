@@ -9,7 +9,7 @@
     <div class="add-search">
         <div class="rows">
             <div class="c-3">
-                
+                <button class="open-modal" data-modal-id="uploadModal"><i class="fa-solid fa-plus"></i> Upload Excel </button>
             </div>
             <div class="c-6">
 
@@ -33,6 +33,8 @@
 
     {{-- Modals --}}
     @include('setup.event_user.edit')
+
+    @include('setup.event_user.upload')
 
     <script src="{{ asset('js/ajax').'/'. $js . '.js' }}"></script>
 @endsection
