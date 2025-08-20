@@ -38,7 +38,7 @@ $(document).ready(function () {
                         <tr>
                             <td colspan="2">
                                 <div class="center">
-                                    <img src="${apiUrl.replace('/api', '')}/storage/${res.user.image ? res.user.image : 'male.png'}?${new Date().getTime()}" height="200">
+                                    <img src="${apiUrl.replace('/api', '')}/storage/${res.user.image ? res.user.image : 'male.png'}?${new Date().getTime()}" height="200" onerror="this.onerror=null;this.src='${apiUrl.replace('/api', '')}/storage/male.png';">
                                 </div>
                             </td>
                         </tr>
@@ -62,7 +62,7 @@ $(document).ready(function () {
                 </table>
             `);
         }
-        $('#userData').append(`<span class="${res.status == false ? 'red':'green'}">${res.message}</span>`);
+        $('#userData').append(`<span class="${res.status == false ? 'red':'green'}" style="padding:10px;display:flex;align-items:center;gap:5px;">${res.status == false ? '<i class="fa-solid fa-circle-xmark" style="font-size:25px;"></i>':'<i class="fa-solid fa-circle-check" style="font-size:25px;"></i>'} ${res.message}</span>`);
         $('#qr_url').val('');
         $('#qr_url').focus();
 

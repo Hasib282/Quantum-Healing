@@ -36,6 +36,8 @@ class AttendanceController extends Controller
             'qr_url' => 'required'
         ]);
 
+        $attendence = "";
+
         // Check User Data
         $user = User_Info::with('branchs')
         ->select('reg_no','id','name','phone','gender','qt_status','branch','image')

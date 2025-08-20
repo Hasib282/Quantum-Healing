@@ -7,7 +7,7 @@
 <div class="add-search">
     <div class="rows">
         <div class="c-3">
-            <button class="open-modal" data-modal-id="uploadModal"><i class="fa-solid fa-plus"></i> Upload Excel </button>
+            <button class="open-modal btn-blue" data-modal-id="uploadModal"><i class="fa-solid fa-arrow-up-from-bracket"></i> Upload Excel </button>
         </div>
         <div class="c-6">
 

@@ -275,9 +275,11 @@ class UserInfoController extends Controller
                 continue;
             }
 
-            if ($item[7]) {
+            $sl = !empty($item[0]) ? $item[0] : GenerateTempSLNo() + 0;
+
+            if ($item[8]) {
                 // Calculate DOB from Age (approximate)
-                $age = (int) $item[7];
+                $age = (int) $item[8];
                 $dob = now()->subYears($age)->format('Y-m-d');
             } else {
                 // Calculate DOB from Age (approximate)
@@ -287,35 +289,36 @@ class UserInfoController extends Controller
 
             // Insert into temp__users
             Temp_User::create([
-                'sl' => GenerateTempSLNo() + 0,
-                'qr_url' => !empty($item[0]) ? $item[0] : null,
-                'u_id' => !empty($item[1]) ? $item[1] : null,
-                'reg_no' => $item[2],
-                'name' => $item[3],
-                'phone' => $item[4],
-                'duplicate' => !empty($item[5]) ? $item[2] : 0,
-                'gender' => $item[6],
+                'sl' => $sl,
+                'qr_url' => !empty($item[1]) ? $item[0] : null,
+                'u_id' => !empty($item[2]) ? $item[1] : null,
+                'reg_no' => $item[3],
+                'name' => $item[4],
+                'phone' => $item[5],
+                'duplicate' => !empty($item[6]) ? $item[6] : 0,
+                'gender' => $item[7],
                 'age' => $age,
                 'dob' => $dob,
-                'occupation' => !empty($item[9]) ? $item[9] : null,
-                'qt_status' => $item[10],
-                'quantum' => !empty($item[11]) ? $item[11] : 0,
-                'quantier' => !empty($item[12]) ? $item[12] : 0,
-                'ardentier' => !empty($item[13]) ? $item[13] : 0,
-                'branch' => !empty($item[14]) ? $item[14] : null,     
-                'job_status' => !empty($item[15]) ? $item[15] : 0,
-                'psyche_certificate' => !empty($item[16]) ? $item[16] : 0,
-                'sp' => !empty($item[17]) ? $item[17] : 0,
-                'group' => !empty($item[18]) ? $item[18] : null,
-                'call' => !empty($item[19]) ? $item[19] : null,
-                'sms' => !empty($item[20]) ? $item[20] : 0,
-                'color' => !empty($item[21]) ? $item[21] : null,
-                'barcode' => !empty($item[22]) ? $item[22] : 0,
-                'new_barcode' => !empty($item[23]) ? $item[23] : null,
-                'new_barcode_sl' => !empty($item[24]) ? $item[24] : null,
-                'barcode_delivery' => !empty($item[25]) ? $item[25] : 0,
-                'first_attend' => !empty($item[26]) ? $item[26] : null,
-                'last_attend' =>  !empty($item[27]) ? $item[27] : null,
+                'occupation' => !empty($item[10]) ? $item[10] : null,
+                'qt_status' => $item[11],
+                'quantum' => !empty($item[12]) ? $item[12] : 0,
+                'quantier' => !empty($item[13]) ? $item[13] : 0,
+                'ardentier' => !empty($item[14]) ? $item[14] : 0,
+                'branch' => !empty($item[15]) ? $item[15] : null,     
+                'job_status' => !empty($item[16]) ? $item[16] : 0,
+                'psyche_certificate' => !empty($item[17]) ? $item[17] : 0,
+                'sp' => !empty($item[18]) ? $item[18] : 0,
+                'group' => !empty($item[19]) ? $item[19] : null,
+                'call' => !empty($item[20]) ? $item[20] : null,
+                'sms' => !empty($item[21]) ? $item[21] : 0,
+                'color' => !empty($item[22]) ? $item[22] : null,
+                'barcode' => !empty($item[23]) ? $item[23] : 0,
+                'new_barcode' => !empty($item[24]) ? $item[24] : null,
+                'new_barcode_sl' => !empty($item[25]) ? $item[25] : null,
+                'barcode_delivery' => !empty($item[26]) ? $item[26] : 0,
+                'first_attend' => !empty($item[27]) ? $item[27] : null,
+                'last_attend' =>  !empty($item[28]) ? $item[28] : null,
+                'image' =>  'qt_img/'.$sl.'.jpeg',
             ]);
         };
 
@@ -365,7 +368,6 @@ class UserInfoController extends Controller
             // Step 4: Find new branches that are not in Branch table
             $newBranches = $branchNames->diff($existingBranches);
 
-            // dd($newBranches);
             // Step 5: Insert new branches into Branch table
             foreach ($newBranches as $branchName) {
                 Branch::create(['branch' => ucwords($branchName)]);
@@ -377,9 +379,8 @@ class UserInfoController extends Controller
             );
 
             foreach ($validTempUsers as $user) {
-                // dd($user->branch);
                 User_Info::create([
-                    'sl' => GenerateSLNo() + 0,
+                    'sl' => $user->sl,
                     'qr_url' => $user->qr_url,
                     'u_id' => $user->u_id,
                     'reg_no' => $user->reg_no,
@@ -408,6 +409,7 @@ class UserInfoController extends Controller
                     'barcode_delivery' => $user->barcode_delivery,
                     'first_attend' => $user->first_attend,
                     'last_attend' =>  $user->last_attend,
+                    'image' =>  $user->image,
                 ]);
             }
         }
