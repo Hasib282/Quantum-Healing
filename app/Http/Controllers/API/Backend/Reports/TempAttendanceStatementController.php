@@ -20,15 +20,7 @@ class TempAttendanceStatementController extends Controller
         $data = Attendence_Temp::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,short')
         ->where('event_id', $req->events)
         ->where('date', $req->date)
-        ->whereHas('participants', function ($query) use ($req) {
-            $query->where('gender', "Like",  $req->gender ."%");
-            $query->where('qt_status', "Like",  $req->qt_status ."%");
-        })
-        ->get()
-        ->sortBy(function ($item) {
-            $participant = $item->participants[0]; // or [0]
-            return $participant ? [$participant->gender, $participant->qt_status] : ['', ''];
-        })->values();
+        ->get();
 
         return response()->json([
             'status'=> true,
@@ -48,16 +40,7 @@ class TempAttendanceStatementController extends Controller
         $data = Attendence::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,short')
         ->where('event_id', $req->events)
         ->where('date', "Like",  $req->date ."%")
-        ->whereHas('participants', function ($query) use ($req) {
-            $query->where('gender', "Like",  $req->gender ."%");
-            $query->where('qt_status', "Like",  $req->qt_status ."%");
-        })
-        ->get()
-        ->sortBy(function ($item) {
-            $participant = $item->participants[0]; // or [0]
-            return $participant ? [$participant->gender, $participant->qt_status] : ['', ''];
-        })
-        ->values();
+        ->get();
         
         $pdf = Pdf::loadView('report.attendance_statement.print', compact('data'))->setPaper('a4', 'portrait');
         return $pdf->stream();
