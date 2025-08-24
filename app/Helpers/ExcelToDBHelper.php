@@ -73,14 +73,6 @@
                         if (isset($c['t']) && (string)$c['t'] === 's') {
                             $value = $sharedStrings[(int)$value] ?? '';
                         }
-                        elseif (is_numeric($value)) {
-                            // Try to convert numeric values to dates
-                            $date = excelDateToPhp((float)$value);
-                            // Only replace if it looks like a valid date
-                            if ($date !== $value) {
-                                $value = $date;
-                            }
-                        }
                         
                         $cells[] = $value;
                         $lastCol = $colIndex;

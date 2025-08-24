@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // Auth Seeders
             RoleSeeder::class,
-            BranchSeeder::class,
+            // BranchSeeder::class,
             EventSeeder::class,
             LoginUserSeeder::class,
-            UserSeeder::class,
-            EventUserSeeder::class,
+            // UserSeeder::class,
+            // EventUserSeeder::class,
         ]);
     }
 }

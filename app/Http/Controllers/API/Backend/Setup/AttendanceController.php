@@ -192,6 +192,16 @@ class AttendanceController extends Controller
                 continue;
             }
 
+
+            if (!empty($item[1]) && is_numeric($item[1])) {
+                // Try to convert numeric values to dates
+                $date = excelDateToPhp((float)$item[1]);
+                // Only replace if it looks like a valid date
+                if ($date !== $item[1]) {
+                    $item[1] = $date;
+                }
+            }
+
             $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$item[2])->where('date',$item[1])->first();
 
             if(!$attendence){

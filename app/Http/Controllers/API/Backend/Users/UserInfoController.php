@@ -275,6 +275,23 @@ class UserInfoController extends Controller
                 continue;
             }
 
+            if (!empty($item[27]) && is_numeric($item[27])) {
+                // Try to convert numeric values to dates
+                $date = excelDateToPhp((float)$item[27]);
+                // Only replace if it looks like a valid date
+                if ($date !== $item[27]) {
+                    $item[27] = $date;
+                }
+            }
+            if (!empty($item[28]) && is_numeric($item[28])) {
+                // Try to convert numeric values to dates
+                $date = excelDateToPhp((float)$item[28]);
+                // Only replace if it looks like a valid date
+                if ($date !== $item[28]) {
+                    $item[28] = $date;
+                }
+            }
+
             $sl = !empty($item[0]) ? $item[0] : GenerateTempSLNo() + 0;
 
             if ($item[8]) {
@@ -290,8 +307,8 @@ class UserInfoController extends Controller
             // Insert into temp__users
             Temp_User::create([
                 'sl' => $sl,
-                'qr_url' => !empty($item[1]) ? $item[0] : null,
-                'u_id' => !empty($item[2]) ? $item[1] : null,
+                'qr_url' => !empty($item[1]) ? $item[1] : null,
+                'u_id' => !empty($item[2]) ? $item[2] : null,
                 'reg_no' => $item[3],
                 'name' => $item[4],
                 'phone' => $item[5],
@@ -378,6 +395,7 @@ class UserInfoController extends Controller
                 fn($id, $name) => [strtolower(rtrim($name)) => $id]
             );
 
+            // dd($validTempUsers);
             foreach ($validTempUsers as $user) {
                 User_Info::create([
                     'sl' => $user->sl,
