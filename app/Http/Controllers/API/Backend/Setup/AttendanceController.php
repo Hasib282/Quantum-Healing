@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Backend\Setup;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Attendence;
 use App\Models\Attendence_Temp;
@@ -179,12 +180,14 @@ class AttendanceController extends Controller
             'events' => 'required|exists:events,id',
             'file' => 'required|file|mimes:xlsx'
         ]);
+        set_time_limit(3600);
 
         $filePath = $req->file('file')->getRealPath();
         $data = readXlsxRaw($filePath);
         
         $count = 0;
         $isHeader = true;
+        $insertData = [];
         foreach ($data as $key => $item) {
             // Skip header
             if ($isHeader) {
@@ -202,19 +205,28 @@ class AttendanceController extends Controller
                 }
             }
 
-            $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$item[2])->where('date',$item[1])->first();
+            $exists = Attendence::where('event_id',$req->events)->where('reg_no',$item[2])->where('date',$item[1])->first();
 
-            if(!$attendence){
-                // Insert into temp__users
-                Attendence::create([
+            if(!$exists){
+                // Insert into insertData array
+                $insertData[] = [
                     'event_id' => $req->events,
                     'date' => $item[1],
                     'reg_no' => $item[2],
-                ]);
+                ];
                 $count++;
             }
-            
         }
+
+
+        // Bulk insert
+        DB::transaction(function () use ($insertData) {
+            if (!empty($insertData)) {
+                foreach (array_chunk($insertData, 10000) as $chunk) {
+                    Attendence::insert($chunk);
+                }
+            }
+        });
 
         if($count > 0){
             return response()->json([

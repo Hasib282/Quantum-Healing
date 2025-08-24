@@ -108,7 +108,7 @@ if (!function_exists('GenerateSLNo')) {
 if (!function_exists('GenerateTempSLNo')) {
     function GenerateTempSLNo() {
         $sl = Temp_User::on('mysql')->select('sl')->orderBy('sl', 'desc')->first();
-        return $sl ? $sl->sl += 1 : 1;
+        return $sl ? $sl->sl += 1 : GenerateSLNo() + 0;
     }
 }
 

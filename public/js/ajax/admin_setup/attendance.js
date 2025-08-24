@@ -125,7 +125,7 @@ $(document).ready(function () {
 
 
     // Events Change 
-    $(document).off('change','#date').on('change','#date', function (e) {
+    $('#date').off('change').on('change', function (e) {
         e.preventDefault();
         let search = $(this).val();
         $.ajax({
@@ -143,7 +143,7 @@ $(document).ready(function () {
     
     
     // Events Change 
-    $(document).off('change','#events').on('change','#events', function (e) {
+    $('#events').off('change',).on('change', function (e) {
         e.preventDefault();
         let events = $('#events').val();
         let date = $('#date').val();

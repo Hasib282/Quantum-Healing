@@ -92,6 +92,8 @@ class EventUserController extends Controller
             'file' => 'required|file|mimes:xlsx'
         ]);
 
+        set_time_limit(3600);
+
         $filePath = $req->file('file')->getRealPath();
         $data = readXlsxRaw($filePath);
         $rows = array_slice($data, 1);

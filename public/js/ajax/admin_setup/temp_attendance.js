@@ -74,7 +74,7 @@ $(document).ready(function () {
     }
 
 
-    $(document).off("keyup", '#reg_no').on("keyup", '#reg_no', function (e){
+    $('#reg_no').off("keyup", ).on("keyup", function (e){
         let reg_no = $(this).val();
         $.ajax({
             url: `${apiUrl}/admin/users/user_info/get/reg`,
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 
     // Upload CSV Form Submit Event
-    $(document).off('submit','#CsvForm').on('submit','#CsvForm', function (e) {
+    $('#CsvForm').off('submit',).on('submit', function (e) {
         e.preventDefault();
         let formData = new FormData(this);
         $.ajax({

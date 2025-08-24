@@ -178,7 +178,7 @@ $(document).ready(function () {
 
 
     // Upload CSV Form Submit Event
-    $(document).off('submit','#CsvForm').on('submit','#CsvForm', function (e) {
+    $('#CsvForm').off('submit',).on('submit', function (e) {
         e.preventDefault();
         let formData = new FormData(this);
         $.ajax({
