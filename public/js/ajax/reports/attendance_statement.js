@@ -20,7 +20,7 @@ $(document).ready(function () {
 
 
     // Events Change 
-    $('#events').off('change',).on('change', function (e) {
+    $('#events').off('change').on('change', function (e) {
         e.preventDefault();
         let search = $(this).val();
         $.ajax({
@@ -35,7 +35,7 @@ $(document).ready(function () {
     
     
     // Events Change 
-    $('#eventDate, #gender, #qt_status, #events').off('change',).on('change', function (e) {
+    $('#eventDate, #gender, #qt_status, #events').off('change','#eventDate, #gender, #qt_status').on('change', function (e) {
         e.preventDefault();
         let date = $("#eventDate").val();
         let events = $('#events').val();
@@ -85,7 +85,7 @@ $(document).ready(function () {
                                     table += `<td>${key + 1}</td>
                                             <td>${p.reg_no}</td>
                                             <td>${p.name}</td>
-                                            <td>${p.branchs.short}</td>
+                                            <td>${p.branchs.branch}</td>
                                             <td>${p.phone}</td>
                                             <td style="text-align:center">${p.date}</td>`;
                                     table += `</tr>`;

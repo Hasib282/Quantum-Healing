@@ -38,7 +38,7 @@ $(document).ready(function () {
                         <tr>
                             <td colspan="2">
                                 <div class="center">
-                                    <img src="${apiUrl.replace('/api', '')}/storage/${res.user.image ? res.user.image : 'male.png'}?${new Date().getTime()}" height="200" onerror="this.onerror=null;this.src='${apiUrl.replace('/api', '')}/storage/male.png';">
+                                    <img src="${apiUrl.replace('/api', '')}/storage/${res.user?.image}" height="200" loading="lazy" onerror="this.onerror=null;this.src='${apiUrl.replace('/api', '')}/storage/${(res.user.gender == 'female' ? 'female.png' : 'male.png')}';">
                                 </div>
                             </td>
                         </tr>
@@ -56,7 +56,7 @@ $(document).ready(function () {
                         </tr>
                         <tr>
                             <td>Branch :</td>
-                            <td>${res.user.branch}</td>
+                            <td>${res.user.branchs.branch}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -66,20 +66,23 @@ $(document).ready(function () {
         $('#qr_url').val('');
         $('#qr_url').focus();
 
-        let events = $('#events').val();
-        let date = $('#date').val();
-        
-        $.ajax({
-            url: `${apiUrl}/admin/attendance/count`,
-            data: {events, date},
-            success: function (res) {
-                $('#grad').html(res.graduate ?? 0)
-                $('#pro').html(res.prograduate ?? 0)
-                $('#other').html(res.temp ?? 0)
-                let total = Number(res.graduate) + Number(res.prograduate) + Number(res.temp);
-                $('#tot').html(total ?? 0)
-            }
-        });
+        if(res.counts){
+            let totMale = Number(res.counts.male_graduate) + Number(res.counts.male_pro);
+            let totFemale = Number(res.counts.female_graduate) + Number(res.counts.female_pro);
+            let total = Number(totMale) + Number(totFemale) + Number(res.counts.temp);
+
+            $('#male_grad').html(res.counts.male_graduate ?? 0)
+            $('#male_pro').html(res.counts.male_pro ?? 0)
+            $('#female_grad').html(res.counts.female_graduate ?? 0)
+            $('#female_pro').html(res.counts.female_pro ?? 0)
+            
+            $('#tot_male').html(totMale ?? 0)
+            $('#tot_female').html(totFemale ?? 0)
+
+            $('#other').html(res.counts.temp ?? 0)
+            
+            $('#tot').html(total ?? 0)
+        }
     });
 
 
@@ -143,18 +146,27 @@ $(document).ready(function () {
     
     
     // Events Change 
-    $('#events').off('change',).on('change', function (e) {
+    $('#events').off('change').on('change', function (e) {
         e.preventDefault();
         let events = $('#events').val();
         let date = $('#date').val();
         $.ajax({
-            url: `${apiUrl}/admin/attendance/count`,
-            data: {events, date},
+            url: `${apiUrl}/admin/attendance/count/${events}/${date}`,
             success: function (res) {
-                $('#grad').html(res.graduate ?? 0)
-                $('#pro').html(res.prograduate ?? 0)
+                let totMale = Number(res.male_graduate) + Number(res.male_pro);
+                let totFemale = Number(res.female_graduate) + Number(res.female_pro);
+                let total = Number(totMale) + Number(totFemale) + Number(res.temp);
+
+                $('#male_grad').html(res.male_graduate ?? 0)
+                $('#male_pro').html(res.male_pro ?? 0)
+                $('#female_grad').html(res.female_graduate ?? 0)
+                $('#female_pro').html(res.female_pro ?? 0)
+                
+                $('#tot_male').html(totMale ?? 0)
+                $('#tot_female').html(totFemale ?? 0)
+
                 $('#other').html(res.temp ?? 0)
-                let total = Number(res.graduate) + Number(res.prograduate) + Number(res.temp);
+                
                 $('#tot').html(total ?? 0)
             }
         });

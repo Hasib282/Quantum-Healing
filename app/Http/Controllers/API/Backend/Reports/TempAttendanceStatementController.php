@@ -37,12 +37,12 @@ class TempAttendanceStatementController extends Controller
             'date' => 'required'
         ]);
 
-        $data = Attendence::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,short')
+        $data = Attendence_Temp::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,short')
         ->where('event_id', $req->events)
-        ->where('date', "Like",  $req->date ."%")
+        ->where('date', $req->date)
         ->get();
         
-        $pdf = Pdf::loadView('report.attendance_statement.print', compact('data'))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('report.temp_attendance_statement.print', compact('data'))->setPaper('a4', 'portrait');
         return $pdf->stream();
     } // End Method
 }

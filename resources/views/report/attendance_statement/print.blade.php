@@ -67,7 +67,7 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $p->reg_no }}</td>
                     <td>{{ $p->name }}</td>
-                    <td>{{ $p->branchs->short ?? '-' }}</td>
+                    <td>{{ $p->branchs->branch ?? '-' }}</td>
                     <td>{{ $p->phone }}</td>
                     <td style="text-align: center;">{{ $p->date }}</td>
                 </tr>

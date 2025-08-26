@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 
     // Events Change 
-    $('#events').off('change',).on('change', function (e) {
+    $('#events').off('change').on('change', function (e) {
         e.preventDefault();
         let search = $(this).val();
         $.ajax({
@@ -31,7 +31,7 @@ $(document).ready(function () {
     
     
     // Events Change 
-    $('#eventDate, #events').off('change',).on('change', function (e) {
+    $('#eventDate, #events').off('change','#eventDate').on('change', function (e) {
         e.preventDefault();
         let date = $("#eventDate").val();
         let events = $('#events').val();

@@ -17,7 +17,7 @@ class AttendanceStatementController extends Controller
             'date' => 'required'
         ]);
 
-        $data = Attendence::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,short')
+        $data = Attendence::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,branch')
         ->where('event_id', $req->events)
         ->where('date', $req->date)
         ->whereHas('participants', function ($query) use ($req) {
@@ -45,7 +45,7 @@ class AttendanceStatementController extends Controller
             'date' => 'required'
         ]);
 
-        $data = Attendence::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,short')
+        $data = Attendence::with('events:id,name','participants:gender,qt_status,reg_no,phone,name,branch','participants.branchs:id,branch')
         ->where('event_id', $req->events)
         ->where('date', "Like",  $req->date ."%")
         ->whereHas('participants', function ($query) use ($req) {

@@ -57,20 +57,32 @@
                     <caption style="background:#270fa5a8;">Atendence Count</caption>
                     <tbody>
                         <tr>
+                            <td rowspan="2">Male</td>
                             <td>Graduate</td>
-                            <td id="grad">0</td>
+                            <td id="male_grad" style="text-align: right;">0</td>
+                            <td rowspan="2" id="tot_male" style="text-align: right;">0</td>
                         </tr>
                         <tr>
                             <td>Pro-master</td>
-                            <td id="pro">0</td>
+                            <td id="male_pro" style="text-align: right;">0</td>
                         </tr>
                         <tr>
-                            <td>Others</td>
-                            <td id="other">0</td>
+                            <td rowspan="2">Female</td>
+                            <td>Graduate</td>
+                            <td id="female_grad" style="text-align: right;">0</td>
+                            <td rowspan="2" id="tot_female" style="text-align: right;">0</td>
                         </tr>
                         <tr>
-                            <th>Total</th>
-                            <th id="tot">0</th>
+                            <td>Pro-master</td>
+                            <td id="female_pro" style="text-align: right;">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Others</td>
+                            <td id="other" style="text-align: right;">0</td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Total</th>
+                            <th id="tot" style="text-align: right;">0</th>
                         </tr>
                     </tbody>
                 </table>

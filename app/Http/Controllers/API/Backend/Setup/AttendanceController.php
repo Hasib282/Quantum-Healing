@@ -32,36 +32,40 @@ class AttendanceController extends Controller
     // Insert Attendance
     public function Insert(Request $req){
         $req->validate([
-            'events' => 'required',
+            'events' => 'required|exists:events,id',
             'date' => 'required',
             'qr_url' => 'required'
         ]);
 
-        $attendence = "";
-
-        // Check User Data
-        $user = User_Info::with('branchs')
+        // Get User Data
+        $user = User_Info::with('branchs:id,branch')
         ->select('reg_no','id','name','phone','gender','qt_status','branch','image')
         ->where('qr_url', $req->qr_url)
         ->orWhere('reg_no', $req->qr_url)
         ->first();
 
+        // Get Event Status
+        $event = Event::select('all')->find($req->events);
+
         // Check User Attendance
         if($user){
-            $attendence = Attendence::where('event_id',$req->events)->where('reg_no',$user->reg_no)->where('date',$req->date)->first();
+            $attendence = Attendence::where([
+                ['event_id', '=', $req->events],
+                ['reg_no', '=', $user->reg_no],
+                ['date', '=', $req->date]
+            ])->exists();
+            
+            if($attendence){
+                return response()->json([
+                    'status'=> false,
+                    'message' => 'Your Attendance is already Given',
+                    "user" => $user
+                ], 200);
+            }
         }
 
-        if($attendence){
-            return response()->json([
-                'status'=> false,
-                'message' => 'Your Attendance is already Given',
-                "user" => $user
-            ], 200);
-        }
 
-        // Check Event Status
-        $event = Event::where('id', $req->events)->first();
-
+        // If All Participants are Alowed in Event
         if($event->all == 1){
             if(!$user){
                 Attendence_Temp::create([
@@ -70,69 +74,103 @@ class AttendanceController extends Controller
                     'qr_url' => $req->qr_url,
                 ]);
 
+                $counts = $this->Count($req->events, $req->date);
+
                 return response()->json([
                     'status'=> true,
                     'message' => 'Your Attendance is Successfull. Status others.',
-                    "user" => $user
+                    "user" => null,
+                    'counts' => $counts
                 ], 200);
             }
 
+            // Save attendence for valid user
             $insert = Attendence::create([
                 'event_id' => $req->events,
                 'date' => $req->date,
                 'reg_no' => $user->reg_no,
             ]);
-
-            $data = Attendence::with('users:name,reg_no','events:id,name')->findOrFail($insert->id);
             
+            $counts = $this->Count($req->events, $req->date);
+
             return response()->json([
                 'status'=> true,
                 'message' => 'Your Attendance is Successfull',
-                "data" => $data,
-                "user" => $user
+                "data" => $insert->load('users:name,reg_no','events:id,name'),
+                "user" => $user,
+                'counts' => $counts
             ], 200);
         }
-        else if($event->all == 0){
-            $data = Event_User_List::with('events','participants')
-            ->where('event_id', $req->events)
-            ->whereHas('participants',function($query) use ($req) {
-                $query->where('qr_url', $req->qr_url);
-                $query->orWhere('reg_no', $req->qr_url);
-            })
-            ->first();
 
-            if ($data) {
-                if($event->id == 2){
-                    Attendence::create([
-                        'event_id' => 1,
-                        'date' => $req->date,
-                        'reg_no' => $data->participants->first()->reg_no,
-                    ]);
-                }
+        // If Limited Participants are Alowed in Event
+        $participantExists = Event_User_List::with('participants:qr_url,reg_no')
+        ->where('event_id', $req->events)
+        ->whereHas('participants',function($query) use ($req) {
+            $query->where('qr_url', $req->qr_url);
+            $query->orWhere('reg_no', $req->qr_url);
+        })
+        ->first();
 
-                $insert = Attendence::create([
-                    'event_id' => $req->events,
+        if ($participantExists) {
+            $regNo = $participantExists->first()->reg_no;
+
+            // If hadis than insert attendence into healing event
+            if($req->events == 2){
+                Attendence::create([
+                    'event_id' => 1,
                     'date' => $req->date,
-                    'reg_no' => $data->participants->first()->reg_no,
+                    'reg_no' => $regNo,
                 ]);
-
-                $data = Attendence::with('users:name,reg_no','events:id,name')->findOrFail($insert->id);
-                
-                return response()->json([
-                    'status'=> true,
-                    'message' => 'Attendance Added Successfully',
-                    "data" => $data,
-                    "user" => $user
-                ], 200);
             }
+
+            $insert = Attendence::create([
+                'event_id' => $req->events,
+                'date' => $req->date,
+                'reg_no' => $regNo,
+            ]);
+
+            $counts = $this->Count($req->events, $req->date);
+
+            return response()->json([
+                'status'=> true,
+                'message' => 'Attendance Added Successfully',
+                "data" => $insert->load('users:name,reg_no','events:id,name'),
+                "user" => $user,
+                'counts' => $counts
+            ], 200);
         }
         
-
         return response()->json([
             'status'=> false,
             'message' => 'You are not allowed to enter',
             'user' => $user,
         ], 200);
+    } // End Method
+
+
+
+    // User Count
+    public function Count($eventId, $date){
+        $attendance = Attendence::join('user__infos as ui', 'ui.reg_no', '=', 'attendences.reg_no')
+        ->where('attendences.event_id', $eventId)
+        ->where('attendences.date', $date)
+        ->selectRaw("
+            SUM(CASE WHEN ui.gender = 'Male'   AND ui.qt_status = 'Graduate'   THEN 1 ELSE 0 END) as male_graduate,
+            SUM(CASE WHEN ui.gender = 'Male'   AND ui.qt_status = 'Pro-master' THEN 1 ELSE 0 END) as male_prograduate,
+            SUM(CASE WHEN ui.gender = 'Female' AND ui.qt_status = 'Graduate'   THEN 1 ELSE 0 END) as female_graduate,
+            SUM(CASE WHEN ui.gender = 'Female' AND ui.qt_status = 'Pro-master' THEN 1 ELSE 0 END) as female_prograduate
+        ")
+        ->first();
+        
+        $temp = Attendence_Temp::where('event_id',$eventId)->where('date',$date)->count();
+
+        return [
+            'male_graduate' => $attendance->male_graduate ?? 0,
+            'male_pro' => $attendance->male_prograduate ?? 0,
+            'female_graduate' => $attendance->female_graduate ?? 0,
+            'female_pro' => $attendance->female_prograduate ?? 0,
+            'temp' => $temp,
+        ];
     } // End Method
 
 
@@ -152,24 +190,30 @@ class AttendanceController extends Controller
 
 
 
-    // User Count
-    public function Count(Request $req){
-        $graduate = Attendence::with('users:name,reg_no,qt_status')->where('event_id',$req->events)->where('date',$req->date)->whereHas('users', function ($q) {
-                $q->where('qt_status', 'Graduate');
-            })
-            ->count();
-        $prograduate = Attendence::with('users:name,reg_no,qt_status')->where('event_id',$req->events)->where('date',$req->date)->whereHas('users', function ($q) {
-                $q->where('qt_status', 'Pro-master');
-            })->count();
-        $temp = Attendence_Temp::where('event_id',$req->events)->where('date',$req->date)->count();
+    // // User Count
+    // public function Count(Request $req){
+    //     $attendance = Attendence::join('user__infos as ui', 'ui.reg_no', '=', 'attendences.reg_no')
+    //     ->where('attendences.event_id', $req->events)
+    //     ->where('attendences.date', $req->date)
+    //     ->selectRaw("
+    //         SUM(CASE WHEN ui.gender = 'Male'   AND ui.qt_status = 'Graduate'   THEN 1 ELSE 0 END) as male_graduate,
+    //         SUM(CASE WHEN ui.gender = 'Male'   AND ui.qt_status = 'Pro-master' THEN 1 ELSE 0 END) as male_prograduate,
+    //         SUM(CASE WHEN ui.gender = 'Female' AND ui.qt_status = 'Graduate'   THEN 1 ELSE 0 END) as female_graduate,
+    //         SUM(CASE WHEN ui.gender = 'Female' AND ui.qt_status = 'Pro-master' THEN 1 ELSE 0 END) as female_prograduate
+    //     ")
+    //     ->first();
+        
+    //     $temp = Attendence_Temp::where('event_id',$req->events)->where('date',$req->date)->count();
 
-        return response()->json([
-            'status' => true,
-            'graduate' => $graduate,
-            'prograduate' => $prograduate,
-            'temp' => $temp,
-        ], 200);
-    } // End Method
+    //     return response()->json([
+    //         'status' => true,
+    //         'male_graduate' => $attendance->male_graduate ?? 0,
+    //         'male_pro' => $attendance->male_prograduate ?? 0,
+    //         'female_graduate' => $attendance->female_graduate ?? 0,
+    //         'female_pro' => $attendance->female_prograduate ?? 0,
+    //         'temp' => $temp,
+    //     ], 200);
+    // } // End Method
 
 
 
