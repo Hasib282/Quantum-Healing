@@ -258,233 +258,147 @@ class UserInfoController extends Controller
 
 
 
-    // Upload User Data
-    public function UploadData(Request $req){
-        $req->validate([
-            'file' => 'required|file|mimes:xlsx'
-        ]);
-        set_time_limit(3600);
+    // // Upload User Data
+    // public function UploadData(Request $req){
+    //     $req->validate([
+    //         'file' => 'required|file|mimes:xlsx'
+    //     ]);
+    //     set_time_limit(3600);
 
-        $filePath = $req->file('file')->getRealPath();
-        $data = readXlsxRaw($filePath);
+    //     $filePath = $req->file('file')->getRealPath();
+    //     $data = readXlsxRaw($filePath);
         
-        $isHeader = true;
-        $insertData = [];
-        foreach ($data as $key => $item) {
-            // Skip header
-            if ($isHeader) {
-                $isHeader = false;
-                continue;
-            }
+    //     $isHeader = true;
+    //     $insertData = [];
+    //     foreach ($data as $key => $item) {
+    //         // Skip header
+    //         if ($isHeader) {
+    //             $isHeader = false;
+    //             continue;
+    //         }
 
-            if (!empty($item[27]) && is_numeric($item[27])) {
-                $date = excelDateToPhp((float)$item[27]);   // Try to convert numeric values to dates
-                if ($date !== $item[27]) {                  // Only replace if it looks like a valid date
-                    $item[27] = $date;
-                }
-            }
-            if (!empty($item[28]) && is_numeric($item[28])) {
-                $date = excelDateToPhp((float)$item[28]);       // Try to convert numeric values to dates
-                if ($date !== $item[28]) {                      // Only replace if it looks like a valid date
-                    $item[28] = $date;
-                }
-            }
+    //         if (!empty($item[27]) && is_numeric($item[27])) {
+    //             $date = excelDateToPhp((float)$item[27]);   // Try to convert numeric values to dates
+    //             if ($date !== $item[27]) {                  // Only replace if it looks like a valid date
+    //                 $item[27] = $date;
+    //             }
+    //         }
+    //         if (!empty($item[28]) && is_numeric($item[28])) {
+    //             $date = excelDateToPhp((float)$item[28]);       // Try to convert numeric values to dates
+    //             if ($date !== $item[28]) {                      // Only replace if it looks like a valid date
+    //                 $item[28] = $date;
+    //             }
+    //         }
 
-            $sl = !empty($item[0]) ? $item[0] : GenerateTempSLNo() + 0;
+    //         $sl = !empty($item[0]) ? $item[0] : GenerateTempSLNo() + 0;
 
-            if ($item[8]) {
-                // Calculate DOB from Age (approximate)
-                $age = (int) $item[8];
-                $dob = now()->subYears($age)->format('Y-m-d');
-            } else {
-                // Calculate DOB from Age (approximate)
-                $age = null;
-                $dob = null;
-            }
+    //         if ($item[8]) {
+    //             // Calculate DOB from Age (approximate)
+    //             $age = (int) $item[8];
+    //             $dob = now()->subYears($age)->format('Y-m-d');
+    //         } else {
+    //             // Calculate DOB from Age (approximate)
+    //             $age = null;
+    //             $dob = null;
+    //         }
 
-            // Insert into insertData array
-            $insertData[] = [
-                'sl' => $sl,
-                'qr_url' => !empty($item[1]) ? $item[1] : null,
-                'u_id' => !empty($item[2]) ? $item[2] : null,
-                'reg_no' => $item[3],
-                'name' => $item[4],
-                'phone' => $item[5],
-                'duplicate' => !empty($item[6]) ? $item[6] : 0,
-                'gender' => $item[7],
-                'age' => $age,
-                'dob' => $dob,
-                'occupation' => !empty($item[10]) ? $item[10] : null,
-                'qt_status' => $item[11],
-                'quantum' => !empty($item[12]) ? $item[12] : 0,
-                'quantier' => !empty($item[13]) ? $item[13] : 0,
-                'ardentier' => !empty($item[14]) ? $item[14] : 0,
-                'branch' => !empty($item[15]) ? $item[15] : null,     
-                'job_status' => !empty($item[16]) ? $item[16] : 0,
-                'psyche_certificate' => !empty($item[17]) ? $item[17] : 0,
-                'sp' => !empty($item[18]) ? $item[18] : 0,
-                'group' => !empty($item[19]) ? $item[19] : null,
-                'call' => !empty($item[20]) ? $item[20] : null,
-                'sms' => !empty($item[21]) ? $item[21] : 0,
-                'color' => !empty($item[22]) ? $item[22] : null,
-                'barcode' => !empty($item[23]) ? $item[23] : 0,
-                'new_barcode' => !empty($item[24]) ? $item[24] : null,
-                'new_barcode_sl' => !empty($item[25]) ? $item[25] : null,
-                'barcode_delivery' => !empty($item[26]) ? $item[26] : 0,
-                'first_attend' => !empty($item[27]) ? $item[27] : null,
-                'last_attend' =>  !empty($item[28]) ? $item[28] : null,
-                'image' =>  'qt_img/'.$sl.'.jpeg',
-            ];
-        };
-
-
-        if (empty($insertData)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'No data found in file.'
-            ], 200);
-        }
+    //         // Insert into insertData array
+    //         $insertData[] = [
+    //             'sl' => $sl,
+    //             'qr_url' => !empty($item[1]) ? $item[1] : null,
+    //             'u_id' => !empty($item[2]) ? $item[2] : null,
+    //             'reg_no' => $item[3],
+    //             'name' => $item[4],
+    //             'phone' => $item[5],
+    //             'duplicate' => !empty($item[6]) ? $item[6] : 0,
+    //             'gender' => $item[7],
+    //             'age' => $age,
+    //             'dob' => $dob,
+    //             'occupation' => !empty($item[10]) ? $item[10] : null,
+    //             'qt_status' => $item[11],
+    //             'quantum' => !empty($item[12]) ? $item[12] : 0,
+    //             'quantier' => !empty($item[13]) ? $item[13] : 0,
+    //             'ardentier' => !empty($item[14]) ? $item[14] : 0,
+    //             'branch' => !empty($item[15]) ? $item[15] : null,     
+    //             'job_status' => !empty($item[16]) ? $item[16] : 0,
+    //             'psyche_certificate' => !empty($item[17]) ? $item[17] : 0,
+    //             'sp' => !empty($item[18]) ? $item[18] : 0,
+    //             'group' => !empty($item[19]) ? $item[19] : null,
+    //             'call' => !empty($item[20]) ? $item[20] : null,
+    //             'sms' => !empty($item[21]) ? $item[21] : 0,
+    //             'color' => !empty($item[22]) ? $item[22] : null,
+    //             'barcode' => !empty($item[23]) ? $item[23] : 0,
+    //             'new_barcode' => !empty($item[24]) ? $item[24] : null,
+    //             'new_barcode_sl' => !empty($item[25]) ? $item[25] : null,
+    //             'barcode_delivery' => !empty($item[26]) ? $item[26] : 0,
+    //             'first_attend' => !empty($item[27]) ? $item[27] : null,
+    //             'last_attend' =>  !empty($item[28]) ? $item[28] : null,
+    //             'image' =>  'qt_img/'.$sl.'.jpeg',
+    //         ];
+    //     };
 
 
-        // DB::transaction(function () use ($insertData) {
-        //     if (!empty($insertData)) {
-        //         foreach (array_chunk($insertData, 1500) as $chunk) {
-        //             Temp_User::insert($chunk);
-        //         }
-        //     }
-
-        //     $count = $this->moveTempUsers();
-        // });
+    //     if (empty($insertData)) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'No data found in file.'
+    //         ], 200);
+    //     }
 
 
-        // if($count > 0){
-        //     return response()->json([
-        //         'status' => true,
-        //         'message' => 'Excel Data Inserted successfully',
-        //         'count' => $count
-        //     ], 200);
-        // }
+    //     // DB::transaction(function () use ($insertData) {
+    //     //     if (!empty($insertData)) {
+    //     //         foreach (array_chunk($insertData, 1500) as $chunk) {
+    //     //             Temp_User::insert($chunk);
+    //     //         }
+    //     //     }
 
-        // return response()->json([
-        //     'status' => false,
-        //     'message' => 'No unique data in Excel File',
-        // ], 200);
+    //     //     $count = $this->moveTempUsers();
+    //     // });
 
 
-        $count = 0;
+    //     // if($count > 0){
+    //     //     return response()->json([
+    //     //         'status' => true,
+    //     //         'message' => 'Excel Data Inserted successfully',
+    //     //         'count' => $count
+    //     //     ], 200);
+    //     // }
 
-        DB::transaction(function () use ($insertData, &$count) {
-            // Step 1: Remove already existing reg_no
-            $regNos = array_column($insertData, 'reg_no');
-            $existing = User_Info::whereIn('reg_no', $regNos)->pluck('reg_no')->toArray();
-
-            $filteredData = array_filter($insertData, function ($row) use ($existing) {
-                return !in_array($row['reg_no'], $existing);
-            });
-
-            if (empty($filteredData)) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No unique data in Excel File',
-                ], 200);
-            }
-
-            // Step 2: Handle branches
-            $branchNames = collect($filteredData)
-                ->pluck('branch')
-                ->filter()
-                ->map(fn($b) => strtolower(trim($b)))
-                ->unique();
-
-            $existingBranches = Branch::pluck('branch')->map(fn($b) => strtolower(trim($b)))->toArray();
-
-            $newBranches = $branchNames->diff($existingBranches);
-            if ($newBranches->isNotEmpty()) {
-                $branchInsert = [];
-                foreach ($newBranches as $branchName) {
-                    $branchInsert[] = ['branch' => ucwords($branchName)];
-                }
-                Branch::insert($branchInsert);
-            }
-
-            // Step 3: Get branch mapping
-            $branches = Branch::pluck('id', DB::raw('LOWER(TRIM(branch)) as branch'));
-
-            // Step 4: Replace branch names with branch IDs
-            $finalData = collect($filteredData)->map(function ($user) use ($branches) {
-                $user['branch'] = $user['branch']
-                    ? $branches[strtolower(trim($user['branch']))] ?? null
-                    : null;
-                return $user;
-            })->toArray();
-
-            $count = count($finalData);
-
-            // Step 5: Bulk Insert in chunks
-            foreach (array_chunk($finalData, 1500) as $chunk) {
-                User_Info::insert($chunk);
-            }
-        });
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Excel Data Inserted successfully',
-            'count' => $count
-        ], 200);
-    } // End Method
+    //     // return response()->json([
+    //     //     'status' => false,
+    //     //     'message' => 'No unique data in Excel File',
+    //     // ], 200);
 
 
+    //     $count = 0;
 
-    // public function moveTempUsers(){
-    //     // // Step 1: Get only unique reg_no from Temp_User that are not in User_Info
-    //     // $existingRegNos = User_Info::pluck('reg_no')->toArray();
+    //     DB::transaction(function () use ($insertData, &$count) {
+    //         // Step 1: Remove already existing reg_no
+    //         $regNos = array_column($insertData, 'reg_no');
+    //         $existing = User_Info::whereIn('reg_no', $regNos)->pluck('reg_no')->toArray();
 
-    //     // $validTempUsers = Temp_User::whereNotIn('reg_no', $existingRegNos)
-    //     //     ->get()
-    //     //     ->unique('reg_no'); // keep unique reg_no only
+    //         $filteredData = array_filter($insertData, function ($row) use ($existing) {
+    //             return !in_array($row['reg_no'], $existing);
+    //         });
 
-    //     // Step 1: Get only unique reg_no from Temp_User that are not in User_Info
-    //     $validTempUsers = Temp_User::leftJoin('user_info as u', 'temp_users.reg_no', '=', 'u.reg_no')
-    //     ->whereNull('u.reg_no')
-    //     ->select('temp_users.*')
-    //     ->distinct('temp_users.reg_no')
-    //     ->get();
+    //         if (empty($filteredData)) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'No unique data in Excel File',
+    //             ], 200);
+    //         }
 
-    //     if($validTempUsers->count() > 0){
-    //         // // Step 2: Delete duplicates from Temp_User
-    //         // Temp_User::whereIn('reg_no', $existingRegNos)->delete();
+    //         // Step 2: Handle branches
+    //         $branchNames = collect($filteredData)
+    //             ->pluck('branch')
+    //             ->filter()
+    //             ->map(fn($b) => strtolower(trim($b)))
+    //             ->unique();
 
-            
+    //         $existingBranches = Branch::pluck('branch')->map(fn($b) => strtolower(trim($b)))->toArray();
 
-    //         // // Step 2: Get distinct branch names from Temp_User
-    //         // $branchNames = Temp_User::pluck('branch')
-    //         //     ->map(fn($branch) => strtolower(rtrim($branch)))
-    //         //     ->unique()
-    //         //     ->values();
-
-    //         // // Step 3: Get already existing branches in Branch table
-    //         // $existingBranches = Branch::pluck('branch')->map(fn($branch) => strtolower(rtrim($branch)))->toArray();
-
-    //         // // Step 4: Find new branches that are not in Branch table
-    //         // $newBranches = $branchNames->diff($existingBranches);
-
-    //         // // Step 5: Insert new branches into Branch table
-    //         // foreach ($newBranches as $branchName) {
-    //         //     Branch::create(['branch' => ucwords($branchName)]);
-    //         // }
-
-    //         // Step 2: Get distinct branch names from Temp_User
-    //         $branchNames = Temp_User::selectRaw('LOWER(TRIM(branch)) as branch')
-    //             ->distinct()
-    //             ->pluck('branch');
-
-    //         // Step 3: Get already existing branches in Branch table
-    //         $existingBranches = Branch::pluck('branch')->map(fn($b)=> strtolower(trim($b)))->toArray();
-
-    //         // Step 4: Find new branches that are not in Branch table
     //         $newBranches = $branchNames->diff($existingBranches);
-
-    //         // Step 5: Insert new branches into Branch table
     //         if ($newBranches->isNotEmpty()) {
     //             $branchInsert = [];
     //             foreach ($newBranches as $branchName) {
@@ -493,107 +407,29 @@ class UserInfoController extends Controller
     //             Branch::insert($branchInsert);
     //         }
 
-    //         // $branches = Branch::pluck('id', 'branch')->mapWithKeys(
-    //         //     fn($id, $name) => [strtolower(rtrim($name)) => $id]
-    //         // );
-
-    //         // Step 6: Map branch name to branch_id
+    //         // Step 3: Get branch mapping
     //         $branches = Branch::pluck('id', DB::raw('LOWER(TRIM(branch)) as branch'));
 
-            
-    //         // $insertData = [];
-    //         // foreach ($validTempUsers as $user) {
-    //         //     $insertData[] = [
-    //         //         'sl' => $user->sl,
-    //         //         'qr_url' => $user->qr_url,
-    //         //         'u_id' => $user->u_id,
-    //         //         'reg_no' => $user->reg_no,
-    //         //         'name' => $user->name,
-    //         //         'phone' => $user->phone,
-    //         //         'duplicate' => $user->duplicate,
-    //         //         'gender' => $user->gender,
-    //         //         'age' => $user->age,
-    //         //         'dob' => $user->dob,
-    //         //         'occupation' => $user->occupation,
-    //         //         'qt_status' => $user->qt_status,
-    //         //         'quantum' => $user->quantum,
-    //         //         'quantier' => $user->quantier,
-    //         //         'ardentier' => $user->ardentier,
-    //         //         'branch' => $branches[strtolower(rtrim($user->branch))] ?? null,
-    //         //         'job_status' => $user->job_status,
-    //         //         'psyche_certificate' => $user->psyche_certificate,
-    //         //         'sp' => $user->sp,
-    //         //         'group' => $user->group,
-    //         //         'call' => $user->call,
-    //         //         'sms' => $user->sms,
-    //         //         'color' => $user->color,
-    //         //         'barcode' => $user->barcode,
-    //         //         'new_barcode' => $user->new_barcode,
-    //         //         'new_barcode_sl' => $user->new_barcode_sl,
-    //         //         'barcode_delivery' => $user->barcode_delivery,
-    //         //         'first_attend' => $user->first_attend,
-    //         //         'last_attend' =>  $user->last_attend,
-    //         //         'image' =>  $user->image,
-    //         //     ];
-    //         // }
+    //         // Step 4: Replace branch names with branch IDs
+    //         $finalData = collect($filteredData)->map(function ($user) use ($branches) {
+    //             $user['branch'] = $user['branch']
+    //                 ? $branches[strtolower(trim($user['branch']))] ?? null
+    //                 : null;
+    //             return $user;
+    //         })->toArray();
 
-    //         // DB::transaction(function () use ($insertData) {
-    //         //     if (!empty($insertData)) {
-    //         //         foreach (array_chunk($insertData, 1500) as $chunk) {
-    //         //             User_Info::insert($chunk);
-    //         //         }
-    //         //     }
-    //         // });
+    //         $count = count($finalData);
 
-    //         // Step 7: Bulk Insert into User_Info
-    //         DB::transaction(function () use ($validTempUsers,$branches) {
-    //             // Chunk the data and Execute loop for each chunk data
-    //             $validTempUsers->chunk(1500)->each(function ($chunk) use ($branches) {
-    //                 // Execute a loop for each row of chunck data
-    //                 $insertData = $chunk->map(function ($user) use ($branches) {
-                        
-    //                     return [
-    //                         'sl' => $user->sl,
-    //                         'qr_url' => $user->qr_url,
-    //                         'u_id' => $user->u_id,
-    //                         'reg_no' => $user->reg_no,
-    //                         'name' => $user->name,
-    //                         'phone' => $user->phone,
-    //                         'duplicate' => $user->duplicate,
-    //                         'gender' => $user->gender,
-    //                         'age' => $user->age,
-    //                         'dob' => $user->dob,
-    //                         'occupation' => $user->occupation,
-    //                         'qt_status' => $user->qt_status,
-    //                         'quantum' => $user->quantum,
-    //                         'quantier' => $user->quantier,
-    //                         'ardentier' => $user->ardentier,
-    //                         'branch' => $branches[strtolower(trim($user->branch))] ?? null,
-    //                         'job_status' => $user->job_status,
-    //                         'psyche_certificate' => $user->psyche_certificate,
-    //                         'sp' => $user->sp,
-    //                         'group' => $user->group,
-    //                         'call' => $user->call,
-    //                         'sms' => $user->sms,
-    //                         'color' => $user->color,
-    //                         'barcode' => $user->barcode,
-    //                         'new_barcode' => $user->new_barcode,
-    //                         'new_barcode_sl' => $user->new_barcode_sl,
-    //                         'barcode_delivery' => $user->barcode_delivery,
-    //                         'first_attend' => $user->first_attend,
-    //                         'last_attend' => $user->last_attend,
-    //                         'image' => $user->image,
-    //                     ];
-    //                 })->toArray();
+    //         // Step 5: Bulk Insert in chunks
+    //         foreach (array_chunk($finalData, 1500) as $chunk) {
+    //             User_Info::insert($chunk);
+    //         }
+    //     });
 
-    //                 User_Info::insert($insertData);
-    //             });
-    //         });
-    //     }
-
-    //     // Empty the Temp_User table data
-    //     Temp_User::truncate();
-
-    //     return $validTempUsers->count();
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Excel Data Inserted successfully',
+    //         'count' => $count
+    //     ], 200);
     // } // End Method
 }

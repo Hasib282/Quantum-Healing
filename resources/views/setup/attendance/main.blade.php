@@ -7,6 +7,9 @@
                 <button class="open-modal" data-modal-id="addModal" id="add"><i class="fa-solid fa-plus"></i> Add {{ $name }} </button>
             </div>
             <div class="c-2">
+                <button class="open-modal btn-blue" data-modal-id="uploadModal"><i class="fa-solid fa-arrow-up-from-bracket"></i> Upload Excel </button>
+            </div>
+            <div class="c-2">
                 <label for="searchEvents">Events</label>
                 <select name="searchEvents" id="searchEvents">
                     <option value="">Select Events</option>
@@ -15,9 +18,9 @@
             </div>
             <div class="c-2">
                 <label for="searchDates">Date</label>
-                <input type="date" name="searchDates" id="searchDates" class="form-input"  value="{{date('Y-m-d')}}">
+                <input type="date" name="searchDates" id="searchDates" class="form-input" value="{{date('Y-m-d')}}">
             </div>
-            <div class="c-5">
+            <div class="c-3">
                 <label for="search">Search</label>
                 <input type="text" name="search" id="search" class="form-input">
             </div>
@@ -41,6 +44,8 @@
     @include('setup.attendance.edit')
 
     @include('common_modals.delete')
+
+    @include('setup.attendance.upload')
 
     <script src="{{ asset('js/ajax').'/'. $js . '.js' }}"></script>
 @endsection

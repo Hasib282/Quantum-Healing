@@ -285,4 +285,150 @@ class AttendanceController extends Controller
             ], 200);
         }
     } // End Method
+
+
+
+    // Upload User Data
+    public function UploadUserData(Request $req){
+        $req->validate([
+            'file' => 'required|file|mimes:xlsx',
+            'events'=> 'required|exists:events,id',
+            'event_date'=>'required|date'
+        ]);
+        set_time_limit(3600);
+
+        $filePath = $req->file('file')->getRealPath();
+        $data = readXlsxRaw($filePath);
+        
+        $isHeader = true;
+        $insertUser = [];
+        $insertAttendence = [];
+        foreach ($data as $key => $item) {
+            // Skip header
+            if ($isHeader) {
+                $isHeader = false;
+                continue;
+            }
+
+            if (!empty($item[8]) && is_numeric($item[8])) {
+                $date = excelDateToPhp((float)$item[8]);   // Try to convert numeric values to dates
+                if ($date !== $item[8]) {                  // Only replace if it looks like a valid date
+                    $item[8] = $date;
+                }
+            }
+
+            if (!empty($item[8])) {
+                // Calculate age from DOB
+                $dob = \Carbon\Carbon::parse($item[8]);
+                $age = $dob->age;
+            } elseif (!empty($item[7])){
+                // Calculate DOB from Age (approximate)
+                $age = (int) $item[7];
+                $dob = now()->subYears($age)->format('Y-m-d');
+            }
+            else{
+                $dob = null;
+                $age = null;
+            }
+
+            // Insert into insertUser array
+            $insertUser[] = [
+                'qr_url' => !empty($item[5]) ? $item[5] : null,
+                'reg_no' => $item[0],
+                'name' => $item[1],
+                'phone' => $item[6],
+                'gender' => $item[2],
+                'age' => $age,
+                'dob' => $dob,
+                'qt_status' => $item[3],
+                'branch' => !empty($item[4]) ? $item[4] : null,     
+            ];
+
+            $exists = Attendence::where('event_id',$req->events)->where('reg_no',$item[0])->where('date',$req->event_date)->first();
+            
+            // Insert into insertAttandence array
+            if(!$exists){
+                $insertAttendence[] = [
+                    'event_id' => $req->events,
+                    'date' => $req->event_date,
+                    'reg_no' => $item[0],
+                ];
+            }
+        };
+
+        if (empty($insertUser)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No data found in file.'
+            ], 200);
+        }
+
+        $count = 0;
+        DB::transaction(function () use ($insertUser, $insertAttendence, &$count) {
+            // Step 1: Remove already existing reg_no
+            $regNos = array_column($insertUser, 'reg_no');
+            $existing = User_Info::whereIn('reg_no', $regNos)->pluck('reg_no')->toArray();
+
+            $filteredData = array_filter($insertUser, function ($row) use ($existing) {
+                return !in_array($row['reg_no'], $existing);
+            });
+            
+            if (!empty($filteredData)) {
+                // Step 2: Handle branches
+                $branchNames = collect($filteredData)
+                    ->pluck('branch')
+                    ->filter()
+                    ->map(fn($b) => strtolower(trim($b)))
+                    ->unique();
+
+                $existingBranches = Branch::pluck('branch')->map(fn($b) => strtolower(trim($b)))->toArray();
+
+                $newBranches = $branchNames->diff($existingBranches);
+                if ($newBranches->isNotEmpty()) {
+                    $branchInsert = [];
+                    foreach ($newBranches as $branchName) {
+                        $branchInsert[] = ['branch' => ucwords($branchName)];
+                    }
+                    Branch::insert($branchInsert);
+                }
+
+                $sl = GenerateTempSLNo() + 0;
+                // Step 3: Get branch mapping
+                $branches = Branch::get()
+                ->mapWithKeys(fn($b) => [strtolower(trim($b->branch)) => $b->id]);
+                $branches = Branch::pluck('id', DB::raw('LOWER(TRIM(branch)) as branch'));
+
+                // Step 4: Replace branch names with branch IDs
+                $finalData = collect($filteredData)->map(function ($user) use ($branches, $sl) {
+                    $user['branch'] = $user['branch']
+                    ? $branches[strtolower(trim($user['branch']))] ?? null
+                    : null;
+                    $user['sl'] = $sl;
+                    $user['image'] = 'qt_img/'.$sl.'.jpeg';
+                    $sl++;
+                    return $user;
+                })->toArray();
+
+                
+                // Step 5: Bulk Insert in chunks
+                foreach (array_chunk($finalData, 1500) as $chunk) {
+                    User_Info::insert($chunk);
+                }
+            }
+            
+            $count = count($insertAttendence);
+
+            if (!empty($insertAttendence)) {
+                foreach (array_chunk($insertAttendence, 10000) as $chunk) {
+                    Attendence::insert($chunk);
+                }
+            }
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Excel Data Inserted successfully',
+            'count' => $count
+        ], 200);
+    } // End Method
 }

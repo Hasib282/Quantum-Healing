@@ -152,6 +152,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/attendance/search','Search');
             Route::get('/attendance/count/{eventId}/{date}','Count');
             Route::post('/attendance/upload_data', 'UploadData');
+            Route::post('/attendance/upload_user_data', 'UploadUserData');
         }); // End Branch Routes
         
         
