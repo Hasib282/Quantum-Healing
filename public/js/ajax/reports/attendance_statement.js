@@ -5,6 +5,7 @@ $(document).ready(function () {
         { label: 'QT Status' },
         { label: 'SL:' },
         { label: 'Reg No' },
+        { label: 'Barcode' },
         { label: 'Name' },
         { label: 'Branch' },
         { label: 'Phone' },
@@ -84,6 +85,17 @@ $(document).ready(function () {
                                     }
                                     table += `<td>${key + 1}</td>
                                             <td>${p.reg_no}</td>
+                                            <td>
+                                                <svg class="barcode"
+                                                    jsbarcode-value="${p.reg_no}" 
+                                                    jsbarcode-format="code128"
+                                                    jsbarcode-height="35"
+                                                    jsbarcode-width="1"
+                                                    jsbarcode-margin="2"
+                                                    jsbarcode-displayvalue="true"
+                                                    jsbarcode-fontsize="10">
+                                                </svg>
+                                            </td>
                                             <td>${p.name}</td>
                                             <td>${p.branchs.branch}</td>
                                             <td>${p.phone}</td>
@@ -95,6 +107,7 @@ $(document).ready(function () {
                     });
 
                     $('#data-table tbody').html(table);
+                    JsBarcode(".barcode").init();
                 } else {
                     $('#data-table tbody').html('');
                 }

@@ -110,9 +110,8 @@ class AttendanceController extends Controller
             $query->orWhere('reg_no', $req->qr_url);
         })
         ->first();
-
         if ($participantExists) {
-            $regNo = $participantExists->first()->reg_no;
+            $regNo = $participantExists->reg_no;
 
             // If hadis than insert attendence into healing event
             if($req->events == 2){
