@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Backend\Reports;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 
 use App\Models\Attendence;
 
@@ -58,6 +59,16 @@ class AttendanceStatementController extends Controller
             return $participant ? [$participant->gender, $participant->qt_status] : ['', ''];
         })
         ->values();
+
+        $generator = new BarcodeGeneratorPNG();
+
+        foreach ($data as $item) {
+            $p = $item->participants[0];
+            $p->date = $item->date;
+
+            $barcode = $generator->getBarcode($p->reg_no, $generator::TYPE_CODE_128);
+            $p->barcode_svg = 'data:image/png;base64,' . base64_encode($barcode);
+        }
         
         $pdf = Pdf::loadView('report.attendance_statement.print', compact('data'))->setPaper('a4', 'portrait');
         return $pdf->stream();

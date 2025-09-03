@@ -38,6 +38,7 @@
             <th>QT Status</th>
             <th>Sl</th>
             <th>Reg No</th>
+            <th>Barcode</th>
             <th>Name</th>
             <th>Branch</th>
             <th>Phone</th>
@@ -66,6 +67,7 @@
                     <td>{{ $p->qt_status }}</td>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $p->reg_no }}</td>
+                    <td><img src="{{ $p->barcode_svg }}" alt="barcode" style="height:20px;width:100%"></td>
                     <td>{{ $p->name }}</td>
                     <td>{{ $p->branchs->branch ?? '-' }}</td>
                     <td>{{ $p->phone }}</td>
