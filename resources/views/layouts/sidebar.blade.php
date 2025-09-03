@@ -63,7 +63,7 @@
                     <div class="menu-title {{ (Request::segment(1) == 'admin' && Request::segment(2) == 'users' && Request::segment(3) == 'user_info') ? 'active':''}}">
                         <p>
                             <i class="fa-solid fa-address-card"></i>
-                            User Informations
+                            Participants
                         </p>
                     </div>
                 </li>

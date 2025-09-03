@@ -2,7 +2,7 @@ function ShowUsers(res) {
     tableInstance = new GenerateTable({
         tableId: '#data-table',
         data: res.data,
-        tbody: ['reg_no','name','phone','gender','age','branch.branch','occupation','qr_url', {key:'image', type: 'image'}],
+        tbody: ['reg_no','name','phone','gender','age','branchs.branch','occupation','qr_url', {key:'image', type: 'image'}],
         actions: (row) => `
                 <button data-modal-id="editModal" id="edit" data-id="${row.id}"><i class="fas fa-edit"></i></button>
                         
@@ -22,7 +22,7 @@ $(document).ready(function () {
         { label: 'Phone', key: 'phone' },
         { label: 'Gender', key: 'gender' },
         { label: 'Age', key: 'age' },
-        { label: 'Branch', key: 'branch.branch' },
+        { label: 'Branch', key: 'branchs.branch' },
         { label: 'Occupation', key: 'occupation' },
         { label: 'QR URL', key: 'qr_url' },
         { label: 'Image' },
@@ -74,7 +74,7 @@ $(document).ready(function () {
         $('#updateDob').val(item.dob);
         $('#updateQt_Status').val(item.qt_status);
         $('#updateBranch').val(item.branchs.branch);
-        $('#updateBranch').attr('data-id',item.branch.id);
+        $('#updateBranch').attr('data-id',item.branchs.id);
         $('#updateCall').val(item.call);
         $('#updateColor').val(item.color);
         $('#updateOccupation').val(item.occupation);

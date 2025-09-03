@@ -79,8 +79,6 @@
 
     @include('users.user_info.edit')
 
-    {{-- @include('users.user_info.upload') --}}
-
     @include('common_modals.detailsModal')
 
     @include('common_modals.delete')
