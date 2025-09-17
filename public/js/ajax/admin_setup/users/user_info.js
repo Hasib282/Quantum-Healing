@@ -95,6 +95,33 @@ $(document).ready(function () {
         $('#updatePreviewImage').attr('src',`${apiUrl.replace('/api', '')}/storage/${item.image ? item.image : 'male.png'}?${new Date().getTime()} `).show();
         // $('#updateImage').val(item.image);
     }; // End Method
+
+
+
+    // Upload CSV Form Submit Event
+    $('#CsvForm').off('submit',).on('submit', function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.ajax({
+            url: `${apiUrl}/admin/users/upload_data`,
+            method: 'POST',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: formData,
+            success: function (res) {
+                if (res.status == true) {
+                    $('#CsvForm')[0].reset();
+
+                    $('#message').html(res.message)
+
+                    tableInstance.updateRow(res.updatedData.id, res.updatedData);
+
+                    toastr.success(res.message, 'Added!');
+                }
+            }
+        });
+    })
 });
 
 

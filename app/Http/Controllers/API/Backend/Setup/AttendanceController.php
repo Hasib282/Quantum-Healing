@@ -399,7 +399,7 @@ class AttendanceController extends Controller
                 $branches = Branch::pluck('id', DB::raw('LOWER(TRIM(branch)) as branch'));
 
                 // Step 4: Replace branch names with branch IDs
-                $finalData = collect($filteredData)->map(function ($user) use ($branches, $sl) {
+                $finalData = collect($filteredData)->map(function ($user) use ($branches, &$sl) {
                     $user['branch'] = $user['branch']
                     ? $branches[strtolower(trim($user['branch']))] ?? null
                     : null;
