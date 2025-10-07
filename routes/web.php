@@ -117,5 +117,10 @@ Route::prefix('/reports')->group(function () {
         
         ///////////// --------------- Temporary Attendance routes ----------- ///////////////////
         Route::get('/temp_attendance_statement','ShowTempAttendanceStatement')->name('show.tempAttendanceStatement');
+        
+        
+        
+        ///////////// --------------- Attendance Sheet routes ----------- ///////////////////
+        Route::get('/attendance_sheet','ShowAttendanceSheet')->name('show.attendanceSheet');
     });
 });

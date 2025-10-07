@@ -32,6 +32,7 @@ use App\Http\Controllers\API\Backend\Setup\TempAttendanceController;
 // Reports Controller
 use App\Http\Controllers\API\Backend\Reports\AttendanceStatementController;
 use App\Http\Controllers\API\Backend\Reports\TempAttendanceStatementController;
+use App\Http\Controllers\API\Backend\Reports\AttendanceSheetController;
 
 
 // *************************************** Forget Password Controller Routes Start *************************************** //
@@ -182,6 +183,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(TempAttendanceStatementController::class)->group(function () {
             Route::post('/temp_attendance_statement', 'Show');
             Route::get('/temp_attendance_statement/print', 'Print')->withoutMiddleware('auth:sanctum')->middleware('web');
+        });
+        
+        
+        
+        ///////////// --------------- Attendance Sheet routes ----------- ///////////////////
+        Route::controller(AttendanceSheetController::class)->group(function () {
+            Route::post('/attendance_sheet', 'Show');
+            Route::get('/attendance_sheet/print', 'Print')->withoutMiddleware('auth:sanctum')->middleware('web');
         });
     });
 });

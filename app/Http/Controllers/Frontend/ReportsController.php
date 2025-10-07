@@ -34,4 +34,19 @@ class ReportsController extends Controller
             return view('report.temp_attendance_statement.main', compact('name', 'js'));
         }
     } // End Method
+    
+    
+    
+    /////////////////////////// --------------- Attedance Sheet Methods start ---------- //////////////////////////
+    // Show All Attedance Sheet
+    public function ShowAttendanceSheet(Request $req){
+        $name = "Attedance Sheet";
+        $js = 'reports/attendance_sheet';
+        if ($req->ajax()) {
+            return view('report.attendance_sheet.ajaxBlade', compact('name', 'js'));
+        }
+        else{
+            return view('report.attendance_sheet.main', compact('name', 'js'));
+        }
+    } // End Method
 }
