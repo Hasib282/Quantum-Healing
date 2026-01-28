@@ -33,7 +33,7 @@
 <table class="show-table" style="width: 100%; border-collapse: collapse; page-break-inside: auto;">
     <caption style="background: #f2f2f25e;color:black;border: 1px solid #80808080;">Event {{$data[0]->events->name}} <br> Attendence on {{request()->query('date')}}</caption>
     <thead style="display: table-header-group;">
-        <tr style="background:none;">
+        <tr style="background:none;font-size:15px;">
             <th>Gender</th>
             <th>QT Status</th>
             <th>Sl</th>

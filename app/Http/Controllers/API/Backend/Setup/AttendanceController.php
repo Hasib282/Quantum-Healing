@@ -12,6 +12,7 @@ use App\Models\Attendence_Temp;
 use App\Models\Event_User_List;
 use App\Models\Event;
 use App\Models\User_Info;
+use App\Models\Branch;
 
 class AttendanceController extends Controller
 {
@@ -391,14 +392,15 @@ class AttendanceController extends Controller
                     Branch::insert($branchInsert);
                 }
 
-                $sl = GenerateTempSLNo() + 0;
+                $sl = GenerateSLNo() + 0;
+                // dd($sl);
                 // Step 3: Get branch mapping
                 $branches = Branch::get()
                 ->mapWithKeys(fn($b) => [strtolower(trim($b->branch)) => $b->id]);
                 $branches = Branch::pluck('id', DB::raw('LOWER(TRIM(branch)) as branch'));
 
                 // Step 4: Replace branch names with branch IDs
-                $finalData = collect($filteredData)->map(function ($user) use ($branches, $sl) {
+                $finalData = collect($filteredData)->map(function ($user) use ($branches, &$sl) {
                     $user['branch'] = $user['branch']
                     ? $branches[strtolower(trim($user['branch']))] ?? null
                     : null;

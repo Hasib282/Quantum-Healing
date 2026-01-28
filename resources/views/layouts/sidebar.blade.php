@@ -158,6 +158,15 @@
                         </p>
                     </div>
                 </li>
+                {{-- Attendence Sheet Sub Menu --}}
+                <li class="sub-menu-item" data-url="{{ route('show.attendanceSheet') }}">
+                    <div class="menu-title  {{ (Request::segment(1) == 'reports' && Request::segment(2) == 'attendance_sheet') ? 'active':''}}">
+                        <p>
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            Attendence Sheet
+                        </p>
+                    </div>
+                </li>
             </ul>
         </li>
     </ul>

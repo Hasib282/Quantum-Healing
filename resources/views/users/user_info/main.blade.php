@@ -13,7 +13,7 @@
                 <button class="open-modal" data-modal-id="addModal" id="add"><i class="fa-solid fa-plus"></i> Add {{ $name }}</button>
             </div>
             <div class="c-3">
-                {{-- <button class="open-modal btn-blue" data-modal-id="uploadModal"><i class="fa-solid fa-arrow-up-from-bracket"></i> Upload Excel </button> --}}
+                <button class="open-modal btn-blue" data-modal-id="uploadModal"><i class="fa-solid fa-arrow-up-from-bracket"></i> Upload Excel </button>
             </div>
             <div class="c-3">
 
@@ -78,6 +78,8 @@
     @include('users.user_info.add')
 
     @include('users.user_info.edit')
+    
+    @include('users.user_info.upload')
 
     @include('common_modals.detailsModal')
 

@@ -17,4 +17,8 @@ class Event_User_List extends Model
     public function participants(){
         return $this->hasmany(User_Info::class,'reg_no','reg_no');
     }
+    
+    public function participant(){
+        return $this->belongsTo(User_Info::class,'reg_no','reg_no');
+    }
 }
